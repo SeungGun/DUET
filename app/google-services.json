@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "782907097274",
+    "project_id": "duet-7009e",
+    "storage_bucket": "duet-7009e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:782907097274:android:48dbb20585728c837d8283",
+        "android_client_info": {
+          "package_name": "com.example.duet"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "782907097274-oct2m926p73vbgh2clq7m4eudt6d0oua.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCAbyF3IhBP_nW_r5inAlh6tmHmgFP-I2k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "782907097274-oct2m926p73vbgh2clq7m4eudt6d0oua.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
