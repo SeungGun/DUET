@@ -17,6 +17,8 @@ package com.example.duet;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -69,15 +71,28 @@ public class Auth extends AppCompatActivity {
     private FirebaseAuth.AuthStateListener mAuthStateListener;
 
     //Same method using startActivityForResult which is deprecated
-    private ActivityResultLauncher<Intent> signInLauncher = registerForActivityResult(
-            new FirebaseAuthUIActivityResultContract(),
-            this::onSignInResult);
-
+//    private ActivityResultLauncher<Intent> signInLauncher = registerForActivityResult(
+//            new FirebaseAuthUIActivityResultContract(),
+//            this::onSignInResult);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_auth);
+        findViewById(R.id.btn_sign_in).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), SignInActivity.class);
+                startActivity(intent);
+            }
+        });
+        findViewById(R.id.btn_sign_up).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), SignUpActivity.class);
+                startActivity(intent);
+            }
+        });
 
         mUsername = ANONYMOUS;
 
@@ -90,13 +105,15 @@ public class Auth extends AppCompatActivity {
         //functions.useEmulator("127.0.0.1", 4400);
 
         // check If current user is in database
-        mAuthStateListener = firebaseAuth -> {
+
+        /*mAuthStateListener = firebaseAuth -> {
             FirebaseUser user = firebaseAuth.getCurrentUser();
+            Log.d("test",(user == null)+"");
             if(user != null){
                 // user is signed in
                 //onSignedInInitialize(user.getDisplayName());
                 Intent intent = new Intent(this, MainActivity.class);
-
+                intent.putExtra("uid", user.getUid());
                 startActivity(intent);
                 finish();
             } else {
@@ -118,10 +135,13 @@ public class Auth extends AppCompatActivity {
         };
 
 
+         */
+
 
     }
 
     private void onSignInResult(FirebaseAuthUIAuthenticationResult result) {
+        Log.d("function call", "called");
         IdpResponse response = result.getIdpResponse();
 
         if (result.getResultCode() == RESULT_OK) {
@@ -153,16 +173,16 @@ public class Auth extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        if (mAuthStateListener != null) {
-            mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
-        }
-        detachDatabaseReadListener();
+//        if (mAuthStateListener != null) {
+//            mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
+//        }
+//        detachDatabaseReadListener();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        mFirebaseAuth.addAuthStateListener(mAuthStateListener);
+//        mFirebaseAuth.addAuthStateListener(mAuthStateListener);
     }
 
     private void onSignedInInitialize(String username) {
