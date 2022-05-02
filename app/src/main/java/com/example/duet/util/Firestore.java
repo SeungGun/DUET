@@ -26,11 +26,11 @@ public class Firestore {
     /**
      * 새로운 유저를 Firestore 에 생성하는 요청
      * "user" collection → {uid} document 경로로 데이터 create
+     * ※ User 모델의 나머지 attribute 들은 default 값으로 채워서 추가
      * @param uid 유저 고유 아이디
      * @param email 유저 이메일
      * @param nickname 유저 닉네임
      * @param userName 유저 이름
-     * ※ User 모델의 나머지 attribute 들은 default 값으로 채워서 추가
      * @return Task<Void>
      */
     public static Task<Void> createNewUser(String uid, String email, String nickname, String userName){
