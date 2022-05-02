@@ -115,4 +115,18 @@ public class User {
     public void setReliability(int reliability) {
         this.reliability = reliability;
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "uid='" + uid + '\'' +
+                ", email='" + email + '\'' +
+                ", nickname='" + nickname + '\'' +
+                ", registerDate='" + registerDate + '\'' +
+                ", userName='" + userName + '\'' +
+                ", level=" + level +
+                ", exp=" + exp +
+                ", reliability=" + reliability +
+                '}';
+    }
 }
