@@ -4,9 +4,11 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/SeoungGun/AndroidStudioProjects/DUET/app/src/main/res/layout/activity_auth.xml" value="0.23731884057971014" />
+        <entry key="..\:/Users/SeoungGun/AndroidStudioProjects/DUET/app/src/main/res/layout/activity_create_post.xml" value="0.23177083333333334" />
         <entry key="..\:/Users/SeoungGun/AndroidStudioProjects/DUET/app/src/main/res/layout/activity_main.xml" value="0.22826086956521738" />
         <entry key="..\:/Users/SeoungGun/AndroidStudioProjects/DUET/app/src/main/res/layout/activity_sign_in.xml" value="0.23731884057971014" />
         <entry key="..\:/Users/SeoungGun/AndroidStudioProjects/DUET/app/src/main/res/layout/activity_sign_up.xml" value="0.23731884057971014" />
+        <entry key="..\:/Users/SeoungGun/AndroidStudioProjects/DUET/app/src/main/res/layout/create_post_images_layout.xml" value="0.23177083333333334" />
         <entry key="..\:/Users/SeoungGun/AndroidStudioProjects/DUET/app/src/main/res/menu/main_menu.xml" value="0.21481481481481482" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.1526268115942029" />
         <entry key="app/src/main/res/layout/activity_register.xml" value="0.20833333333333334" />
