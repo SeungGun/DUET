@@ -79,7 +79,10 @@ public class SignUpActivity extends AppCompatActivity {
                                     // 데이터 생성 성공
                                     if (task.isSuccessful()) {
                                         Log.d("sign up success", "sucess");
-                                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                                        intent.putExtra("uid", userId);
+                                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                        startActivity(intent);
                                     } else { // 데이터 생성 실패
                                         Log.d("sign up failure", "failure");
                                         firebaseAuth.signOut();
