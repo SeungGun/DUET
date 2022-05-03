@@ -1,4 +1,4 @@
-package com.example.duet.activity;
+package com.example.duet.activity.testbed;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;

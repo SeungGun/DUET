@@ -1,4 +1,4 @@
-package com.example.duet.activity;
+package com.example.duet.activity.testbed;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -37,7 +37,6 @@ public class AdminActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 CreateText createText = new CreateText();
-
                 writeNewThing("Who Am I", "Won Kim", createText.generateRandomChunk());
             }
         });
@@ -45,7 +44,11 @@ public class AdminActivity extends AppCompatActivity {
 
     }
 
-
+/**
+ * @auther Me
+ * @since 2022/05/03 10:45 오후
+ Insert dummy data to database
+ **/
 
     private void writeNewThing(String title, String mentor, ArrayList<String> group) {
         CardData cardData = new CardData(title, mentor, group);

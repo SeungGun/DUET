@@ -14,6 +14,13 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
+/**
+ * @auther Me
+ * @since 2022/05/03 10:45 오후
+ Just implementation
+ Planned to use later
+ **/
+
 public class FirebaseRDB {
     private FirebaseDatabase mDatabase;
     private DatabaseReference mRef;
@@ -36,20 +43,6 @@ public class FirebaseRDB {
     }
 
     public void readData(ArrayList<CardData> cardDataList){
-        CardData card;
-        mRef.child("classes").child("admin").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DataSnapshot> task) {
-                if (!task.isSuccessful()){
-                    Log.e("firebase", "Error getting data", task.getException());
-                }
-                else {
-                    cardDataList.add(task.getResult().getValue(CardData.class));
-
-                }
-            }
-        });
-
 
     }
 }
