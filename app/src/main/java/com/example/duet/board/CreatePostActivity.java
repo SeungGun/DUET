@@ -14,6 +14,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -35,6 +36,9 @@ import java.io.InputStream;
 public class CreatePostActivity extends AppCompatActivity {
     private LinearLayout imageContainer;
     private Button addImageButton;
+    private EditText inputTitle;
+    private EditText inputBody;
+    private EditText inputSubtractPoint;
     public static final int REQUEST_CODE = 0;
 
     @Override
@@ -43,6 +47,9 @@ public class CreatePostActivity extends AppCompatActivity {
         setContentView(R.layout.activity_create_post);
         imageContainer = findViewById(R.id.container);
         addImageButton = findViewById(R.id.btn_add_image);
+        inputTitle = findViewById(R.id.input_title);
+        inputBody = findViewById(R.id.input_body);
+        inputSubtractPoint = findViewById(R.id.input_alloc_point);
 
         addImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
