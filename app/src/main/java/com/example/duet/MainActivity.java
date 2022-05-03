@@ -28,33 +28,22 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Intent intent = getIntent();
-        String loginUid = intent.getStringExtra("uid");
-        createPostButton = findViewById(R.id.btn_create_post);
-        createPostButton.setOnClickListener(new View.OnClickListener() {
+
+        findViewById(R.id.btn_sign_in).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), CreatePostActivity.class));
+                Intent intent = new Intent(getApplicationContext(), SignInActivity.class);
+                startActivity(intent);
             }
         });
-        // uid 로 Firestore 에 있는 유저 데이터 가져오기
-        Firestore.getUserData(loginUid)
-                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+        findViewById(R.id.btn_sign_up).setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                // 데이터를 User 모델 클래스로 변환 (deserialize)
-                User user = documentSnapshot.toObject(User.class);
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), SignUpActivity.class);
+                startActivity(intent);
+            }
+        });
 
-                Log.d("user data test", user.toString());
-                // 잘 됐는지 유저 데이터 출력
-            }
-       }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                FirebaseAuth.getInstance().signOut();
-                finish();
-            }
-        });
     }
 
 
@@ -71,9 +60,6 @@ public class MainActivity extends AppCompatActivity {
             case R.id.sign_out_menu:
                 AuthUI.getInstance().signOut(this);
                 FirebaseAuth.getInstance().signOut();
-                Intent intent = new Intent(this, Auth.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
                 return true;
 
             default:
