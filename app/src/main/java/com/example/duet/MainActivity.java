@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
                 // 데이터를 User 모델 클래스로 변환 (deserialize)
                 User user = documentSnapshot.toObject(User.class);
 
-                Log.d("user data test", user.toString());
+               // Log.d("user data test", user.toString());
                 // 잘 됐는지 유저 데이터 출력
             }
        }).addOnFailureListener(new OnFailureListener() {
@@ -65,19 +65,5 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
-            case R.id.sign_out_menu:
-                AuthUI.getInstance().signOut(this);
-                FirebaseAuth.getInstance().signOut();
-                Intent intent = new Intent(this, Auth.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
-                return true;
 
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
 }

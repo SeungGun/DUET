@@ -2,6 +2,11 @@
     <string name="app_name">DUET</string>
     <string name="sign_out">Sign Out</string>
     <string name="send_button_label">Send</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="content_description_media">dummy</string>
+    <string name="title">Material-UI-Basic</string>
+    <string name="secondary_text">김원님, 정옥란님, 이주형님 참여중</string>
+    <string name="supporting_text">멘토: 김원님</string>
+    <string name="action_1">참여하기</string>
+
+
 </resources>
