@@ -1,7 +1,9 @@
 package com.example.duet.util;
 
+import com.example.duet.model.PostData;
 import com.example.duet.model.User;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -46,5 +48,9 @@ public class Firestore {
      */
     public static Task<DocumentSnapshot> getUserData(String uid){
         return getFirestoreInstance().collection("user").document(uid).get();
+    }
+
+    public static Task<DocumentReference> createNewPost(PostData postData){
+        return getFirestoreInstance().collection("post").add(postData);
     }
 }
