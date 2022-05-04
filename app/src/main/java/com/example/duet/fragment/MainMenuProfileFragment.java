@@ -1,5 +1,6 @@
 package com.example.duet.fragment;
 
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -14,10 +15,16 @@ import android.widget.ListView;
 import com.example.duet.R;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.CalendarMode;
+import com.prolificinteractive.materialcalendarview.DayViewDecorator;
+import com.prolificinteractive.materialcalendarview.DayViewFacade;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
+import com.prolificinteractive.materialcalendarview.spans.DotSpan;
 
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -72,6 +79,10 @@ public class MainMenuProfileFragment extends Fragment {
         ViewGroup rootView = (ViewGroup)inflater.inflate(R.layout.fragment_main_menu_profile, container, false);
 
         MaterialCalendarView materialCalendarView = rootView.findViewById(R.id.profile_calendar);
+        materialCalendarView.setSelectedDate(CalendarDay.today());
+
+        // 점찍기
+        materialCalendarView.addDecorator(new EventDecorator(Color.RED, Collections.singleton(CalendarDay.today())));
 
 //        materialCalendarView.setOnDateChangedListener(new OnDateSelectedListener() {
 //            @Override
@@ -85,6 +96,7 @@ public class MainMenuProfileFragment extends Fragment {
         ListView listView = (ListView) rootView.findViewById(R.id.profile_list);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, activities);
         listView.setAdapter(adapter);
+
 
         return rootView;
     }
