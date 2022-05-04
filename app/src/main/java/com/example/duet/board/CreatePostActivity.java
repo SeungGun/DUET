@@ -1,5 +1,6 @@
 package com.example.duet.board;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
@@ -9,9 +10,15 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import androidx.exifinterface.media.ExifInterface;
+
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -20,8 +27,17 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.duet.R;
+import com.example.duet.model.PostData;
+import com.example.duet.model.User;
+import com.example.duet.util.FireStorage;
+import com.example.duet.util.Firestore;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 
 /**
  * 새로운 게시글을 추가할 수 있는 Activity
@@ -39,7 +55,32 @@ public class CreatePostActivity extends AppCompatActivity {
     private EditText inputTitle;
     private EditText inputBody;
     private EditText inputSubtractPoint;
+    private Button uploadButton;
+    private ArrayList<String> imgUrlList;
     public static final int REQUEST_CODE = 0;
+    private int sum = 0;
+    private Bundle bundle;
+    private Handler handler = new Handler(Looper.myLooper()){
+        @Override
+        public void handleMessage(Message msg){
+            sum += msg.getData().getInt("index");
+            if(imageContainer.getChildCount() == sum){
+                Firestore.createNewPost(
+                        new PostData(User.currentUser.getUid()
+                                , inputTitle.getText().toString()
+                                , imgUrlList, inputBody.getText().toString()
+                                , 100
+                                , imgUrlList)).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentReference> task) {
+                        if(task.isSuccessful()){
+                            Log.d("create post", "success");
+                        }
+                    }
+                });
+            };
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +91,9 @@ public class CreatePostActivity extends AppCompatActivity {
         inputTitle = findViewById(R.id.input_title);
         inputBody = findViewById(R.id.input_body);
         inputSubtractPoint = findViewById(R.id.input_alloc_point);
+        uploadButton = findViewById(R.id.upload_post_btn);
+        imgUrlList = new ArrayList<>();
+        bundle = new Bundle();
 
         addImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -59,6 +103,13 @@ public class CreatePostActivity extends AppCompatActivity {
                 intent.setType("image/* video/*"); // 파일 타입 지정 (이미지, 비디오)
                 intent.setAction(Intent.ACTION_GET_CONTENT);
                 startActivityForResult(Intent.createChooser(intent, "Select Picture"), REQUEST_CODE);
+            }
+        });
+
+        uploadButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                uploadImagesToStorage();
             }
         });
     }
@@ -153,4 +204,34 @@ public class CreatePostActivity extends AppCompatActivity {
             return null;
         }
     }
+
+    private void uploadImagesToStorage(){
+        int imageCount = imageContainer.getChildCount();
+        for(int i=0; i<imageCount; ++i){
+            FireStorage.uploadPostImage(((BitmapDrawable)((ImageView)imageContainer.getChildAt(i))
+                            .getDrawable()).getBitmap()
+                    , User.currentUser.getUid()).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                    if(task.isSuccessful()){
+                        task.getResult().getStorage().getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Uri> task) {
+                                if(task.isSuccessful()){
+                                    imgUrlList.add(task.getResult().toString());
+                                    bundle.putInt("index", 1);
+                                    Message msg = handler.obtainMessage();
+                                    msg.setData(bundle);
+                                    handler.sendMessage(msg);
+
+                                    Log.d("image url added", "f");
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+        }
+    }
 }
+
