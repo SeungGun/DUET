@@ -2,13 +2,22 @@ package com.example.duet.fragment;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import com.example.duet.R;
+import com.prolificinteractive.materialcalendarview.CalendarDay;
+import com.prolificinteractive.materialcalendarview.CalendarMode;
+import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
+import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
+
+import java.util.Calendar;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -61,6 +70,21 @@ public class MainMenuProfileFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         ViewGroup rootView = (ViewGroup)inflater.inflate(R.layout.fragment_main_menu_profile, container, false);
+
+        MaterialCalendarView materialCalendarView = rootView.findViewById(R.id.profile_calendar);
+
+//        materialCalendarView.setOnDateChangedListener(new OnDateSelectedListener() {
+//            @Override
+//            public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
+//
+//                // here 날짜 눌렀을 때 !
+//            }
+//        }
+
+        String[] activities = {"made a study room with 정윤현", "uploaded new activities"};
+        ListView listView = (ListView) rootView.findViewById(R.id.profile_list);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, activities);
+        listView.setAdapter(adapter);
 
         return rootView;
     }
