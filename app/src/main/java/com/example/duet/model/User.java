@@ -17,6 +17,7 @@ public class User {
     private int level;
     private int exp;
     private int reliability;
+    public static User currentUser;
 
     public User() {
         // 데이터에서 클래스로 deserialize 할 때 default constructor 필요
