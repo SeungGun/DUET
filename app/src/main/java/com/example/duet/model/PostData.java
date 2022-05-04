@@ -1,15 +1,41 @@
 package com.example.duet.model;
 
+import java.util.ArrayList;
+
 public class PostData {
     private String postID;
     private String writerID;
     private String title;
-    private String[] category;
+    private ArrayList<String> category;
     private String writeDate;
     private String body;
     private int likeCount;
     private int allocPoint;
-    private boolean isAllowReply;
+    private int stateAllowReply;
+    private ArrayList<String> postImageUrls;
+
+    public PostData() {
+
+    }
+
+    public PostData(String writerID, String title, ArrayList<String> category, String body, int allocPoint, ArrayList<String> postImageUrls) {
+        this.writerID = writerID;
+        this.title = title;
+        this.category = category;
+        this.body = body;
+        this.likeCount = 0;
+        this.allocPoint = allocPoint;
+        this.stateAllowReply = 1;
+        this.postImageUrls = postImageUrls;
+    }
+
+    public ArrayList<String> getPostImageUrls() {
+        return postImageUrls;
+    }
+
+    public void setPostImageUrls(ArrayList<String> postImageUrls) {
+        this.postImageUrls = postImageUrls;
+    }
 
     public String getPostID() {
         return postID;
@@ -35,11 +61,11 @@ public class PostData {
         this.title = title;
     }
 
-    public String[] getCategory() {
+    public ArrayList<String> getCategory() {
         return category;
     }
 
-    public void setCategory(String[] category) {
+    public void setCategory(ArrayList<String> category) {
         this.category = category;
     }
 
@@ -75,11 +101,11 @@ public class PostData {
         this.allocPoint = allocPoint;
     }
 
-    public boolean isAllowReply() {
-        return isAllowReply;
+    public int getStateAllowReply() {
+        return stateAllowReply;
     }
 
-    public void setAllowReply(boolean allowReply) {
-        isAllowReply = allowReply;
+    public void setStateAllowReply(int stateAllowReply) {
+        this.stateAllowReply = stateAllowReply;
     }
 }
