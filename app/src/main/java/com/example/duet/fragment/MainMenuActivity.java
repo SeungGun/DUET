@@ -1,5 +1,6 @@
 package com.example.duet.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 
@@ -9,7 +10,11 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.duet.R;
+import com.example.duet.model.User;
+import com.example.duet.util.Firestore;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.firestore.DocumentSnapshot;
 
 public class MainMenuActivity extends AppCompatActivity {
 
@@ -24,6 +29,17 @@ public class MainMenuActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
 
+        Intent intent = getIntent();
+        if(intent != null){
+            String uid = intent.getStringExtra("uid");
+            Firestore.getUserData(uid).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                    User user = documentSnapshot.toObject(User.class);
+                    User.currentUser = user;
+                }
+            });
+        }
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.menu_frame_layout, fragmentBulletin).commitAllowingStateLoss();
 
