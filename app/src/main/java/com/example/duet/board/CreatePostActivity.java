@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+
 import androidx.exifinterface.media.ExifInterface;
 
 import android.graphics.drawable.BitmapDrawable;
@@ -32,6 +33,7 @@ import com.example.duet.model.User;
 import com.example.duet.util.FireStorage;
 import com.example.duet.util.Firestore;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.storage.UploadTask;
@@ -41,13 +43,14 @@ import java.util.ArrayList;
 
 /**
  * 새로운 게시글을 추가할 수 있는 Activity
+ *
  * @author Seungun Sin, 2022-05-02
  */
 /*
     To Do List
-    1. PostData 모델에 맞는 사용자 입력창 생성
-    2. 이미지 메타데이터와 입력한 정보를 Firestore 에 저장
-    3. 이미지를 Firebase Storage 에 저장
+    1. PostData 모델에 맞는 사용자 입력창 생성 v
+    2. 이미지 메타데이터와 입력한 정보를 Firestore 에 저장 v
+    3. 이미지를 Firebase Storage 에 저장 v
  */
 public class CreatePostActivity extends AppCompatActivity {
     private LinearLayout imageContainer;
@@ -58,27 +61,40 @@ public class CreatePostActivity extends AppCompatActivity {
     private Button uploadButton;
     private ArrayList<String> imgUrlList;
     public static final int REQUEST_CODE = 0;
-    private int sum = 0;
+    private int checkSum = 0;
     private Bundle bundle;
-    private Handler handler = new Handler(Looper.myLooper()){
+    private Handler handler = new Handler(Looper.myLooper()) {
+        /**
+         * 이미지를 갤러리에서 추가한 개수만큼 Storage 에 저장할 때 message sign 을 받는 곳
+         * 만약 총합 개수가 추가한 이미지 개수와 같아지게 된다면 그때 Firestore 에 Post Data 저장 요청
+         * @param msg 핸들러를 통해 전달한 메세지(데이터)
+         * @author Seunggun Sin, 2022-05-06
+         */
         @Override
-        public void handleMessage(Message msg){
-            sum += msg.getData().getInt("index");
-            if(imageContainer.getChildCount() == sum){
+        public void handleMessage(Message msg) {
+            checkSum += msg.getData().getInt("finish_count");
+
+            if (imageContainer.getChildCount() == checkSum) {
+                // Firestore 에 이미지 url 정보들과 입력한 데이터를 함께 Post 데이터 저장 요청
                 Firestore.createNewPost(
                         new PostData(User.currentUser.getUid()
                                 , inputTitle.getText().toString()
                                 , imgUrlList, inputBody.getText().toString()
-                                , 100
+                                , Integer.parseInt(inputSubtractPoint.getText().toString())
                                 , imgUrlList)).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
                     @Override
                     public void onComplete(@NonNull Task<DocumentReference> task) {
-                        if(task.isSuccessful()){
+                        if (task.isSuccessful()) {
                             Log.d("create post", "success");
                         }
                     }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d("create post", "failure");
+                    }
                 });
-            };
+            }
         }
     };
 
@@ -86,12 +102,7 @@ public class CreatePostActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_post);
-        imageContainer = findViewById(R.id.container);
-        addImageButton = findViewById(R.id.btn_add_image);
-        inputTitle = findViewById(R.id.input_title);
-        inputBody = findViewById(R.id.input_body);
-        inputSubtractPoint = findViewById(R.id.input_alloc_point);
-        uploadButton = findViewById(R.id.upload_post_btn);
+        bindingView();
         imgUrlList = new ArrayList<>();
         bundle = new Bundle();
 
@@ -112,6 +123,19 @@ public class CreatePostActivity extends AppCompatActivity {
                 uploadImagesToStorage();
             }
         });
+    }
+
+    /**
+     * CreatePostActivity 에 있는 모든 View 초기화 및 바인딩 하는 작업
+     * @author Seunggun Sin, 2022-05-06
+     */
+    private void bindingView() {
+        imageContainer = findViewById(R.id.container);
+        addImageButton = findViewById(R.id.btn_add_image);
+        inputTitle = findViewById(R.id.input_title);
+        inputBody = findViewById(R.id.input_body);
+        inputSubtractPoint = findViewById(R.id.input_alloc_point);
+        uploadButton = findViewById(R.id.upload_post_btn);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -155,8 +179,7 @@ public class CreatePostActivity extends AppCompatActivity {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-            }
-            else if(resultCode == RESULT_CANCELED){ // 사진 선택이 취소된 경우
+            } else if (resultCode == RESULT_CANCELED) { // 사진 선택이 취소된 경우
                 Toast.makeText(this, "사진 선택 취소", Toast.LENGTH_SHORT).show();
             }
         }
@@ -164,10 +187,11 @@ public class CreatePostActivity extends AppCompatActivity {
 
     /**
      * 불러온 이미지가 ImageView 에서 회전되는 현상이 있어서, Bitmap 자체에서 Exif 메타데이터를 이용해 제대로 회전시킨 이미지(Bitmap) 반환
-     * @author Seunggun Sin, 2022-05-02
-     * @param bitmap 원본 Bitmap 데이터
+     *
+     * @param bitmap      원본 Bitmap 데이터
      * @param orientation 원본 이미지의 현재 회전 상태 값(?)
      * @return 제대로 회전시킨 뒤의 Bitmap 반환
+     * @author Seunggun Sin, 2022-05-02
      */
     public Bitmap rotateBitmap(Bitmap bitmap, int orientation) {
         Matrix matrix = new Matrix();
@@ -205,26 +229,37 @@ public class CreatePostActivity extends AppCompatActivity {
         }
     }
 
-    private void uploadImagesToStorage(){
+    /**
+     * 추가한 이미지 개수만큼 반복하여 Storage 에 저장하는 요청을 함
+     * 동시에 저장이 완료되었다라는 신호를 handler 를 통해 전달
+     *
+     * @author Seunggun Sin, 2022-05-06
+     */
+    private void uploadImagesToStorage() {
         int imageCount = imageContainer.getChildCount();
-        for(int i=0; i<imageCount; ++i){
-            FireStorage.uploadPostImage(((BitmapDrawable)((ImageView)imageContainer.getChildAt(i))
-                            .getDrawable()).getBitmap()
-                    , User.currentUser.getUid()).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+        for (int i = 0; i < imageCount; ++i) {
+            // image 를 Storage 에 저장하는 요청
+            FireStorage.uploadPostImage(getBitmapFromViewImage(imageContainer.getChildAt(i))
+                    , User.currentUser.getUid())
+                    .addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                    if(task.isSuccessful()){
-                        task.getResult().getStorage().getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                    if (task.isSuccessful()) {
+                        task.getResult().getStorage().getDownloadUrl()
+                                .addOnCompleteListener(new OnCompleteListener<Uri>() {
                             @Override
                             public void onComplete(@NonNull Task<Uri> task) {
-                                if(task.isSuccessful()){
+                                if (task.isSuccessful()) {
+                                    // Storage 에 저장한 경로 주소 값을 받아와서 List 에 저장
                                     imgUrlList.add(task.getResult().toString());
-                                    bundle.putInt("index", 1);
+
+                                    bundle.putInt("finish_count", 1);
                                     Message msg = handler.obtainMessage();
                                     msg.setData(bundle);
-                                    handler.sendMessage(msg);
-
-                                    Log.d("image url added", "f");
+                                    handler.sendMessage(msg); // 메세지 전달
+                                }
+                                else{
+                                    Log.e("get image download url", "Failure");
                                 }
                             }
                         });
@@ -232,6 +267,17 @@ public class CreatePostActivity extends AppCompatActivity {
                 }
             });
         }
+    }
+
+    /**
+     * ViewGroup 에 있는 child View, raw image view 를 Bitmap 으로 변환
+     *
+     * @param image View 타입의 이미지(ImageView 로 downCasting 되지 않은 view object)
+     * @return Bitmap 으로 변환된 이미지
+     * @author Seunggun Sin, 2022-05-06
+     */
+    private Bitmap getBitmapFromViewImage(View image) {
+        return ((BitmapDrawable) ((ImageView) image).getDrawable()).getBitmap();
     }
 }
 
