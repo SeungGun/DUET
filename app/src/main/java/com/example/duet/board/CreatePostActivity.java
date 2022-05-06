@@ -5,14 +5,18 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Matrix;
 
 import androidx.exifinterface.media.ExifInterface;
 
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -20,16 +24,19 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.duet.R;
 import com.example.duet.model.PostData;
 import com.example.duet.model.User;
+import com.example.duet.util.CustomProgressDialog;
 import com.example.duet.util.FireStorage;
 import com.example.duet.util.Firestore;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -63,6 +70,7 @@ public class CreatePostActivity extends AppCompatActivity {
     public static final int REQUEST_CODE = 0;
     private int checkSum = 0;
     private Bundle bundle;
+    private CustomProgressDialog progressDialog;
     private Handler handler = new Handler(Looper.myLooper()) {
         /**
          * 이미지를 갤러리에서 추가한 개수만큼 Storage 에 저장할 때 message sign 을 받는 곳
@@ -85,7 +93,19 @@ public class CreatePostActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<DocumentReference> task) {
                         if (task.isSuccessful()) {
-                            Log.d("create post", "success");
+                            Log.d("create post", "success, id:"+task.getResult().getId());
+                            Firestore.insertPostId(task.getResult().getId()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if(task.isSuccessful()){
+                                        Log.d("pid update","success");
+                                        progressDialog.dismissDialog();
+                                    }
+                                    else{
+
+                                    }
+                                }
+                            });
                         }
                     }
                 }).addOnFailureListener(new OnFailureListener() {
@@ -105,6 +125,7 @@ public class CreatePostActivity extends AppCompatActivity {
         bindingView();
         imgUrlList = new ArrayList<>();
         bundle = new Bundle();
+        progressDialog = new CustomProgressDialog(CreatePostActivity.this);
 
         addImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -120,7 +141,14 @@ public class CreatePostActivity extends AppCompatActivity {
         uploadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                uploadImagesToStorage();
+                progressDialog.showLoadingDialog();
+                new Thread(){
+                    @Override
+                    public void run(){
+                        uploadImagesToStorage();
+                    }
+
+                }.start();
             }
         });
     }
