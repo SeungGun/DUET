@@ -33,11 +33,12 @@ public class Firestore {
      * @param email 유저 이메일
      * @param nickname 유저 닉네임
      * @param userName 유저 이름
+     * @param profileUrl 유저 프로필 이미지 Url
      * @return Task<Void>
      */
-    public static Task<Void> createNewUser(String uid, String email, String nickname, String userName){
+    public static Task<Void> createNewUser(String uid, String email, String nickname, String userName, String profileUrl){
         return getFirestoreInstance().collection("user").document(uid).set(
-                new User(uid, email, nickname, userName));
+                new User(uid, email, nickname, userName, profileUrl));
     }
 
     /**
@@ -50,7 +51,22 @@ public class Firestore {
         return getFirestoreInstance().collection("user").document(uid).get();
     }
 
+    /**
+     * 새로운 게시글 데이터를 생성하는 요청
+     * "post" collection → {pid} document 경로로 데이터 create
+     * @param postData PostData instance
+     * @return Task<DocumentReference>: 요청 결과
+     */
     public static Task<DocumentReference> createNewPost(PostData postData){
         return getFirestoreInstance().collection("post").add(postData);
+    }
+
+    /**
+     * 새로운 게시글 데이터를 생성하고 난 뒤 비어있는 게시글 데이터의 ID 필드 값을 채워넣는 요청
+     * @param pid 새로 생성된 post id
+     * @return Task<Void>: 요청 결과
+     */
+    public static Task<Void> insertPostId(String pid){
+        return getFirestoreInstance().collection("post").document(pid).update("postID", pid);
     }
 }
