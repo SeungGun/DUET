@@ -3,6 +3,7 @@ package com.example.duet.activity.testbed;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -31,6 +32,8 @@ public class AuthActivity extends AppCompatActivity {
 
         firebaseAuth = FirebaseAuth.getInstance();
 
+        //TODO Add defensive coding
+
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -41,6 +44,8 @@ public class AuthActivity extends AppCompatActivity {
                                 if (task.isSuccessful()){
                                     Log.d("firebase", "Create user successful");
                                     FirebaseUser user = firebaseAuth.getCurrentUser();
+                                    setResult(Activity.RESULT_OK);
+                                    finish();
 
                                 }
                                 else{

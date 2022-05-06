@@ -1,18 +1,27 @@
 package com.example.duet.activity.testbed;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContract;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 
 import com.example.duet.R;
+import com.example.duet.cardview.BulletAdapter;
+import com.example.duet.cardview.BulletData;
 import com.example.duet.cardview.CardData;
-import com.example.duet.cardview.MyAdapter;
+import com.example.duet.cardview.CardAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -33,10 +42,22 @@ public class CardActivity extends AppCompatActivity {
 
     FirebaseUser user;
     DatabaseReference mRef;
-    ArrayList<CardData> cardDataArrayList = new ArrayList<CardData>();
-    MyAdapter mAdapter;
+    ArrayList<BulletData> bulletDataArrayList = new ArrayList<BulletData>();
+    BulletAdapter mAdapter;
     String uid;
     ChildEventListener mChildEventListener;
+
+    ActivityResultLauncher<Intent> startActivityResult = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+                @Override public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        user = FirebaseAuth.getInstance().getCurrentUser();
+                        mRef = FirebaseDatabase.getInstance().getReference();
+                    }
+                }
+            });
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +76,8 @@ public class CardActivity extends AppCompatActivity {
             }
         });
 
-        mAdapter = new MyAdapter(this, cardDataArrayList);
+
+        mAdapter = new BulletAdapter(this, bulletDataArrayList);
         listView.setAdapter(mAdapter);
 
         if (user != null) {
@@ -63,7 +85,7 @@ public class CardActivity extends AppCompatActivity {
             uid = user.getUid();
         } else {
             Intent intent = new Intent(getApplicationContext(), AuthActivity.class);
-            startActivity(intent);
+            startActivityResult.launch(intent);
         }
 
     }
@@ -77,7 +99,8 @@ public class CardActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        recvChat();
+        if (user != null)
+            recvBullet();
 
     }
 
@@ -88,13 +111,13 @@ public class CardActivity extends AppCompatActivity {
      Update when value under classes/"uid" changed
      **/
 
-    private void recvChat() {
+    private void recvBullet() {
         if (mChildEventListener == null) {
             mChildEventListener = new ChildEventListener() {
                 @Override
                 public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                    CardData cardData = snapshot.getValue(CardData.class);
-                    cardDataArrayList.add(cardData);
+                    BulletData bulletData = snapshot.getValue(BulletData.class);
+                    bulletDataArrayList.add(bulletData);
                     mAdapter.notifyDataSetChanged();
                 }
 
@@ -110,7 +133,9 @@ public class CardActivity extends AppCompatActivity {
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) { }
             };
-            mRef.child("classes").child(uid).addChildEventListener(mChildEventListener);
+            mRef.child("bulletin").addChildEventListener(mChildEventListener);
         }
     }
+
+
 }

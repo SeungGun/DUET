@@ -18,13 +18,19 @@ import com.example.duet.R;
 
 import java.util.ArrayList;
 
-public class MyAdapter extends BaseAdapter {
+/**
+ * @auther Me
+ * @since 2022/05/06 10:36 오전
+ Will change structure of Card layout
+ **/
+
+public class CardAdapter extends BaseAdapter {
 
     Context mContext = null;
     LayoutInflater mLayoutInflater = null;
     ArrayList<CardData> sample;
 
-    public MyAdapter(Context context, ArrayList<CardData> data){
+    public CardAdapter(Context context, ArrayList<CardData> data){
         mContext = context;
         mLayoutInflater = LayoutInflater.from(mContext);
         sample = data;

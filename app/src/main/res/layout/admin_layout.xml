@@ -15,6 +15,26 @@
         android:id="@+id/dummyBtn"
         />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add posting"
+        android:id="@+id/postingBtn"
+        />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="title"
+        android:id="@+id/editTitle"
+        />
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="content"
+        android:id="@+id/editContent"
+        />
+
 
 
 </LinearLayout>
