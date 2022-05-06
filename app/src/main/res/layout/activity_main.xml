@@ -7,8 +7,14 @@
     android:orientation="vertical"
     >
     <Button
-        android:id="@+id/btn_create_post"
+        android:id="@+id/btn_sign_in"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="게시글 만들기"/>
+        android:text="sign_in"/>
+    <Button
+        android:id="@+id/btn_sign_up"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="sign_up"/>
+
 </LinearLayout>

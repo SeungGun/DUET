@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.duet">
 
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
     <application
         android:allowBackup="true"
@@ -13,10 +13,21 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.DUET">
         <activity
+            android:name=".board.CreatePostActivity"
+            android:exported="false" />
+
+        <activity
             android:name=".activity.testbed.PostActivity"
             android:exported="false" />
         <activity
-            android:name=".board.CreatePostActivity"
+            android:name=".activity.testbed.AuthActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.testbed.AdminActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".activity.testbed.CardActivity"
             android:exported="false" />
         <activity
             android:name=".SignInActivity"
@@ -25,28 +36,20 @@
             android:name=".SignUpActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
-            android:exported="false" />
-        <activity
             android:name=".fragment.MainMenuActivity"
-            android:exported="false"></activity>
-        <activity
-            android:name=".activity.testbed.AdminActivity"
-            android:exported="false" />
-        <activity
-            android:name=".activity.testbed.AuthActivity"
-            android:exported="false"></activity>
+            android:exported="false"  />
 
+        <activity android:name=".MainActivity"
+            android:exported="true" >
 
-        <activity
-            android:name=".activity.testbed.CardActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+
         </activity>
+
     </application>
 
 </manifest>

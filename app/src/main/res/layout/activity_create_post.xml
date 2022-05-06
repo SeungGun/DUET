@@ -7,23 +7,55 @@
     android:orientation="vertical"
     tools:context=".board.CreatePostActivity">
 
-    <Button
-        android:id="@+id/btn_add_image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="addImage from gallery"/>
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fillViewport="true">
-    <LinearLayout
-        android:id="@+id/container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
 
-    </LinearLayout>
-        </ScrollView>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/btn_add_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="addImage from gallery"/>
+
+            <EditText
+                android:id="@+id/input_title"
+                android:hint="title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <EditText
+                android:id="@+id/input_body"
+                android:hint="body"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <EditText
+                android:id="@+id/input_alloc_point"
+                android:hint="point to subtract"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <LinearLayout
+                android:id="@+id/container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+            </LinearLayout>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="upload"
+                android:id="@+id/upload_post_btn"/>
+
+        </LinearLayout>
+
+    </ScrollView>
 
 </LinearLayout>

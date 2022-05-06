@@ -1,5 +1,6 @@
 package com.example.duet.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -9,6 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.duet.R;
+import com.example.duet.board.CreatePostActivity;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -22,6 +25,7 @@ public class MainMenuBulletinFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
+    private FloatingActionButton createPostFab;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -62,6 +66,13 @@ public class MainMenuBulletinFragment extends Fragment {
                              Bundle savedInstanceState) {
         ViewGroup rootView = (ViewGroup)inflater.inflate(R.layout.fragment_main_menu_bulletin, container, false);
 
+        createPostFab = rootView.findViewById(R.id.fab_create_post);
+        createPostFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getActivity(), CreatePostActivity.class));
+            }
+        });
         return rootView;
     }
 }
