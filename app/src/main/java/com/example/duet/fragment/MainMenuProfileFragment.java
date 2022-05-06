@@ -26,6 +26,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 
+import com.example.duet.R;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link MainMenuProfileFragment#newInstance} factory method to
