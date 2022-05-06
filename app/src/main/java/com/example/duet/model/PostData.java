@@ -1,13 +1,15 @@
 package com.example.duet.model;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class PostData {
     private String postID;
     private String writerID;
     private String title;
     private ArrayList<String> category;
-    private String writeDate;
+    private Timestamp writeDate;
     private String body;
     private int likeCount;
     private int allocPoint;
@@ -27,6 +29,7 @@ public class PostData {
         this.allocPoint = allocPoint;
         this.stateAllowReply = 1;
         this.postImageUrls = postImageUrls;
+        this.writeDate = new Timestamp(new Date().getTime());
     }
 
     public ArrayList<String> getPostImageUrls() {
@@ -69,11 +72,11 @@ public class PostData {
         this.category = category;
     }
 
-    public String getWriteDate() {
+    public Timestamp getWriteDate() {
         return writeDate;
     }
 
-    public void setWriteDate(String writeDate) {
+    public void setWriteDate(Timestamp writeDate) {
         this.writeDate = writeDate;
     }
 

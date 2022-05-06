@@ -18,12 +18,13 @@ public class User {
     private int exp;
     private int reliability;
     public static User currentUser;
+    private String profileUrl;
 
     public User() {
         // 데이터에서 클래스로 deserialize 할 때 default constructor 필요
     }
 
-    public User(String uid, String email, String nickname, String registerDate, String userName, int level, int exp, int reliability) {
+    public User(String uid, String email, String nickname, String registerDate, String userName, int level, int exp, int reliability, String profileUrl) {
         this.uid = uid;
         this.email = email;
         this.nickname = nickname;
@@ -32,6 +33,7 @@ public class User {
         this.level = level;
         this.exp = exp;
         this.reliability = reliability;
+        this.profileUrl = profileUrl;
     }
 
     /**
@@ -41,12 +43,14 @@ public class User {
      * @param email
      * @param nickname
      * @param userName
+     * @param profileUrl
      */
-    public User(String uid, String email, String nickname, String userName) {
+    public User(String uid, String email, String nickname, String userName, String profileUrl) {
         this.uid = uid;
         this.email = email;
         this.nickname = nickname;
         this.userName = userName;
+        this.profileUrl = profileUrl;
         this.registerDate = new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime()); // 회원가입 날짜
         this.level = 1; // 유저 레벨 = 1
         this.exp = 0; // 유저 경험치 = 0
@@ -117,6 +121,14 @@ public class User {
         this.reliability = reliability;
     }
 
+    public String getProfileUrl() {
+        return profileUrl;
+    }
+
+    public void setProfileUrl(String profileUrl) {
+        this.profileUrl = profileUrl;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -128,6 +140,7 @@ public class User {
                 ", level=" + level +
                 ", exp=" + exp +
                 ", reliability=" + reliability +
+                ", profileUrl='" + profileUrl + '\'' +
                 '}';
     }
 }
