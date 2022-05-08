@@ -2,6 +2,7 @@ package com.example.duet.cardview;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +17,7 @@ import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 
+import com.example.duet.ChattingRoomActivity;
 import com.example.duet.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -76,6 +78,12 @@ public class BulletAdapter extends BaseAdapter {
                 Map<String, Object> update = new HashMap<String, Object>();
                 update.put(user.getUid(), true);
                 mRef.child("members").child(sample.get(i).getConv_key()).updateChildren(update);
+
+                Intent intent = new Intent(mContext, ChattingRoomActivity.class);
+                intent.putExtra("conv_id", sample.get(i).getConv_key());
+                intent.putExtra("uid", user.getUid());
+                mContext.startActivity(intent);
+
             }
         });
 
