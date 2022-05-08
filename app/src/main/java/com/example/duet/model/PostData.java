@@ -1,6 +1,5 @@
 package com.example.duet.model;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -9,7 +8,7 @@ public class PostData {
     private String writerID;
     private String title;
     private ArrayList<String> category;
-    private Timestamp writeDate;
+    private Date writeDate;
     private String body;
     private int likeCount;
     private int allocPoint;
@@ -23,13 +22,13 @@ public class PostData {
     public PostData(String writerID, String title, ArrayList<String> category, String body, int allocPoint, ArrayList<String> postImageUrls) {
         this.writerID = writerID;
         this.title = title;
-        this.category = category;
+        this.category = null; // 임시 처리, 카테고리 데이터 만들면 변경하기
         this.body = body;
         this.likeCount = 0;
         this.allocPoint = allocPoint;
         this.stateAllowReply = 1;
         this.postImageUrls = postImageUrls;
-        this.writeDate = new Timestamp(new Date().getTime());
+        this.writeDate = new Date();
     }
 
     public ArrayList<String> getPostImageUrls() {
@@ -72,11 +71,11 @@ public class PostData {
         this.category = category;
     }
 
-    public Timestamp getWriteDate() {
+    public Date getWriteDate() {
         return writeDate;
     }
 
-    public void setWriteDate(Timestamp writeDate) {
+    public void setWriteDate(Date writeDate) {
         this.writeDate = writeDate;
     }
 
@@ -110,5 +109,21 @@ public class PostData {
 
     public void setStateAllowReply(int stateAllowReply) {
         this.stateAllowReply = stateAllowReply;
+    }
+
+    @Override
+    public String toString() {
+        return "PostData{" +
+                "postID='" + postID + '\'' +
+                ", writerID='" + writerID + '\'' +
+                ", title='" + title + '\'' +
+                ", category=" + category +
+                ", writeDate=" + writeDate +
+                ", body='" + body + '\'' +
+                ", likeCount=" + likeCount +
+                ", allocPoint=" + allocPoint +
+                ", stateAllowReply=" + stateAllowReply +
+                ", postImageUrls=" + postImageUrls +
+                '}';
     }
 }
