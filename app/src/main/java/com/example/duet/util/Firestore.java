@@ -5,7 +5,9 @@ import com.example.duet.model.User;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 /**
  * Firestore 관련 기능에 대해 짧은 참조로 사용하기 위한 클래스
@@ -68,5 +70,22 @@ public class Firestore {
      */
     public static Task<Void> insertPostId(String pid){
         return getFirestoreInstance().collection("post").document(pid).update("postID", pid);
+    }
+
+    public static Task<QuerySnapshot> getAllPostData(){
+        return getFirestoreInstance().collection("post").get();
+    }
+
+    public static Task<Void> updateUserExpForPosting(String uid){
+        return getFirestoreInstance().collection("user").document(uid).update("exp", FieldValue.increment(100));
+    }
+
+    public static Task<QuerySnapshot> getUserAllPostData(String uid){
+        return getFirestoreInstance().collection("post").whereEqualTo("writerID", uid).get();
+    }
+
+    public static Task<Void> updateUserReliability(boolean positive, String uid){
+        int updateReliability = positive ? 2 : -10;
+        return getFirestoreInstance().collection("user").document(uid).update("reliability", FieldValue.increment(updateReliability));
     }
 }
