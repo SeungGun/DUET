@@ -14,7 +14,11 @@
         <entry key="..\:/Users/SeoungGun/AndroidStudioProjects/DUET/app/src/main/res/layout/activity_main.xml" value="0.22826086956521738" />
         <entry key="..\:/Users/SeoungGun/AndroidStudioProjects/DUET/app/src/main/res/layout/activity_sign_in.xml" value="0.23731884057971014" />
         <entry key="..\:/Users/SeoungGun/AndroidStudioProjects/DUET/app/src/main/res/layout/activity_sign_up.xml" value="0.23731884057971014" />
+        <entry key="..\:/Users/SeoungGun/AndroidStudioProjects/DUET/app/src/main/res/layout/activity_test_reply.xml" value="0.2203125" />
+        <entry key="..\:/Users/SeoungGun/AndroidStudioProjects/DUET/app/src/main/res/layout/activity_test_show_post.xml" value="0.2125" />
+        <entry key="..\:/Users/SeoungGun/AndroidStudioProjects/DUET/app/src/main/res/layout/bulletin_post_item.xml" value="0.23489583333333333" />
         <entry key="..\:/Users/SeoungGun/AndroidStudioProjects/DUET/app/src/main/res/layout/create_post_images_layout.xml" value="0.23177083333333334" />
+        <entry key="..\:/Users/SeoungGun/AndroidStudioProjects/DUET/app/src/main/res/layout/custom_progress_dialog_layout.xml" value="0.23489583333333333" />
         <entry key="..\:/Users/SeoungGun/AndroidStudioProjects/DUET/app/src/main/res/layout/fragment_main_menu_bulletin.xml" value="0.17291666666666666" />
         <entry key="..\:/Users/SeoungGun/AndroidStudioProjects/DUET/app/src/main/res/layout/fragment_main_menu_create_post.xml" value="0.25364583333333335" />
         <entry key="..\:/Users/SeoungGun/AndroidStudioProjects/DUET/app/src/main/res/layout/fragment_main_menu_profile.xml" value="0.25364583333333335" />
