@@ -21,7 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 public class TestPostDataAdapter extends RecyclerView.Adapter<TestPostDataAdapter.ViewHolder> {
     private final ArrayList<PostData> postDataArrayList;
     private final Context context;
-
+    private OnItemClickListener itemClickListener;
     public static class ViewHolder extends RecyclerView.ViewHolder{
         public ImageView imageView;
         public TextView title;
@@ -41,7 +41,12 @@ public class TestPostDataAdapter extends RecyclerView.Adapter<TestPostDataAdapte
         postDataArrayList = data;
         this.context = context;
     }
-
+    public interface OnItemClickListener{
+        void onItemClicked(int position, PostData data);
+    }
+    public void setOnItemClickListener(OnItemClickListener listener){
+        itemClickListener = listener;
+    }
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -50,7 +55,17 @@ public class TestPostDataAdapter extends RecyclerView.Adapter<TestPostDataAdapte
 
         View view = inflater.inflate(R.layout.bulletin_post_item, parent, false);
         TestPostDataAdapter.ViewHolder viewHolder = new TestPostDataAdapter.ViewHolder(view);
-
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PostData data = null;
+                int position = viewHolder.getAdapterPosition();
+                if(position != RecyclerView.NO_POSITION){
+                    data = postDataArrayList.get(position);
+                }
+                itemClickListener.onItemClicked(position, data);
+            }
+        });
         return viewHolder;
     }
 
