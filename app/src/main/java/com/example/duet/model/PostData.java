@@ -1,9 +1,10 @@
 package com.example.duet.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class PostData {
+public class PostData implements Serializable {
     private String postID;
     private String writerID;
     private String title;
