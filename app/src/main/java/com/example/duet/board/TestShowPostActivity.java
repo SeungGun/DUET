@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.media.Image;
 import android.os.Bundle;
 import android.util.Log;
@@ -56,6 +57,15 @@ public class TestShowPostActivity extends AppCompatActivity {
 
                     }
                     TestPostDataAdapter adapter = new TestPostDataAdapter(list, getApplicationContext());
+                    adapter.setOnItemClickListener(new TestPostDataAdapter.OnItemClickListener() {
+                        @Override
+                        public void onItemClicked(int position, PostData data) {
+                            Intent intent = new Intent(getApplicationContext(), PostContentActivity.class);
+                            intent.putExtra("position", position);
+                            intent.putExtra("data", data);
+                            startActivity(intent);
+                        }
+                    });
                     recyclerView.setAdapter(adapter);
                 }
                 else{
