@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="10dp">
+    android:layout_margin="5dp">
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/messengerImageView"
@@ -12,6 +12,7 @@
         android:layout_height="36dp"
         android:layout_marginBottom="20dp"
         android:src="@drawable/ic_account_circle_black_36dp"
+        android:layout_alignParentRight="true"
         />
 
     <TextView
@@ -19,13 +20,13 @@
         android:layout_width="wrap_content"
         android:maxWidth="250dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
         android:padding="10dp"
         android:background="@drawable/rounded_message_gray"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="@android:color/black"
         tools:text="This is a message"
-        android:layout_toRightOf="@id/messengerImageView"
+        android:layout_toLeftOf="@id/messengerImageView"
         />
 
     <TextView
@@ -36,7 +37,7 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         tools:text="Name"
         android:layout_below="@id/messageTextView"
-        android:layout_toRightOf="@id/messengerImageView"
+        android:layout_toLeftOf="@id/messengerImageView"
         />
 
 

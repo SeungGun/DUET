@@ -4,6 +4,7 @@ public class MessageData {
     private String text;
     private String name;
     private String photoUrl;
+    private int viewType;
 
     public MessageData() {
     }
@@ -12,6 +13,21 @@ public class MessageData {
         this.text = text;
         this.name = name;
         this.photoUrl = photoUrl;
+    }
+
+    public MessageData(String text, String name, String photoUrl, int viewType) {
+        this.text = text;
+        this.name = name;
+        this.photoUrl = photoUrl;
+        this.viewType = viewType;
+    }
+
+    public int getViewType() {
+        return viewType;
+    }
+
+    public void setViewType(int viewType) {
+        this.viewType = viewType;
     }
 
     public String getText() {

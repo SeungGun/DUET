@@ -27,7 +27,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ChattingRoomActivity extends AppCompatActivity {
     private static final int DEFAULT_MSG_LENGTH_LIMIT = 1000;
@@ -60,7 +64,11 @@ public class ChattingRoomActivity extends AppCompatActivity {
         recyclerView.setAdapter(messageAdapter);
 
 
-
+        /**
+         * @auther Me
+         * @since 2022/05/12 12:02 오전
+         만약 EditText가 비어있을 걍우 sendbutton을 비활성화
+         **/
         mMessageEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -79,6 +87,8 @@ public class ChattingRoomActivity extends AppCompatActivity {
             public void afterTextChanged(Editable editable) {
             }
         });
+
+        //문자 길이가 너무 길 경우 일정 길이에서 잘라버림
         mMessageEditText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(DEFAULT_MSG_LENGTH_LIMIT)});
 
         // Send button sends a message and clears the EditText
@@ -87,7 +97,17 @@ public class ChattingRoomActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 MessageData message = new MessageData(mMessageEditText.getText().toString(), uid, null);
+
+                //TODO 타임 스탬프 용 data
+                SimpleDateFormat date = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+
+                //Notification을 위해 새로운 메시지 갱신
+                Map<String, Object> update = new HashMap<>();
+                update.put("lastMessage", mMessageEditText.getText().toString());
+
+
                 mRef.child("messages/" + convId).push().setValue(message);
+                mRef.child("chats/" + convId).updateChildren(update);
                 // Clear input box
                 mMessageEditText.setText("");
             }
@@ -110,6 +130,13 @@ public class ChattingRoomActivity extends AppCompatActivity {
                 @Override
                 public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                     MessageData messageData = snapshot.getValue(MessageData.class);
+
+                    if (messageData.getName().equals(uid)){
+                        messageData.setViewType(1);
+                    }
+                    else {
+                        messageData.setViewType(0);
+                    }
                     messageAdapter.addItem(messageData);
                     messageAdapter.notifyDataSetChanged();
                 }
