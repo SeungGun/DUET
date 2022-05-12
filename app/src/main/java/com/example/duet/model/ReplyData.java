@@ -1,13 +1,38 @@
 package com.example.duet.model;
 
+import java.util.Date;
+
 public class ReplyData {
     private String replyID;
     private String postIDtoReply;
-    private String writerID;
+    private User writer;
     private String body;
-    private String replyDate;
+    private Date replyDate;
     private boolean isSelected;
     private boolean isHidden;
+
+    public ReplyData() {
+
+    }
+
+    public ReplyData(String replyID, String postIDtoReply, User writer, String body, Date replyDate, boolean isSelected, boolean isHidden) {
+        this.replyID = replyID;
+        this.postIDtoReply = postIDtoReply;
+        this.writer = writer;
+        this.body = body;
+        this.replyDate = replyDate;
+        this.isSelected = isSelected;
+        this.isHidden = isHidden;
+    }
+
+    public ReplyData(String postIDtoReply, User writer, String body) {
+        this.postIDtoReply = postIDtoReply;
+        this.writer = writer;
+        this.body = body;
+        this.replyDate = new Date();
+        this.isSelected = false;
+        this.isHidden = false;
+    }
 
     public String getReplyID() {
         return replyID;
@@ -25,12 +50,12 @@ public class ReplyData {
         this.postIDtoReply = postIDtoReply;
     }
 
-    public String getWriterID() {
-        return writerID;
+    public User getWriter() {
+        return writer;
     }
 
-    public void setWriterID(String writerID) {
-        this.writerID = writerID;
+    public void setWriter(User writer) {
+        this.writer = writer;
     }
 
     public String getBody() {
@@ -41,11 +66,11 @@ public class ReplyData {
         this.body = body;
     }
 
-    public String getReplyDate() {
+    public Date getReplyDate() {
         return replyDate;
     }
 
-    public void setReplyDate(String replyDate) {
+    public void setReplyDate(Date replyDate) {
         this.replyDate = replyDate;
     }
 
