@@ -21,6 +21,7 @@ import android.widget.ListView;
 import com.example.duet.cardview.BulletData;
 import com.example.duet.cardview.MessageAdapter;
 import com.example.duet.cardview.MessageData;
+import com.example.duet.util.CustomProgressDialog;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -42,12 +43,12 @@ public class ChattingRoomActivity extends AppCompatActivity {
     String convId;
     DatabaseReference mRef = FirebaseDatabase.getInstance().getReference();
     ChildEventListener mChildEventListener;
+    RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chatting_room);
-
         Intent getIntent = getIntent();
         uid = getIntent.getStringExtra("uid");
         convId = getIntent.getStringExtra("conv_id");
@@ -55,7 +56,7 @@ public class ChattingRoomActivity extends AppCompatActivity {
 
         EditText mMessageEditText = (EditText)findViewById(R.id.messageEditText);
         ImageButton mSendButton = (ImageButton)findViewById(R.id.sendButton);
-        RecyclerView recyclerView = (RecyclerView)findViewById(R.id.messageRecyclerView);
+        recyclerView = (RecyclerView)findViewById(R.id.messageRecyclerView);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
@@ -139,6 +140,8 @@ public class ChattingRoomActivity extends AppCompatActivity {
                     }
                     messageAdapter.addItem(messageData);
                     messageAdapter.notifyDataSetChanged();
+                    recyclerView.scrollToPosition(messageAdapter.getItemCount() - 1);
+
                 }
 
                 @Override

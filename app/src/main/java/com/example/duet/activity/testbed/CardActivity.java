@@ -22,6 +22,7 @@ import com.example.duet.cardview.BulletAdapter;
 import com.example.duet.cardview.BulletData;
 import com.example.duet.cardview.CardData;
 import com.example.duet.cardview.CardAdapter;
+import com.example.duet.util.CustomProgressDialog;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -46,6 +47,7 @@ public class CardActivity extends AppCompatActivity {
     BulletAdapter mAdapter;
     String uid;
     ChildEventListener mChildEventListener;
+    CustomProgressDialog dialog;
 
     ActivityResultLauncher<Intent> startActivityResult = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
@@ -102,6 +104,7 @@ public class CardActivity extends AppCompatActivity {
         if (user != null)
             recvBullet();
 
+
     }
 
     /**
@@ -134,7 +137,9 @@ public class CardActivity extends AppCompatActivity {
                 public void onCancelled(@NonNull DatabaseError error) { }
             };
             mRef.child("bulletin").addChildEventListener(mChildEventListener);
+
         }
+
     }
 
 
