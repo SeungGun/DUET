@@ -105,8 +105,12 @@ public class Firestore {
      * @param pid 게시글 아이디
      * @return Tak<QuerySnapshot> 결과 값
      */
-    public static Task<QuerySnapshot> getAllReplyOnPost(String pid){
+    public static Task<QuerySnapshot> getAllReplyOnPostForOwner(String pid){
         return getFirestoreInstance().collection("reply").whereEqualTo("postIDtoReply", pid).get();
+    }
+
+    public static Task<QuerySnapshot> getAllReplyOnPostForAnybody(String pid){
+        return getFirestoreInstance().collection("reply").whereEqualTo("postIDtoReply", pid).whereEqualTo("isWaiting", false).get();
     }
 
     public static Task<Void> updateUserPoint(String uid, int point){
