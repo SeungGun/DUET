@@ -9,29 +9,32 @@ public class ReplyData {
     private String body;
     private Date replyDate;
     private boolean isSelected;
-    private boolean isHidden;
+    private boolean isWaiting;
+    private int viewType;
 
     public ReplyData() {
 
     }
 
-    public ReplyData(String replyID, String postIDtoReply, User writer, String body, Date replyDate, boolean isSelected, boolean isHidden) {
+    public ReplyData(String replyID, String postIDtoReply, User writer, String body, Date replyDate, boolean isSelected, boolean isWaiting) {
         this.replyID = replyID;
         this.postIDtoReply = postIDtoReply;
         this.writer = writer;
         this.body = body;
         this.replyDate = replyDate;
         this.isSelected = isSelected;
-        this.isHidden = isHidden;
+        this.isWaiting = isWaiting;
+        this.viewType = 0;
     }
 
-    public ReplyData(String postIDtoReply, User writer, String body) {
+    public ReplyData(String postIDtoReply, User writer, String body, boolean isWaiting, int viewType) {
         this.postIDtoReply = postIDtoReply;
         this.writer = writer;
         this.body = body;
         this.replyDate = new Date();
         this.isSelected = false;
-        this.isHidden = false;
+        this.isWaiting = isWaiting;
+        this.viewType = viewType;
     }
 
     public String getReplyID() {
@@ -82,11 +85,19 @@ public class ReplyData {
         isSelected = selected;
     }
 
-    public boolean isHidden() {
-        return isHidden;
+    public boolean isWaiting() {
+        return isWaiting;
     }
 
-    public void setHidden(boolean hidden) {
-        isHidden = hidden;
+    public void setWaiting(boolean waiting) {
+        isWaiting = waiting;
+    }
+
+    public int getViewType() {
+        return viewType;
+    }
+
+    public void setViewType(int viewType) {
+        this.viewType = viewType;
     }
 }
