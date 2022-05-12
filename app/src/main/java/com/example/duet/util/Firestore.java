@@ -1,12 +1,14 @@
 package com.example.duet.util;
 
 import com.example.duet.model.PostData;
+import com.example.duet.model.ReplyData;
 import com.example.duet.model.User;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
 /**
@@ -72,8 +74,43 @@ public class Firestore {
         return getFirestoreInstance().collection("post").document(pid).update("postID", pid);
     }
 
+    /**
+     * Firestore 에 저장되어 있는 모든 게시글 데이터를 가져오는 요청
+     * @return Task<QuerySnapshot> 게시글 데이터 집합
+     */
     public static Task<QuerySnapshot> getAllPostData(){
         return getFirestoreInstance().collection("post").get();
+    }
+
+    /**
+     * 게시글의 댓글을 저장하는 요청
+     * @param replyData ReplyData 객체 - 게시글 ID와 작성자 정보 포함
+     * @return Task<DocumentReference>
+     */
+    public static Task<DocumentReference> addReplyData(ReplyData replyData){
+        return getFirestoreInstance().collection("reply").add(replyData);
+    }
+
+    /**
+     * 게시글에 댓글을 달 때, reply 데이터의 replyID 필드에 아이디 값 저장하는 요청
+     * @param rid 저장할 게시글 ID
+     * @return Task<Void>
+     */
+    public static Task<Void> insertReplyId(String rid){
+        return getFirestoreInstance().collection("reply").document(rid).update("replyID", rid);
+    }
+
+    /**
+     * pid 에 해당하는 게시글에 있는 모든 reply 데이터를 가져오는 요청
+     * @param pid 게시글 아이디
+     * @return Tak<QuerySnapshot> 결과 값
+     */
+    public static Task<QuerySnapshot> getAllReplyOnPost(String pid){
+        return getFirestoreInstance().collection("reply").whereEqualTo("postIDtoReply", pid).get();
+    }
+
+    public static Task<Void> updateUserPoint(String uid, int point){
+        return getFirestoreInstance().collection("user").document(uid).update("exp", FieldValue.increment(point));
     }
 
     public static Task<Void> updateUserExpForPosting(String uid){
