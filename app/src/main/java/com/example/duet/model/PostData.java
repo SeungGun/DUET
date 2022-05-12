@@ -6,7 +6,7 @@ import java.util.Date;
 
 public class PostData implements Serializable {
     private String postID;
-    private String writerID;
+    private User writer;
     private String title;
     private ArrayList<String> category;
     private Date writeDate;
@@ -20,14 +20,14 @@ public class PostData implements Serializable {
 
     }
 
-    public PostData(String writerID, String title, ArrayList<String> category, String body, int allocPoint, ArrayList<String> postImageUrls) {
-        this.writerID = writerID;
+    public PostData(User writer, String title, ArrayList<String> category, String body, int allocPoint, int stateAllowReply, ArrayList<String> postImageUrls) {
+        this.writer = writer;
         this.title = title;
         this.category = null; // 임시 처리, 카테고리 데이터 만들면 변경하기
         this.body = body;
         this.likeCount = 0;
         this.allocPoint = allocPoint;
-        this.stateAllowReply = 1;
+        this.stateAllowReply = stateAllowReply;
         this.postImageUrls = postImageUrls;
         this.writeDate = new Date();
     }
@@ -48,12 +48,12 @@ public class PostData implements Serializable {
         this.postID = postID;
     }
 
-    public String getWriterID() {
-        return writerID;
+    public User getWriter() {
+        return writer;
     }
 
-    public void setWriterID(String writerID) {
-        this.writerID = writerID;
+    public void setWriter(User writer) {
+        this.writer = writer;
     }
 
     public String getTitle() {
@@ -116,7 +116,7 @@ public class PostData implements Serializable {
     public String toString() {
         return "PostData{" +
                 "postID='" + postID + '\'' +
-                ", writerID='" + writerID + '\'' +
+                ", writerID='" + writer.getUid() + '\'' +
                 ", title='" + title + '\'' +
                 ", category=" + category +
                 ", writeDate=" + writeDate +
