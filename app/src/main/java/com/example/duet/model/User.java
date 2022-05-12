@@ -1,5 +1,6 @@
 package com.example.duet.model;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -8,7 +9,7 @@ import java.util.Calendar;
  *
  * @author Seunggun Sin, 2022-05-01
  */
-public class User {
+public class User implements Serializable {
     private String uid;
     private String email;
     private String nickname;
