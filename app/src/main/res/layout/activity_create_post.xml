@@ -49,7 +49,28 @@
                 android:hint="point to subtract"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
-
+            <RadioGroup
+                android:id="@+id/reply_range_radio_group"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <RadioButton
+                    android:id="@+id/radio_always"
+                    android:text="Always Allow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+                <RadioButton
+                    android:id="@+id/radio_optional"
+                    android:checked="true"
+                    android:text="Optional Allow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+                <RadioButton
+                    android:id="@+id/radio_never"
+                    android:text="Never"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </RadioGroup>
             <LinearLayout
                 android:id="@+id/container"
                 android:layout_width="match_parent"
