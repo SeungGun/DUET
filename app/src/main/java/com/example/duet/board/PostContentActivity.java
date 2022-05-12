@@ -8,6 +8,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,7 +41,7 @@ public class PostContentActivity extends AppCompatActivity {
 
     private LinearLayout linearLayout;
     private TextView postIDTextView;
-    private TextView writerIDTextView;
+    private TextView writerNicknameTextView;
     private TextView titleTextView;
     private TextView dateTextView;
     private TextView bodyTextView;
@@ -48,6 +51,27 @@ public class PostContentActivity extends AppCompatActivity {
     private Button submitReplyButton;
     private RecyclerView replyRecyclerView;
     private ArrayList<ReplyData> replyDataArrayList;
+    private Handler handler = new Handler(Looper.myLooper()){
+        @Override
+        public void handleMessage(Message msg){
+            Firestore.getAllReplyOnPostForOwner(data.getPostID()).addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    if(task.isSuccessful()){
+                        replyDataArrayList.clear();
+                        for(QueryDocumentSnapshot documentSnapshot: task.getResult()){
+                            replyDataArrayList.add(documentSnapshot.toObject(ReplyData.class));
+                            if(replyDataArrayList.get(replyDataArrayList.size() - 1).isWaiting()){
+                                replyDataArrayList.get(replyDataArrayList.size() - 1).setViewType(1);
+                            }
+                        }
+                        TestReplyAdapter adapter = new TestReplyAdapter(replyDataArrayList, getApplicationContext());
+                        replyRecyclerView.setAdapter(adapter);
+                    }
+                }
+            });
+        }
+    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,7 +80,7 @@ public class PostContentActivity extends AppCompatActivity {
         data = (PostData) intent.getSerializableExtra("data");
         linearLayout = findViewById(R.id.content_container);
         postIDTextView = findViewById(R.id.content_post_id);
-        writerIDTextView = findViewById(R.id.content_writer_id);
+        writerNicknameTextView = findViewById(R.id.content_writer_id);
         titleTextView = findViewById(R.id.content_title);
         dateTextView = findViewById(R.id.content_write_date);
         bodyTextView = findViewById(R.id.content_body);
@@ -65,18 +89,36 @@ public class PostContentActivity extends AppCompatActivity {
         replyRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         replyDataArrayList = new ArrayList<>();
 
-        Firestore.getAllReplyOnPost(data.getPostID()).addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if(task.isSuccessful()){
-                    for(QueryDocumentSnapshot documentSnapshot: task.getResult()){
-                        replyDataArrayList.add(documentSnapshot.toObject(ReplyData.class));
+        if(User.currentUser.getUid().equals(data.getWriter().getUid())) {
+            Firestore.getAllReplyOnPostForOwner(data.getPostID()).addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    if (task.isSuccessful()) {
+                        replyDataArrayList.clear();
+                        for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+                            replyDataArrayList.add(documentSnapshot.toObject(ReplyData.class));
+                        }
+                        TestReplyAdapter adapter = new TestReplyAdapter(replyDataArrayList, getApplicationContext());
+                        replyRecyclerView.setAdapter(adapter);
                     }
-                    TestReplyAdapter adapter = new TestReplyAdapter(replyDataArrayList, getApplicationContext());
-                    replyRecyclerView.setAdapter(adapter);
                 }
-            }
-        });
+            });
+        }
+        else{
+            Firestore.getAllReplyOnPostForAnybody(data.getPostID()).addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    if(task.isSuccessful()){
+                        replyDataArrayList.clear();
+                        for(QueryDocumentSnapshot documentSnapshot: task.getResult()){
+                            replyDataArrayList.add(documentSnapshot.toObject(ReplyData.class));
+                        }
+                        TestReplyAdapter adapter = new TestReplyAdapter(replyDataArrayList, getApplicationContext());
+                        replyRecyclerView.setAdapter(adapter);
+                    }
+                }
+            });
+        }
         int state = data.getStateAllowReply();
 
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -89,7 +131,8 @@ public class PostContentActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     Firestore.addReplyData(new ReplyData(data.getPostID()
                             , User.currentUser
-                            , inputReply.getText().toString()))
+                            , inputReply.getText().toString()
+                            , false, 0))
                             .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
                                 @Override
                                 public void onComplete(@NonNull Task<DocumentReference> task) {
@@ -100,6 +143,8 @@ public class PostContentActivity extends AppCompatActivity {
                                                     public void onComplete(@NonNull Task<Void> task) {
                                                         if (task.isSuccessful()) {
                                                             Toast.makeText(PostContentActivity.this, "success", Toast.LENGTH_SHORT).show();
+                                                            Message msg = handler.obtainMessage();
+                                                            handler.sendMessage(msg);
                                                         } else {
                                                             Log.e("update reply id in field", "failure");
                                                         }
@@ -113,6 +158,9 @@ public class PostContentActivity extends AppCompatActivity {
                 }
             });
         } else if (state == 1) {
+            /*
+                AlertDialog 하기 → 수락을 해야 댓글이 보인다는 메세지
+             */
             View view = inflater.inflate(R.layout.reply_allow_layout, replyContainer);
             inputReply = view.findViewById(R.id.input_reply);
             submitReplyButton = view.findViewById(R.id.submit_button);
@@ -121,7 +169,8 @@ public class PostContentActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     Firestore.addReplyData(new ReplyData(data.getPostID()
                             , User.currentUser
-                            , inputReply.getText().toString()))
+                            , inputReply.getText().toString()
+                            , true, 1))
                             .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
                                 @Override
                                 public void onComplete(@NonNull Task<DocumentReference> task) {
@@ -149,7 +198,7 @@ public class PostContentActivity extends AppCompatActivity {
         }
 
         postIDTextView.setText(data.getPostID());
-        writerIDTextView.setText(data.getWriterID());
+        writerNicknameTextView.setText(data.getWriter().getNickname());
         titleTextView.setText(data.getTitle());
         dateTextView.setText(data.getWriteDate().toString());
         bodyTextView.setText(data.getBody());
