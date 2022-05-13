@@ -5,6 +5,7 @@ import java.util.Date;
 public class ReplyData {
     private String replyID;
     private String postIDtoReply;
+    private String postWriterID;
     private User writer;
     private String body;
     private Date replyDate;
@@ -16,9 +17,10 @@ public class ReplyData {
 
     }
 
-    public ReplyData(String replyID, String postIDtoReply, User writer, String body, Date replyDate, boolean isSelected, boolean isWaiting) {
+    public ReplyData(String replyID, String postIDtoReply, String postWriterID, User writer, String body, Date replyDate, boolean isSelected, boolean isWaiting) {
         this.replyID = replyID;
         this.postIDtoReply = postIDtoReply;
+        this.postWriterID = postWriterID;
         this.writer = writer;
         this.body = body;
         this.replyDate = replyDate;
@@ -27,8 +29,9 @@ public class ReplyData {
         this.viewType = 0;
     }
 
-    public ReplyData(String postIDtoReply, User writer, String body, boolean isWaiting, int viewType) {
+    public ReplyData(String postIDtoReply, String postWriterID, User writer, String body, boolean isWaiting, int viewType) {
         this.postIDtoReply = postIDtoReply;
+        this.postWriterID = postWriterID;
         this.writer = writer;
         this.body = body;
         this.replyDate = new Date();
@@ -99,5 +102,13 @@ public class ReplyData {
 
     public void setViewType(int viewType) {
         this.viewType = viewType;
+    }
+
+    public String getPostWriterID() {
+        return postWriterID;
+    }
+
+    public void setPostWriterID(String postWriterID) {
+        this.postWriterID = postWriterID;
     }
 }
