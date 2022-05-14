@@ -108,7 +108,7 @@ public class ChattingRoomActivity extends AppCompatActivity {
 
 
                 mRef.child("messages/" + convId).push().setValue(message);
-                mRef.child("chats/" + convId).updateChildren(update);
+                mRef.child("chat_meta/" + convId).updateChildren(update);
                 // Clear input box
                 mMessageEditText.setText("");
             }

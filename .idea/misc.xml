@@ -32,6 +32,8 @@
         <entry key="app/src/main/res/layout/activity_chatting_room.xml" value="0.20833333333333334" />
         <entry key="app/src/main/res/layout/activity_create_post.xml" value="0.2125" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.1526268115942029" />
+        <entry key="app/src/main/res/layout/activity_main_menu.xml" value="0.2713541666666667" />
+        <entry key="app/src/main/res/layout/activity_message_list.xml" value="0.2713541666666667" />
         <entry key="app/src/main/res/layout/activity_post.xml" value="0.2125" />
         <entry key="app/src/main/res/layout/activity_register.xml" value="0.20833333333333334" />
         <entry key="app/src/main/res/layout/bullet_list_layout.xml" value="0.20833333333333334" />

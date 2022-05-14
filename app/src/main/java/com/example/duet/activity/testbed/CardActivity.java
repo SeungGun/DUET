@@ -68,12 +68,21 @@ public class CardActivity extends AppCompatActivity {
         user = FirebaseAuth.getInstance().getCurrentUser();
         ListView listView = (ListView) findViewById(R.id.listView);
         Button admin = (Button) findViewById(R.id.adminBtn);
+        Button chatBtn = (Button)findViewById(R.id.chatRoomBtn);
 
         admin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), AdminActivity.class);
                 intent.putExtra("uid", user.getUid());
+                startActivity(intent);
+            }
+        });
+
+        chatBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), MessageListActivity.class);
                 startActivity(intent);
             }
         });

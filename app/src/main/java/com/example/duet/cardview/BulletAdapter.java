@@ -78,7 +78,7 @@ public class BulletAdapter extends BaseAdapter {
                 Map<String, Object> update = new HashMap<String, Object>();
                 update.put(user.getUid(), true);
                 mRef.child("members").child(sample.get(i).getConv_key()).updateChildren(update);
-
+                mRef.child("chat_meta").child(sample.get(i).getConv_key()).child("members").updateChildren(update);
                 Intent intent = new Intent(mContext, ChattingRoomActivity.class);
                 intent.putExtra("conv_id", sample.get(i).getConv_key());
                 intent.putExtra("uid", user.getUid());

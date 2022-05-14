@@ -45,15 +45,6 @@ public class AdminActivity extends AppCompatActivity {
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
 
-        //TODO Will be deleted
-
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                CreateText createText = new CreateText();
-                writeClassData("Who Am I", "Won Kim", createText.generateRandomChunk());
-            }
-        });
 
         btnPosting.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -65,6 +56,10 @@ public class AdminActivity extends AppCompatActivity {
         });
 
 
+
+
+
+
     }
 
 /**
@@ -72,15 +67,6 @@ public class AdminActivity extends AppCompatActivity {
  * @since 2022/05/03 10:45 오후
  Insert dummy data to database
  **/
-
-//TODO Will be deleted
-
-    private void writeClassData(String title, String mentor, ArrayList<String> group) {
-        CardData cardData = new CardData(title, mentor, group);
-
-        mDatabase.child("classes").child(uid).push().setValue(cardData);
-
-    }
 
     /**
      * @auther Me
@@ -109,7 +95,15 @@ public class AdminActivity extends AppCompatActivity {
 
         update.clear();
         update.put("title", sendTitle);
-        mDatabase.child("chats"+"/"+key).setValue(update);
+        mDatabase.child("chat_meta"+"/"+key).setValue(update);
+        update.clear();
+        update.put(uid, true);
+        mDatabase.child("chat_meta"+ "/"+key +"/" + "members").setValue(update);
+        update.clear();
+        update.put("conv_key", key);
+        mDatabase.child("user_in"+ "/"+uid).push().setValue(update);
+
+
     }
 
 
