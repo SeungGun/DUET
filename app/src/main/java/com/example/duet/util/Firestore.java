@@ -114,23 +114,42 @@ public class Firestore {
     }
 
     /**
-     * pid 에 해당하는 게시글에 있는 모든 reply 데이터를 가져오는 요청
+     * pid 에 해당하는 게시글에 있는 모든 reply 데이터를 가져오는 요청 - 게시글 주인에 대한 요청
      *
      * @param pid 게시글 아이디
-     * @return Tak<QuerySnapshot> 결과 값
+     * @return Task<QuerySnapshot> 결과 값
      */
     public static Task<QuerySnapshot> getAllReplyOnPostForOwner(String pid) {
         return getFirestoreInstance().collection("reply").whereEqualTo("postIDtoReply", pid).get();
     }
 
+    /**
+     * pid 에 해당하는 게시글에 있는 모든 reply 데이터를 가져오는 요청 - 일반 사용자에 대한 요청
+     *
+     * @param pid 게시글 아이디
+     * @return Task<QuerySnapshot> 결과 값
+     */
     public static Task<QuerySnapshot> getAllReplyOnPostForAnybody(String pid) {
-        return getFirestoreInstance().collection("reply").whereEqualTo("postIDtoReply", pid).whereEqualTo("waiting", false).get();
+        return getFirestoreInstance().collection("reply").whereEqualTo("postIDtoReply", pid)
+                .whereEqualTo("waiting", false).get();
     }
 
+    /**
+     * 댓글을 삭제하는 요청 - 댓글 작성자 본인 혹은 게시글 주인만 요청 가능
+     *
+     * @param rid 댓글 아이디
+     * @return Task<Void>
+     */
     public static Task<Void> removeReplyOnPostByOwner(String rid) {
         return getFirestoreInstance().collection("reply").document(rid).delete();
     }
 
+    /**
+     * 게시글의 댓글이 선택적 허용인 경우, 게시글 주인이 대기 중인 댓글을 승인했을 때 상태 변경을 요청하는 작업
+     *
+     * @param rid 상태 변경하고자하는 댓글 아이디
+     * @return Task<Void>
+     */
     public static Task<Void> updateReplyWaitingState(String rid) {
         Map<String, Object> toUpdateFields = new HashMap<>();
         toUpdateFields.put("waiting", false);
@@ -138,14 +157,50 @@ public class Firestore {
         return getFirestoreInstance().collection("reply").document(rid).update(toUpdateFields);
     }
 
-    public static Task<Void> updateReplySelection(String rid){
+    /**
+     * 게시글의 댓글이 게시글 주인으로부터 채택을 받았을 경우, 채택받은 상태를 변경하고자 하는 요청
+     *
+     * @param rid 상태 변경하고자 하는 댓글 아이디
+     * @return Task<Void>
+     */
+    public static Task<Void> updateReplySelection(String rid) {
         return getFirestoreInstance().collection("reply").document(rid).update("selected", true);
     }
 
-    public static Task<Void> updateUserProfileUrl(String uid, String url){
+    /**
+     * 유저의 프로필 이미지를 변경했을 때, 변경한 이미지에 대한 url 도 업데이트하는 요청
+     *
+     * @param uid 유저 아아디
+     * @param url 변경된 이미지의 url
+     * @return Task<Void>
+     */
+    public static Task<Void> updateUserProfileUrl(String uid, String url) {
         return getFirestoreInstance().collection("user").document(uid).update("profileUrl", url);
     }
-    public static Task<Void> updateUserInfoForReply(String rid, User user){
+
+    /**
+     * parameter 에 해당하는 유저의 모든 게시글 데이터를 가져오는 요청
+     *
+     * @param uid 유저 아이디
+     * @return Task<QuerySnapshot> 게시글 데이터들
+     */
+    public static Task<QuerySnapshot> getUserAllPostData(String uid) {
+        return getFirestoreInstance().collection("post").whereEqualTo("writerID", uid).get();
+    }
+
+    /**
+     * 유저의 신뢰도를 변경하는 요청
+     *
+     * @param positive 양수 음수 여부 {true: 2, false: -10}
+     * @param uid      유저 아이디
+     * @return Task<Void>
+     */
+    public static Task<Void> updateUserReliability(boolean positive, String uid) {
+        int updateReliability = positive ? 2 : -10;
+        return getFirestoreInstance().collection("user").document(uid).update("reliability", FieldValue.increment(updateReliability));
+    }
+
+    public static Task<Void> updateUserInfoForReply(String rid, User user) {
         return getFirestoreInstance().collection("user").document(user.getUid()).set(user);
     }
 
@@ -159,14 +214,5 @@ public class Firestore {
 
     public static Task<Void> updateUserExpForReply(String uid, boolean positive, int allocPoint) {
         return getFirestoreInstance().collection("user").document(uid).update("exp", FieldValue.increment(positive ? allocPoint : -1 * allocPoint));
-    }
-
-    public static Task<QuerySnapshot> getUserAllPostData(String uid) {
-        return getFirestoreInstance().collection("post").whereEqualTo("writerID", uid).get();
-    }
-
-    public static Task<Void> updateUserReliability(boolean positive, String uid) {
-        int updateReliability = positive ? 2 : -10;
-        return getFirestoreInstance().collection("user").document(uid).update("reliability", FieldValue.increment(updateReliability));
     }
 }

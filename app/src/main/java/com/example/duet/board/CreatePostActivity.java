@@ -102,6 +102,8 @@ public class CreatePostActivity extends AppCompatActivity {
                 else if(radioNeverButton.getId() == id){
                     state = 2;
                 }
+
+                // 새로운 게시글 데이터 생성 요청
                 Firestore.createNewPost(
                         new PostData(User.currentUser
                                 , inputTitle.getText().toString()
@@ -113,6 +115,8 @@ public class CreatePostActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<DocumentReference> task) {
                         if (task.isSuccessful()) {
                             Log.d("create post", "success, id:"+task.getResult().getId());
+
+                            // 생성한 게시글 데이터의 post id 필드 값 채우기
                             Firestore.insertPostId(task.getResult().getId()).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {

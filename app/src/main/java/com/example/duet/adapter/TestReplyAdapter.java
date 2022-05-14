@@ -8,12 +8,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.example.duet.R;
 import com.example.duet.model.ReplyData;
-import com.example.duet.model.User;
 import com.example.duet.util.Firestore;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -26,20 +24,12 @@ import androidx.recyclerview.widget.RecyclerView;
 public class TestReplyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private ArrayList<ReplyData> replyDataArrayList;
     private final Context context;
-    private OnItemLongClickEventListener itemLongClickEventListener;
 
     public TestReplyAdapter(ArrayList<ReplyData> dataArrayList, Context context) {
         this.replyDataArrayList = dataArrayList;
         this.context = context;
     }
 
-    public interface OnItemLongClickEventListener{
-        void onItemLongClick(View view, int position);
-    }
-
-    public void setOnItemLongClickListener(OnItemLongClickEventListener listener){
-        this.itemLongClickEventListener = listener;
-    }
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -59,12 +49,11 @@ public class TestReplyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        int currentPos = position;
+        final int currentPos = position;
         if (holder instanceof NormalViewHolder) {
-            if(replyDataArrayList.get(currentPos).isSelected()){
+            if (replyDataArrayList.get(currentPos).isSelected()) {
                 ((NormalViewHolder) holder).writerNickname.setTextColor(Color.parseColor("#00ff00"));
-            }
-            else{
+            } else {
                 ((NormalViewHolder) holder).writerNickname.setTextColor(Color.parseColor("#000000"));
             }
             ((NormalViewHolder) holder).writerNickname.setText(replyDataArrayList.get(position).getWriter().getNickname());
@@ -74,7 +63,7 @@ public class TestReplyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             ((WaitingViewHolder) holder).writerNickname.setText(replyDataArrayList.get(position).getWriter().getNickname());
             ((WaitingViewHolder) holder).writeDate.setText(replyDataArrayList.get(position).getReplyDate().toString());
             ((WaitingViewHolder) holder).reliability.setText(replyDataArrayList.get(position).getWriter().getReliability() + "");
-            ((WaitingViewHolder) holder).level.setText(replyDataArrayList.get(position).getWriter().getLevel()+"");
+            ((WaitingViewHolder) holder).level.setText(replyDataArrayList.get(position).getWriter().getLevel() + "");
             ((WaitingViewHolder) holder).allowButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -128,11 +117,12 @@ public class TestReplyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         notifyDataSetChanged();
     }
 
-    public void setItem(int position, ReplyData replyData){
+    public void setItem(int position, ReplyData replyData) {
         replyDataArrayList.set(position, replyData);
         notifyItemChanged(position);
         notifyDataSetChanged();
     }
+
     public void addItem(ReplyData replyData) {
         replyDataArrayList.add(replyData);
     }
@@ -142,7 +132,7 @@ public class TestReplyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         return replyDataArrayList.get(position).getViewType();
     }
 
-    public static class NormalViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener{
+    public static class NormalViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener {
         public TextView writerNickname;
         public TextView body;
         public TextView writeDate;
@@ -157,9 +147,9 @@ public class TestReplyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
         @Override
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-                menu.add(this.getAdapterPosition(), R.id.action_adopt, 0, "채택하기");
-                menu.add(this.getAdapterPosition(), R.id.action_delete, 1, "삭제하기");
-                menu.add(this.getAdapterPosition(), R.id.action_report, 2, "신고하기");
+            menu.add(this.getAdapterPosition(), R.id.action_adopt, 0, "채택하기");
+            menu.add(this.getAdapterPosition(), R.id.action_delete, 1, "삭제하기");
+            menu.add(this.getAdapterPosition(), R.id.action_report, 2, "신고하기");
         }
     }
 
