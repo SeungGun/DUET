@@ -16,9 +16,6 @@
             android:name=".board.PostContentActivity"
             android:exported="false" />
         <activity
-            android:name=".board.TestReplyActivity"
-            android:exported="false" />
-        <activity
             android:name=".board.TestShowPostActivity"
             android:exported="false" />
         <activity
