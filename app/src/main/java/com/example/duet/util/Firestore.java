@@ -142,6 +142,9 @@ public class Firestore {
         return getFirestoreInstance().collection("reply").document(rid).update("selected", true);
     }
 
+    public static Task<Void> updateUserProfileUrl(String uid, String url){
+        return getFirestoreInstance().collection("user").document(uid).update("profileUrl", url);
+    }
     public static Task<Void> updateUserInfoForReply(String rid, User user){
         return getFirestoreInstance().collection("user").document(user.getUid()).set(user);
     }
