@@ -31,6 +31,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.example.duet.R;
@@ -66,11 +68,16 @@ public class CreatePostActivity extends AppCompatActivity {
     private EditText inputBody;
     private EditText inputSubtractPoint;
     private Button uploadButton;
+    private Button showPostsButton;
+    private RadioButton radioAlwaysButton;
+    private RadioButton radioOptionalButton;
+    private RadioButton radioNeverButton;
     private ArrayList<String> imgUrlList;
     public static final int REQUEST_CODE = 0;
     private int checkSum = 0;
     private Bundle bundle;
     private CustomProgressDialog progressDialog;
+    private RadioGroup radioGroup;
     private Handler handler = new Handler(Looper.myLooper()) {
         /**
          * 이미지를 갤러리에서 추가한 개수만큼 Storage 에 저장할 때 message sign 을 받는 곳
@@ -84,11 +91,23 @@ public class CreatePostActivity extends AppCompatActivity {
 
             if (imageContainer.getChildCount() == checkSum) {
                 // Firestore 에 이미지 url 정보들과 입력한 데이터를 함께 Post 데이터 저장 요청
+                int id = radioGroup.getCheckedRadioButtonId();
+                int state = 0;
+                if(radioAlwaysButton.getId() == id){
+                    state = 0;
+                }
+                else if(radioOptionalButton.getId() == id){
+                    state = 1;
+                }
+                else if(radioNeverButton.getId() == id){
+                    state = 2;
+                }
                 Firestore.createNewPost(
-                        new PostData(User.currentUser.getUid()
+                        new PostData(User.currentUser
                                 , inputTitle.getText().toString()
                                 , imgUrlList, inputBody.getText().toString()
                                 , Integer.parseInt(inputSubtractPoint.getText().toString())
+                                , state
                                 , imgUrlList)).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
                     @Override
                     public void onComplete(@NonNull Task<DocumentReference> task) {
@@ -151,6 +170,13 @@ public class CreatePostActivity extends AppCompatActivity {
                 }.start();
             }
         });
+
+        showPostsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(), TestShowPostActivity.class));
+            }
+        });
     }
 
     /**
@@ -164,6 +190,11 @@ public class CreatePostActivity extends AppCompatActivity {
         inputBody = findViewById(R.id.input_body);
         inputSubtractPoint = findViewById(R.id.input_alloc_point);
         uploadButton = findViewById(R.id.upload_post_btn);
+        showPostsButton = findViewById(R.id.btn_show_posts);
+        radioGroup = findViewById(R.id.reply_range_radio_group);
+        radioAlwaysButton = findViewById(R.id.radio_always);
+        radioOptionalButton = findViewById(R.id.radio_optional);
+        radioNeverButton = findViewById(R.id.radio_never);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)

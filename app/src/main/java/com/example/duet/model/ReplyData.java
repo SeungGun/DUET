@@ -1,13 +1,44 @@
 package com.example.duet.model;
 
+import java.util.Date;
+
 public class ReplyData {
     private String replyID;
     private String postIDtoReply;
-    private String writerID;
+    private String postWriterID;
+    private User writer;
     private String body;
-    private String replyDate;
+    private Date replyDate;
     private boolean isSelected;
-    private boolean isHidden;
+    private boolean isWaiting;
+    private int viewType;
+
+    public ReplyData() {
+
+    }
+
+    public ReplyData(String replyID, String postIDtoReply, String postWriterID, User writer, String body, Date replyDate, boolean isSelected, boolean isWaiting) {
+        this.replyID = replyID;
+        this.postIDtoReply = postIDtoReply;
+        this.postWriterID = postWriterID;
+        this.writer = writer;
+        this.body = body;
+        this.replyDate = replyDate;
+        this.isSelected = isSelected;
+        this.isWaiting = isWaiting;
+        this.viewType = 0;
+    }
+
+    public ReplyData(String postIDtoReply, String postWriterID, User writer, String body, boolean isWaiting, int viewType) {
+        this.postIDtoReply = postIDtoReply;
+        this.postWriterID = postWriterID;
+        this.writer = writer;
+        this.body = body;
+        this.replyDate = new Date();
+        this.isSelected = false;
+        this.isWaiting = isWaiting;
+        this.viewType = viewType;
+    }
 
     public String getReplyID() {
         return replyID;
@@ -25,12 +56,12 @@ public class ReplyData {
         this.postIDtoReply = postIDtoReply;
     }
 
-    public String getWriterID() {
-        return writerID;
+    public User getWriter() {
+        return writer;
     }
 
-    public void setWriterID(String writerID) {
-        this.writerID = writerID;
+    public void setWriter(User writer) {
+        this.writer = writer;
     }
 
     public String getBody() {
@@ -41,11 +72,11 @@ public class ReplyData {
         this.body = body;
     }
 
-    public String getReplyDate() {
+    public Date getReplyDate() {
         return replyDate;
     }
 
-    public void setReplyDate(String replyDate) {
+    public void setReplyDate(Date replyDate) {
         this.replyDate = replyDate;
     }
 
@@ -57,11 +88,27 @@ public class ReplyData {
         isSelected = selected;
     }
 
-    public boolean isHidden() {
-        return isHidden;
+    public boolean isWaiting() {
+        return isWaiting;
     }
 
-    public void setHidden(boolean hidden) {
-        isHidden = hidden;
+    public void setWaiting(boolean waiting) {
+        isWaiting = waiting;
+    }
+
+    public int getViewType() {
+        return viewType;
+    }
+
+    public void setViewType(int viewType) {
+        this.viewType = viewType;
+    }
+
+    public String getPostWriterID() {
+        return postWriterID;
+    }
+
+    public void setPostWriterID(String postWriterID) {
+        this.postWriterID = postWriterID;
     }
 }

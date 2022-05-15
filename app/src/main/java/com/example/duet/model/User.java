@@ -1,5 +1,6 @@
 package com.example.duet.model;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -8,7 +9,7 @@ import java.util.Calendar;
  *
  * @author Seunggun Sin, 2022-05-01
  */
-public class User {
+public class User implements Serializable {
     private String uid;
     private String email;
     private String nickname;
@@ -53,7 +54,7 @@ public class User {
         this.profileUrl = profileUrl;
         this.registerDate = new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime()); // 회원가입 날짜
         this.level = 1; // 유저 레벨 = 1
-        this.exp = 0; // 유저 경험치 = 0
+        this.exp = 1000; // 유저 경험치 = 1000
         this.reliability = 0; // 유저 신뢰도 0
     }
 
