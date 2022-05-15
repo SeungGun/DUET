@@ -80,7 +80,7 @@ public class SignUpActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             String userId = firebaseAuth.getCurrentUser().getUid(); // 생성한 유저의 uid 값 가져오기
 
-                            Drawable drawable = getResources().getDrawable(R.drawable.ic_launcher_foreground);
+                            Drawable drawable = getResources().getDrawable(R.drawable.ic_profile_foreground);
                             Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
                             Canvas canvas = new Canvas(bitmap);
                             drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
@@ -100,7 +100,8 @@ public class SignUpActivity extends AppCompatActivity {
                                                                     Firestore.createNewUser(userId
                                                                             , inputEmail.getText().toString()
                                                                             , inputNickname.getText().toString()
-                                                                            , inputUserName.getText().toString(), task.getResult().toString())
+                                                                            , inputUserName.getText().toString()
+                                                                            , task.getResult().toString())
                                                                             .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                                                 @Override
                                                                                 public void onComplete(@NonNull Task<Void> task) {

@@ -6,20 +6,17 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
-import android.media.Image;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import com.bumptech.glide.Glide;
 import com.example.duet.R;
 import com.example.duet.adapter.TestPostDataAdapter;
 import com.example.duet.model.PostData;
 import com.example.duet.util.Firestore;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -53,7 +50,6 @@ public class TestShowPostActivity extends AppCompatActivity {
                     for(int i=0; i<urls.size(); ++i){
                         ImageView imageView = new ImageView(getApplicationContext());
                         linearLayout.addView(imageView);
-//                        Glide.with(getApplicationContext()).load(urls.get(i)).into((ImageView) linearLayout.getChildAt(i));
 
                     }
                     TestPostDataAdapter adapter = new TestPostDataAdapter(list, getApplicationContext());

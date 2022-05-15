@@ -57,23 +57,23 @@ public class PostContentActivity extends AppCompatActivity {
     private int checkSum = 0;
     private int arrSize = 0;
     private Bundle bundle;
-    private Handler handler = new Handler(Looper.myLooper()){
+    private Handler handler = new Handler(Looper.myLooper()) {
         @Override
-        public void handleMessage(Message msg){
+        public void handleMessage(Message msg) {
             checkSum += msg.getData().getInt("count");
-            if(arrSize == checkSum){
+            if (arrSize == checkSum) {
                 adapter = new TestReplyAdapter(replyDataArrayList, getApplicationContext());
                 replyRecyclerView.setAdapter(adapter);
                 return;
             }
 
-            if(msg.getData().getBoolean("add_reply")) {
+            if (msg.getData().getBoolean("add_reply")) {
                 Firestore.getAllReplyOnPostForOwner(data.getPostID()).addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             replyDataArrayList.clear();
-                            int i=0;
+                            int i = 0;
                             for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
                                 replyDataArrayList.add(documentSnapshot.toObject(ReplyData.class));
                                 if (replyDataArrayList.get(i).isWaiting()) {
@@ -104,12 +104,16 @@ public class PostContentActivity extends AppCompatActivity {
             }
         }
     };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_content);
+
+        // 이전 화면에서 전달 받은 게시글 데이터
         Intent intent = getIntent();
         data = (PostData) intent.getSerializableExtra("data");
+
         linearLayout = findViewById(R.id.content_container);
         postIDTextView = findViewById(R.id.content_post_id);
         writerNicknameTextView = findViewById(R.id.content_writer_id);
@@ -122,28 +126,27 @@ public class PostContentActivity extends AppCompatActivity {
         replyDataArrayList = new ArrayList<>();
         bundle = new Bundle();
 
-        if(User.currentUser.getUid().equals(data.getWriter().getUid())) {
+        if (User.currentUser.getUid().equals(data.getWriter().getUid())) {
             Firestore.getAllReplyOnPostForOwner(data.getPostID()).addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
                     if (task.isSuccessful()) {
                         replyDataArrayList.clear();
-                        int i=0;
+                        int i = 0;
                         for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
                             int finalI = i;
                             replyDataArrayList.add(documentSnapshot.toObject(ReplyData.class));
                             Firestore.getUserData(replyDataArrayList.get(finalI).getWriter().getUid()).addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                 @Override
                                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                    if(task.isSuccessful()){
+                                    if (task.isSuccessful()) {
                                         replyDataArrayList.get(finalI).setWriter(task.getResult().toObject(User.class));
 
                                         bundle.putInt("count", 1);
                                         Message msg = handler.obtainMessage();
                                         msg.setData(bundle);
                                         handler.sendMessage(msg); // 메세지 전달
-                                    }
-                                    else{
+                                    } else {
 
                                     }
                                 }
@@ -156,14 +159,13 @@ public class PostContentActivity extends AppCompatActivity {
                     }
                 }
             });
-        }
-        else{
+        } else {
             Firestore.getAllReplyOnPostForAnybody(data.getPostID()).addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                    if(task.isSuccessful()){
+                    if (task.isSuccessful()) {
                         replyDataArrayList.clear();
-                        for(QueryDocumentSnapshot documentSnapshot: task.getResult()){
+                        for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
                             replyDataArrayList.add(documentSnapshot.toObject(ReplyData.class));
                         }
                         adapter = new TestReplyAdapter(replyDataArrayList, getApplicationContext());
@@ -175,6 +177,7 @@ public class PostContentActivity extends AppCompatActivity {
         int state = data.getStateAllowReply();
 
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
         if (state == 0) {
             View view = inflater.inflate(R.layout.reply_allow_layout, replyContainer);
             inputReply = view.findViewById(R.id.input_reply);
@@ -276,58 +279,53 @@ public class PostContentActivity extends AppCompatActivity {
 
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
-        Log.d("클릭", "클릭 "+item.getGroupId());
-        Log.d("id",replyDataArrayList.get(item.getGroupId()).getPostWriterID());
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.action_adopt:
-                if(User.currentUser.getUid().equals(replyDataArrayList.get(item.getGroupId()).getPostWriterID())
-                        && !User.currentUser.getUid().equals(replyDataArrayList.get(item.getGroupId()).getWriter().getUid())){
+                if (User.currentUser.getUid().equals(replyDataArrayList.get(item.getGroupId()).getPostWriterID())
+                        && !User.currentUser.getUid().equals(replyDataArrayList.get(item.getGroupId()).getWriter().getUid())) {
                     Log.d("메뉴 클릭", "채택");
                     Firestore.updateReplySelection(replyDataArrayList.get(item.getGroupId()).getReplyID())
                             .addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if(task.isSuccessful()){
-                                Toast.makeText(PostContentActivity.this, "채택 성공", Toast.LENGTH_SHORT).show();
-                                ReplyData current = replyDataArrayList.get(item.getGroupId());
-                                current.setSelected(true);
-                                adapter.setItem(item.getGroupId(), current);
-                                adapter.notifyDataSetChanged();
-                            }
-                            else{
-                                Toast.makeText(PostContentActivity.this, "채택 실패", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
-                }
-                else{
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        Toast.makeText(PostContentActivity.this, "채택 성공", Toast.LENGTH_SHORT).show();
+                                        ReplyData current = replyDataArrayList.get(item.getGroupId());
+                                        current.setSelected(true);
+                                        adapter.setItem(item.getGroupId(), current);
+                                        adapter.notifyDataSetChanged();
+                                    } else {
+                                        Toast.makeText(PostContentActivity.this, "채택 실패", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
+                } else {
                     Log.d("메뉴 클릭 ", "소유자 아니거나 본인글에 대한 본인 댓글");
                 }
                 return true;
             case R.id.action_delete:
-                if(User.currentUser.getUid().equals(replyDataArrayList.get(item.getGroupId()).getPostWriterID())
-                        || User.currentUser.getUid().equals(replyDataArrayList.get(item.getGroupId()).getWriter().getUid())){
+                if (User.currentUser.getUid().equals(replyDataArrayList.get(item.getGroupId()).getPostWriterID())
+                        || User.currentUser.getUid().equals(replyDataArrayList.get(item.getGroupId()).getWriter().getUid())) {
                     Log.d("메뉴 클릭", "삭제");
                     Firestore.removeReplyOnPostByOwner(replyDataArrayList.get(item.getGroupId()).getReplyID()).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
-                            if(task.isSuccessful()){
+                            if (task.isSuccessful()) {
                                 Toast.makeText(PostContentActivity.this, "삭제 성공", Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
                     adapter.removeItem(item.getGroupId());
-                }
-                else{
+                } else {
                     Log.d("메뉴 클릭", "삭제 - 소유자 아니거나 댓글 작성자 아님");
                 }
                 return true;
             case R.id.action_report:
-                if(!User.currentUser.getUid().equals(replyDataArrayList.get(item.getGroupId()).getWriter().getUid())){
+                if (!User.currentUser.getUid().equals(replyDataArrayList.get(item.getGroupId()).getWriter().getUid())) {
                     Firestore.updateUserReliability(false, replyDataArrayList.get(item.getGroupId()).getWriter().getUid()).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
-                            if(task.isSuccessful()){
+                            if (task.isSuccessful()) {
                                 Toast.makeText(PostContentActivity.this, "신고 성공(신뢰도 차감)", Toast.LENGTH_SHORT).show();
 
                                 checkSum = 0;
@@ -336,7 +334,7 @@ public class PostContentActivity extends AppCompatActivity {
                                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                                         if (task.isSuccessful()) {
                                             replyDataArrayList.clear();
-                                            int i=0;
+                                            int i = 0;
                                             for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
                                                 replyDataArrayList.add(documentSnapshot.toObject(ReplyData.class));
                                                 if (replyDataArrayList.get(i).isWaiting()) {
@@ -365,8 +363,7 @@ public class PostContentActivity extends AppCompatActivity {
                                         }
                                     }
                                 });
-                            }
-                            else{
+                            } else {
                                 task.getException().printStackTrace();
                                 Toast.makeText(PostContentActivity.this, "신고 실패", Toast.LENGTH_SHORT).show();
                             }
