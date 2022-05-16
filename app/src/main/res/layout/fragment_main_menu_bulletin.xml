@@ -45,35 +45,6 @@
             android:text="search" />
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:clickable="true">
-        <ImageView
-            android:id="@+id/bulletin_profile_photo"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:adjustViewBounds="true"
-            android:clickable="false"
-            android:cropToPadding="false"
-            app:srcCompat="@drawable/ic_profile_foreground"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="NickName"
-            android:textSize="15dp" />
-
-    </LinearLayout>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="This is where the content of the bulletin board will be located"
-        android:textSize="20dp"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"/>
     <View
         android:layout_width="match_parent"
         android:layout_height="2dp"
@@ -83,6 +54,11 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="vertical"
+            android:id="@+id/post_recyclerview"/>
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab_create_post"
             android:layout_width="wrap_content"
