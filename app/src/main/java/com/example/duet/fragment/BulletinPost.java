@@ -1,6 +1,5 @@
 package com.example.duet.fragment;
 
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -8,32 +7,26 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
 
 import com.example.duet.R;
-import com.example.duet.board.CreatePostActivity;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link MainMenuBulletinFragment#newInstance} factory method to
+ * Use the {@link BulletinPost#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MainMenuBulletinFragment extends Fragment {
+public class BulletinPost extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-
-    private FloatingActionButton createPostFab;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-    String[] items = {"코딩", "수학", "과학", "미술", "음악"};
-    public MainMenuBulletinFragment() {
+
+    public BulletinPost() {
         // Required empty public constructor
     }
 
@@ -43,11 +36,11 @@ public class MainMenuBulletinFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment MainMenuBulletinFragment.
+     * @return A new instance of fragment BulletinPost.
      */
     // TODO: Rename and change types and number of parameters
-    public static MainMenuBulletinFragment newInstance(String param1, String param2) {
-        MainMenuBulletinFragment fragment = new MainMenuBulletinFragment();
+    public static BulletinPost newInstance(String param1, String param2) {
+        BulletinPost fragment = new BulletinPost();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -58,27 +51,16 @@ public class MainMenuBulletinFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        ViewGroup rootView = (ViewGroup)inflater.inflate(R.layout.fragment_main_menu_bulletin, container, false);
-
-        createPostFab = rootView.findViewById(R.id.fab_create_post);
-        createPostFab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getActivity(), CreatePostActivity.class));
-            }
-        });
-        return rootView;
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_bulletin_post, container, false);
     }
-
 }

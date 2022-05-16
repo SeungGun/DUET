@@ -8,5 +8,7 @@
     <string name="supporting_text">멘토: 김원님</string>
     <string name="action_1">참여하기</string>
     <string name="loading_message">로딩 중…</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>
