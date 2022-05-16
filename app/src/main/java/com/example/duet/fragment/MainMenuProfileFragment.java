@@ -57,40 +57,6 @@ import com.example.duet.R;
 
 public class MainMenuProfileFragment extends Fragment {
 
-<<<<<<< HEAD
-    private BulletinPost fragmentPost = new BulletinPost();
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public MainMenuProfileFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment MainMenuProfileFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static MainMenuProfileFragment newInstance(String param1, String param2) {
-        MainMenuProfileFragment fragment = new MainMenuProfileFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-=======
     private ImageView profileImage;
     private ArrayList<PostData> userPostList;
     private Handler handler = new Handler(Looper.myLooper()){
@@ -114,12 +80,6 @@ public class MainMenuProfileFragment extends Fragment {
             });
         }
     };
->>>>>>> 463a58c938341a14080f93e7a2d4808f44dce389
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
