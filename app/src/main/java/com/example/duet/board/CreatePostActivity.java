@@ -122,6 +122,7 @@ public class CreatePostActivity extends AppCompatActivity {
                                     if(task.isSuccessful()){
                                         Log.d("pid update","success");
                                         progressDialog.dismissDialog();
+                                        finish();
                                     }
                                     else{
 
