@@ -315,6 +315,7 @@ public class PostContentActivity extends AppCompatActivity {
                                 }
                             });
                 } else {
+                    Toast.makeText(this, "본인을 채택할 수 없습니다!", Toast.LENGTH_SHORT).show();
                     Log.d("메뉴 클릭 ", "소유자 아니거나 본인글에 대한 본인 댓글");
                 }
                 return true;
@@ -332,6 +333,7 @@ public class PostContentActivity extends AppCompatActivity {
                     });
                     adapter.removeItem(item.getGroupId());
                 } else {
+                    Toast.makeText(this, "본인외의 댓글을 삭제할 수 없습니다!", Toast.LENGTH_SHORT).show();
                     Log.d("메뉴 클릭", "삭제 - 소유자 아니거나 댓글 작성자 아님");
                 }
                 return true;
@@ -386,6 +388,8 @@ public class PostContentActivity extends AppCompatActivity {
                         }
                     });
                     Log.d("메뉴 클릭", "신고");
+                } else {
+                    Toast.makeText(this, "본인을 신고할 수 없습니다!", Toast.LENGTH_SHORT).show();
                 }
                 return true;
             default:
