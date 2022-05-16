@@ -68,7 +68,6 @@ public class CreatePostActivity extends AppCompatActivity {
     private EditText inputBody;
     private EditText inputSubtractPoint;
     private Button uploadButton;
-    private Button showPostsButton;
     private RadioButton radioAlwaysButton;
     private RadioButton radioOptionalButton;
     private RadioButton radioNeverButton;
@@ -174,13 +173,6 @@ public class CreatePostActivity extends AppCompatActivity {
                 }.start();
             }
         });
-
-        showPostsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), TestShowPostActivity.class));
-            }
-        });
     }
 
     /**
@@ -194,7 +186,6 @@ public class CreatePostActivity extends AppCompatActivity {
         inputBody = findViewById(R.id.input_body);
         inputSubtractPoint = findViewById(R.id.input_alloc_point);
         uploadButton = findViewById(R.id.upload_post_btn);
-        showPostsButton = findViewById(R.id.btn_show_posts);
         radioGroup = findViewById(R.id.reply_range_radio_group);
         radioAlwaysButton = findViewById(R.id.radio_always);
         radioOptionalButton = findViewById(R.id.radio_optional);
