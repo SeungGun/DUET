@@ -4,11 +4,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:text="StudyRoom"
         android:textColor="@android:color/black"
-        android:textSize="50sp"/>
+        android:textSize="30dp"/>
+
+
 
 </LinearLayout>
