@@ -75,13 +75,13 @@ public class MainMenuStudyRoomFragment extends Fragment {
         listview.setAdapter(adapter);
 
         // 첫 번째 아이템 추가.
-        adapter.addItem(ContextCompat.getDrawable(getActivity(), R.drawable.ic_profile_foreground),
+        adapter.addItem(ContextCompat.getDrawable(getActivity(), R.mipmap.ic_account_circle),
                 "김원", "최근 대화 내용 어쩌고~") ;
         // 두 번째 아이템 추가.
-        adapter.addItem(ContextCompat.getDrawable(getActivity(), R.drawable.ic_profile_foreground),
+        adapter.addItem(ContextCompat.getDrawable(getActivity(), R.mipmap.ic_account_circle),
                 "정윤현", "최근 대화 내용 어쩌고~") ;
         // 세 번째 아이템 추가.
-        adapter.addItem(ContextCompat.getDrawable(getActivity(), R.drawable.ic_profile_foreground),
+        adapter.addItem(ContextCompat.getDrawable(getActivity(), R.mipmap.ic_account_circle),
                 "정옥란", "최근 대화 내용 어쩌고~") ;
 
         return rootView;
