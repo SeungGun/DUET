@@ -2,11 +2,13 @@ package com.example.duet.fragment;
 
 import android.os.Bundle;
 
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 
 import com.example.duet.R;
 
@@ -61,6 +63,26 @@ public class MainMenuStudyRoomFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         ViewGroup rootView = (ViewGroup)inflater.inflate(R.layout.fragment_main_menu_study_room, container, false);
+
+        ListView listview ;
+        ChatRoomItemAdapter adapter;
+
+        // Adapter 생성
+        adapter = new ChatRoomItemAdapter() ;
+
+        // 리스트뷰 참조 및 Adapter달기
+        listview = (ListView) rootView.findViewById(R.id.chatroom_list);
+        listview.setAdapter(adapter);
+
+        // 첫 번째 아이템 추가.
+        adapter.addItem(ContextCompat.getDrawable(getActivity(), R.drawable.ic_profile_foreground),
+                "김원", "최근 대화 내용 어쩌고~") ;
+        // 두 번째 아이템 추가.
+        adapter.addItem(ContextCompat.getDrawable(getActivity(), R.drawable.ic_profile_foreground),
+                "정윤현", "최근 대화 내용 어쩌고~") ;
+        // 세 번째 아이템 추가.
+        adapter.addItem(ContextCompat.getDrawable(getActivity(), R.drawable.ic_profile_foreground),
+                "정옥란", "최근 대화 내용 어쩌고~") ;
 
         return rootView;
     }
