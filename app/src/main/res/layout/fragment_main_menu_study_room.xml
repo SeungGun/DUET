@@ -6,19 +6,25 @@
     android:layout_height="match_parent">
 
     <TextView
+        android:id="@+id/chatroom_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="24dp"
         android:text="StudyRoom"
         android:textColor="@android:color/black"
         android:textSize="30dp"
-        app:layout_constraintLeft_toLfetOf="parent"
-        tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="16dp" />
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ListView
-        android:id="@+id/chatRoom"
+        android:id="@+id/chatroom_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/chatroom_title"
 
         />
 
