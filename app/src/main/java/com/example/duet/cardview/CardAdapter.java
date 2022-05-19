@@ -18,6 +18,7 @@ import androidx.annotation.RequiresApi;
 
 import com.example.duet.ChattingRoomActivity;
 import com.example.duet.R;
+import com.example.duet.util.RealTimeDatabase;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -38,7 +39,7 @@ public class CardAdapter extends BaseAdapter {
     LayoutInflater mLayoutInflater = null;
     ArrayList<CardData> sample;
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
-    DatabaseReference mRef = FirebaseDatabase.getInstance().getReference();
+    DatabaseReference mRef = RealTimeDatabase.getDatabaseRef();
 
     public CardAdapter(Context context, ArrayList<CardData> data){
         mContext = context;

@@ -23,6 +23,7 @@ import com.example.duet.cardview.BulletData;
 import com.example.duet.cardview.CardData;
 import com.example.duet.cardview.CardAdapter;
 import com.example.duet.util.CustomProgressDialog;
+import com.example.duet.util.RealTimeDatabase;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -30,6 +31,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.ArrayList;
 
@@ -54,7 +56,7 @@ public class CardActivity extends AppCompatActivity {
                 @Override public void onActivityResult(ActivityResult result) {
                     if (result.getResultCode() == Activity.RESULT_OK) {
                         user = FirebaseAuth.getInstance().getCurrentUser();
-                        mRef = FirebaseDatabase.getInstance().getReference();
+                        mRef = RealTimeDatabase.getDatabaseRef();
                     }
                 }
             });
@@ -69,6 +71,9 @@ public class CardActivity extends AppCompatActivity {
         ListView listView = (ListView) findViewById(R.id.listView);
         Button admin = (Button) findViewById(R.id.adminBtn);
         Button chatBtn = (Button)findViewById(R.id.chatRoomBtn);
+
+        FirebaseMessaging firebaseMessaging = FirebaseMessaging.getInstance();
+        firebaseMessaging.subscribeToTopic("message_notification");
 
         admin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -92,7 +97,7 @@ public class CardActivity extends AppCompatActivity {
         listView.setAdapter(mAdapter);
 
         if (user != null) {
-            mRef = FirebaseDatabase.getInstance().getReference();
+            mRef = RealTimeDatabase.getDatabaseRef();
             uid = user.getUid();
         } else {
             Intent intent = new Intent(getApplicationContext(), AuthActivity.class);

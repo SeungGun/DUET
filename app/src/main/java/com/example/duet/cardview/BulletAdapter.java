@@ -19,6 +19,7 @@ import androidx.annotation.RequiresApi;
 
 import com.example.duet.ChattingRoomActivity;
 import com.example.duet.R;
+import com.example.duet.util.RealTimeDatabase;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -33,7 +34,7 @@ public class BulletAdapter extends BaseAdapter {
     Context mContext = null;
     LayoutInflater mLayoutInflater = null;
     ArrayList<BulletData> sample;
-    DatabaseReference mRef = FirebaseDatabase.getInstance().getReference();
+    DatabaseReference mRef = RealTimeDatabase.getDatabaseRef();
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     //TODO Refactor for reusability
 
