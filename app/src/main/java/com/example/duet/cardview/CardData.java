@@ -1,35 +1,50 @@
 package com.example.duet.cardview;
 
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
+
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class CardData {
     private String title;
-    private String participate;
-    private ArrayList<String> group;
-    private String mentor;
+    private Map<String, Boolean> members;
+    private String lastMessage;
+    private String convKey;
 
-    public CardData(String title, String mentor, ArrayList<String> groups){
+    public CardData(String title,  String lastMessage){
         this.title = title;
-        this.mentor = mentor;
-        this.group = groups;
+        this.lastMessage = lastMessage;
     }
+
 
     public CardData(){}
 
-
-
-    public String getMentor() {
-        return mentor;
-    }
-
-    public String getParticipate() {
-        return participate;
-    }
+    //public ArrayList<String> getMembers() {return members; }
 
     public String getTitle() {
         return title;
     }
 
-    public ArrayList<String> getGroup() { return group; }
+    public String getLastMessage() {
+        return lastMessage;
+    }
 
+    public void setMembers(Map<String, Boolean> members) {
+        this.members = members;
+    }
+
+    public void setConvKey(String convKey) {
+        this.convKey = convKey;
+    }
+
+    public String getConvKey() {
+        return convKey;
+    }
+
+    public String getMembers() {
+        return members.keySet().toString();
+    }
 }
