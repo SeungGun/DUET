@@ -2,6 +2,7 @@ package com.example.duet.cardview;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,7 +17,9 @@ import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 
+import com.example.duet.ChattingRoomActivity;
 import com.example.duet.R;
+import com.example.duet.util.RealTimeDatabase;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -31,7 +34,7 @@ public class BulletAdapter extends BaseAdapter {
     Context mContext = null;
     LayoutInflater mLayoutInflater = null;
     ArrayList<BulletData> sample;
-    DatabaseReference mRef = FirebaseDatabase.getInstance().getReference();
+    DatabaseReference mRef = RealTimeDatabase.getDatabaseRef();
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     //TODO Refactor for reusability
 
@@ -76,6 +79,12 @@ public class BulletAdapter extends BaseAdapter {
                 Map<String, Object> update = new HashMap<String, Object>();
                 update.put(user.getUid(), true);
                 mRef.child("members").child(sample.get(i).getConv_key()).updateChildren(update);
+                mRef.child("chat_meta").child(sample.get(i).getConv_key()).child("members").updateChildren(update);
+                Intent intent = new Intent(mContext, ChattingRoomActivity.class);
+                intent.putExtra("conv_id", sample.get(i).getConv_key());
+                intent.putExtra("uid", user.getUid());
+                mContext.startActivity(intent);
+
             }
         });
 

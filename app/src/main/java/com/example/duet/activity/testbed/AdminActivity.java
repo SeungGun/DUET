@@ -1,19 +1,31 @@
 package com.example.duet.activity.testbed;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.duet.R;
 import com.example.duet.cardview.BulletData;
 import com.example.duet.cardview.CardData;
 import com.example.duet.util.CreateText;
+import com.example.duet.util.RealTimeDatabase;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,6 +33,7 @@ import java.util.Map;
 
 public class AdminActivity extends AppCompatActivity {
 
+    private static final String DEFAULT = "DEFAULT";
     private DatabaseReference mDatabase;
     private String uid;
     Button btnPosting;
@@ -42,18 +55,9 @@ public class AdminActivity extends AppCompatActivity {
         content = (EditText)findViewById(R.id.editContent);
 
         uid = flyingIntent.getStringExtra("uid");
-        mDatabase = FirebaseDatabase.getInstance().getReference();
+        mDatabase = RealTimeDatabase.getDatabaseRef();
 
 
-        //TODO Will be deleted
-
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                CreateText createText = new CreateText();
-                writeClassData("Who Am I", "Won Kim", createText.generateRandomChunk());
-            }
-        });
 
         btnPosting.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,23 +68,29 @@ public class AdminActivity extends AppCompatActivity {
             }
         });
 
+        FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(new OnCompleteListener<String>() {
+                    @Override
+                    public void onComplete(@NonNull Task<String> task) {
+                        if (!task.isSuccessful()) {
+                            Log.w("TAG", "Fetching FCM registration token failed", task.getException());
+                            return;
+                        }
+
+                        // Get new FCM registration token
+                        String token = task.getResult();
+                        Log.d("TAG", token);
+                        Toast.makeText(getApplicationContext(), token, Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+
+
+
+
 
     }
 
-/**
- * @auther Me
- * @since 2022/05/03 10:45 오후
- Insert dummy data to database
- **/
-
-//TODO Will be deleted
-
-    private void writeClassData(String title, String mentor, ArrayList<String> group) {
-        CardData cardData = new CardData(title, mentor, group);
-
-        mDatabase.child("classes").child(uid).push().setValue(cardData);
-
-    }
 
     /**
      * @auther Me
@@ -109,8 +119,18 @@ public class AdminActivity extends AppCompatActivity {
 
         update.clear();
         update.put("title", sendTitle);
-        mDatabase.child("chats"+"/"+key).setValue(update);
+        mDatabase.child("chat_meta"+"/"+key).setValue(update);
+        update.clear();
+        update.put(uid, true);
+        mDatabase.child("chat_meta"+ "/"+key +"/" + "members").setValue(update);
+        update.clear();
+        update.put("conv_key", key);
+        mDatabase.child("user_in"+ "/"+uid).push().setValue(update);
+
+
     }
+
+
 
 
 }
