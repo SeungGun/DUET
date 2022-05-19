@@ -2,30 +2,21 @@ package com.example.duet.cardview;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 
 import androidx.annotation.RequiresApi;
 
-import com.example.duet.ChattingRoomActivity;
 import com.example.duet.R;
-import com.example.duet.util.RealTimeDatabase;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @auther Me
@@ -38,8 +29,6 @@ public class CardAdapter extends BaseAdapter {
     Context mContext = null;
     LayoutInflater mLayoutInflater = null;
     ArrayList<CardData> sample;
-    FirebaseAuth mAuth = FirebaseAuth.getInstance();
-    DatabaseReference mRef = RealTimeDatabase.getDatabaseRef();
 
     public CardAdapter(Context context, ArrayList<CardData> data){
         mContext = context;
@@ -74,21 +63,14 @@ public class CardAdapter extends BaseAdapter {
         TextView title = (TextView)mView.findViewById(R.id.title);
         TextView participate = (TextView)mView.findViewById(R.id.participate);
         TextView mentor = (TextView)mView.findViewById(R.id.mentor);
-        Button join = (Button)mView.findViewById(R.id.joinBtn);
 
-        join.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(mContext, ChattingRoomActivity.class);
-                intent.putExtra("conv_id", sample.get(i).getConvKey());
-                intent.putExtra("uid", mAuth.getUid());
-                mContext.startActivity(intent);
-            }
-        });
+        ArrayList<String> testArrayList = sample.get(i).getGroup();
+        String strAppend = String.join(" ", testArrayList);
 
         //imageView.setImageResource(sample.get(i).get());
         title.setText(sample.get(i).getTitle());
-        participate.setText(sample.get(i).getMembers());
+        participate.setText(strAppend);
+        mentor.setText(sample.get(i).getMentor());
 
         return mView;
     }
