@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,15 +16,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 
 import com.example.duet.ChattingRoomActivity;
 import com.example.duet.R;
 import com.example.duet.util.RealTimeDatabase;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -80,6 +85,23 @@ public class BulletAdapter extends BaseAdapter {
                 update.put(user.getUid(), true);
                 mRef.child("members").child(sample.get(i).getConv_key()).updateChildren(update);
                 mRef.child("chat_meta").child(sample.get(i).getConv_key()).child("members").updateChildren(update);
+
+                FirebaseMessaging.getInstance().getToken()
+                        .addOnCompleteListener(new OnCompleteListener<String>() {
+                            @Override
+                            public void onComplete(@NonNull Task<String> task) {
+                                if (!task.isSuccessful()) {
+                                    Log.w("TAG", "Fetching FCM registration token failed", task.getException());
+                                    return;
+                                }
+
+                                // Get new FCM registration token
+                                String token = task.getResult();
+                                Map<String, Object> update = new HashMap<>();
+                                update.put(user.getUid(), token);
+                                mRef.child("chat_meta").child(sample.get(i).getConv_key()).child("FCM").updateChildren(update);
+                            }
+                        });
                 Intent intent = new Intent(mContext, ChattingRoomActivity.class);
                 intent.putExtra("conv_id", sample.get(i).getConv_key());
                 intent.putExtra("uid", user.getUid());
