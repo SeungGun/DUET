@@ -23,10 +23,10 @@
         android:text="login" />
 
     <Button
-        android:id="@+id/bulletinBtn"
+        android:id="@+id/chatRoomBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Go to bulletin" />
+        android:text="Go to chat room" />
 
     <com.google.android.material.divider.MaterialDivider
         android:layout_width="match_parent"

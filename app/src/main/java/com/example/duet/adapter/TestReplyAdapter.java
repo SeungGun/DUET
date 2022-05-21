@@ -8,8 +8,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.duet.R;
 import com.example.duet.model.ReplyData;
 import com.example.duet.util.Firestore;
@@ -59,6 +62,11 @@ public class TestReplyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             ((NormalViewHolder) holder).writerNickname.setText(replyDataArrayList.get(position).getWriter().getNickname());
             ((NormalViewHolder) holder).body.setText((replyDataArrayList.get(position).getBody()));
             ((NormalViewHolder) holder).writeDate.setText(replyDataArrayList.get(position).getReplyDate().toString());
+            Glide.with(context)
+                    .load(replyDataArrayList.get(position).getWriter().getProfileUrl())
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .error(R.drawable.ic_profile_foreground)
+                    .into(((NormalViewHolder) holder).profileImage);
         } else if (holder instanceof WaitingViewHolder) {
             ((WaitingViewHolder) holder).writerNickname.setText(replyDataArrayList.get(position).getWriter().getNickname());
             ((WaitingViewHolder) holder).writeDate.setText(replyDataArrayList.get(position).getReplyDate().toString());
@@ -136,9 +144,11 @@ public class TestReplyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         public TextView writerNickname;
         public TextView body;
         public TextView writeDate;
+        public ImageView profileImage;
 
         public NormalViewHolder(View itemView) {
             super(itemView);
+            profileImage = itemView.findViewById(R.id.reply_profile_image);
             writerNickname = itemView.findViewById(R.id.reply_item_writer);
             body = itemView.findViewById(R.id.reply_item_body);
             writeDate = itemView.findViewById(R.id.reply_item_date);

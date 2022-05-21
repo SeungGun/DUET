@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="horizontal"
+    android:background="#FF4646"
+    android:padding="5dp"
     >
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="32dp"
         android:gravity="center"
-        android:text="not allow reply"
+        android:text="댓글을 허용하지 않습니다!"
+        android:textStyle="bold"
+        android:textSize="15dp"
         />
 </LinearLayout>

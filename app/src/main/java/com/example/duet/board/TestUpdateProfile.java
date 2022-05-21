@@ -11,9 +11,13 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 
 import com.example.duet.R;
 import com.example.duet.model.User;
+import com.example.duet.util.CustomProgressDialog;
 import com.example.duet.util.FireStorage;
 import com.example.duet.util.Firestore;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -26,10 +30,20 @@ import java.io.InputStream;
 
 public class TestUpdateProfile extends AppCompatActivity {
     public static final int REQUEST_CODE = 0;
+    private Handler handler = new Handler(Looper.myLooper()){
+        @Override
+        public void handleMessage(@NonNull Message msg) {
+            progressDialog.dismissDialog();
+            finish();
+        }
+    };
+    private CustomProgressDialog progressDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test_update_profile);
+        progressDialog = new CustomProgressDialog(TestUpdateProfile.this);
         Intent intent = new Intent();
         intent.setType("image/* video/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
@@ -102,26 +116,41 @@ public class TestUpdateProfile extends AppCompatActivity {
 
                     inputStream.close();
                     inputStream2.close();
-                    FireStorage.uploadUserProfileImage(bitmap
-                            , User.currentUser.getUid())
-                    .addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                    Bitmap finalBitmap = bitmap;
+                    progressDialog.showLoadingDialog();
+                    new Thread(new Runnable() {
                         @Override
-                        public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                            if(task.isSuccessful()){
-                                task.getResult().getStorage().getDownloadUrl()
-                                        .addOnCompleteListener(new OnCompleteListener<Uri>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<Uri> task) {
-                                                if(task.isSuccessful()){
-                                                    Firestore.updateUserProfileUrl(User.currentUser.getUid()
-                                                            , task.getResult().toString());
-                                                    finish();
-                                                }
+                        public void run() {
+                            FireStorage.uploadUserProfileImage(finalBitmap
+                                    , User.currentUser.getUid())
+                                    .addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                                            if(task.isSuccessful()){
+                                                task.getResult().getStorage().getDownloadUrl()
+                                                        .addOnCompleteListener(new OnCompleteListener<Uri>() {
+                                                            @Override
+                                                            public void onComplete(@NonNull Task<Uri> task) {
+                                                                if(task.isSuccessful()){
+                                                                    Firestore.updateUserProfileUrl(User.currentUser.getUid()
+                                                                            , task.getResult().toString()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                        @Override
+                                                                        public void onComplete(@NonNull Task<Void> task) {
+                                                                            if(task.isSuccessful()){
+                                                                                Message message = handler.obtainMessage();
+                                                                                handler.sendMessage(message);
+                                                                            }
+                                                                        }
+                                                                    });
+                                                                }
+                                                            }
+                                                        });
                                             }
-                                        });
-                            }
+                                        }
+                                    });
                         }
-                    });
+                    }).start();
+
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 } catch (IOException e) {
@@ -129,7 +158,7 @@ public class TestUpdateProfile extends AppCompatActivity {
                 }
             }
             else if(resultCode ==RESULT_CANCELED){
-
+                finish();
             }
         }
     }

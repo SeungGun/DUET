@@ -1,7 +1,6 @@
 package com.example.duet.adapter;
 
 import android.content.Context;
-import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,17 +22,21 @@ public class TestPostDataAdapter extends RecyclerView.Adapter<TestPostDataAdapte
     private final Context context;
     private OnItemClickListener itemClickListener;
     public static class ViewHolder extends RecyclerView.ViewHolder{
-        public ImageView imageView;
+        public ImageView userProfileImage;
+        public ImageView mainImage;
+        public TextView nickname;
         public TextView title;
         public TextView body;
         public TextView date;
 
         public ViewHolder(View itemView){
             super(itemView);
-            imageView = itemView.findViewById(R.id.item_img);
-            title = itemView.findViewById(R.id.title);
-            body = itemView.findViewById(R.id.body);
-            date = itemView.findViewById(R.id.date);
+            userProfileImage = itemView.findViewById(R.id.bulletin_profile_photo);
+            mainImage = itemView.findViewById(R.id.bulletin_main_image);
+            nickname = itemView.findViewById(R.id.bulletin_profile_nickname);
+            title = itemView.findViewById(R.id.bulletin_main_title);
+            body = itemView.findViewById(R.id.bulletin_main_body);
+            date = itemView.findViewById(R.id.bulletin_post_date);
         }
 
     }
@@ -53,7 +56,7 @@ public class TestPostDataAdapter extends RecyclerView.Adapter<TestPostDataAdapte
         Context context = parent.getContext();
         LayoutInflater inflater= (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-        View view = inflater.inflate(R.layout.bulletin_post_item, parent, false);
+        View view = inflater.inflate(R.layout.bulletin_list_item, parent, false);
         TestPostDataAdapter.ViewHolder viewHolder = new TestPostDataAdapter.ViewHolder(view);
         view.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -73,14 +76,18 @@ public class TestPostDataAdapter extends RecyclerView.Adapter<TestPostDataAdapte
     public void onBindViewHolder(@NonNull TestPostDataAdapter.ViewHolder holder, int position) {
         Glide.with(context)
                 .load(postDataArrayList.get(position).getPostImageUrls().get(0))
-                .placeholder(R.drawable.ic_launcher_foreground)
-                .error(R.drawable.ic_launcher_background)
-                .override(500, 500)
+                .error(R.drawable.logo)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(holder.imageView);
+                .into(holder.mainImage);
+        Glide.with(context)
+                .load(postDataArrayList.get(position).getWriter().getProfileUrl())
+                .error(R.drawable.ic_profile_foreground)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(holder.userProfileImage);
         holder.title.setText(postDataArrayList.get(position).getTitle());
         holder.body.setText(postDataArrayList.get(position).getBody());
         holder.date.setText(postDataArrayList.get(position).getWriteDate().toString());
+        holder.nickname.setText(postDataArrayList.get(position).getWriter().getNickname());
     }
 
     @Override
