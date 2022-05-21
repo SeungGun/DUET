@@ -185,7 +185,7 @@ public class Firestore {
      * @return Task<QuerySnapshot> 게시글 데이터들
      */
     public static Task<QuerySnapshot> getUserAllPostData(String uid) {
-        return getFirestoreInstance().collection("post").whereEqualTo("writerID", uid).get();
+        return getFirestoreInstance().collection("post").whereEqualTo("writer.uid", uid).get();
     }
 
     /**
@@ -200,6 +200,9 @@ public class Firestore {
         return getFirestoreInstance().collection("user").document(uid).update("reliability", FieldValue.increment(updateReliability));
     }
 
+    public static Task<Void> updateGroupLimitCount(String pid, int count){
+        return getFirestoreInstance().collection("post").document(pid).update("limitGroupCount", count);
+    }
     public static Task<Void> updateUserInfoForReply(String rid, User user) {
         return getFirestoreInstance().collection("user").document(user.getUid()).set(user);
     }
@@ -208,8 +211,11 @@ public class Firestore {
         return getFirestoreInstance().collection("user").document(uid).update("exp", FieldValue.increment(point));
     }
 
+    public static Task<Void> updateUserLevel(String uid){
+        return getFirestoreInstance().collection("user").document(uid).update("level", FieldValue.increment(1));
+    }
     public static Task<Void> updateUserExpForPosting(String uid) {
-        return getFirestoreInstance().collection("user").document(uid).update("exp", FieldValue.increment(100));
+        return getFirestoreInstance().collection("user").document(uid).update("exp", FieldValue.increment(200));
     }
 
     public static Task<Void> updateUserExpForReply(String uid, boolean positive, int allocPoint) {

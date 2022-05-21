@@ -5,18 +5,14 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.graphics.Matrix;
 
 import androidx.exifinterface.media.ExifInterface;
 
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -24,13 +20,11 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
@@ -41,14 +35,22 @@ import com.example.duet.model.User;
 import com.example.duet.util.CustomProgressDialog;
 import com.example.duet.util.FireStorage;
 import com.example.duet.util.Firestore;
+import com.example.duet.util.LevelSystem;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.UploadTask;
+import com.prolificinteractive.materialcalendarview.CalendarDay;
 
 import java.io.InputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * 새로운 게시글을 추가할 수 있는 Activity
@@ -73,6 +75,7 @@ public class CreatePostActivity extends AppCompatActivity {
     private RadioButton radioNeverButton;
     private ArrayList<String> imgUrlList;
     public static final int REQUEST_CODE = 0;
+    public static final int INITIAL_POST_POINT = 200;
     private int checkSum = 0;
     private Bundle bundle;
     private CustomProgressDialog progressDialog;
@@ -92,13 +95,11 @@ public class CreatePostActivity extends AppCompatActivity {
                 // Firestore 에 이미지 url 정보들과 입력한 데이터를 함께 Post 데이터 저장 요청
                 int id = radioGroup.getCheckedRadioButtonId();
                 int state = 0;
-                if(radioAlwaysButton.getId() == id){
+                if (radioAlwaysButton.getId() == id) {
                     state = 0;
-                }
-                else if(radioOptionalButton.getId() == id){
+                } else if (radioOptionalButton.getId() == id) {
                     state = 1;
-                }
-                else if(radioNeverButton.getId() == id){
+                } else if (radioNeverButton.getId() == id) {
                     state = 2;
                 }
 
@@ -106,29 +107,29 @@ public class CreatePostActivity extends AppCompatActivity {
                 Firestore.createNewPost(
                         new PostData(User.currentUser
                                 , inputTitle.getText().toString()
-                                , imgUrlList, inputBody.getText().toString()
+                                , imgUrlList
+                                , inputBody.getText().toString()
                                 , Integer.parseInt(inputSubtractPoint.getText().toString())
                                 , state
                                 , imgUrlList)).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
                     @Override
                     public void onComplete(@NonNull Task<DocumentReference> task) {
                         if (task.isSuccessful()) {
-                            Log.d("create post", "success, id:"+task.getResult().getId());
+                            Log.d("create post", "success, id:" + task.getResult().getId());
 
                             // 생성한 게시글 데이터의 post id 필드 값 채우기
                             Firestore.insertPostId(task.getResult().getId()).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
-                                    if(task.isSuccessful()){
-                                        Log.d("pid update","success");
-                                        progressDialog.dismissDialog();
-                                        finish();
-                                    }
-                                    else{
+                                    if (task.isSuccessful()) {
+                                        Log.d("pid update", "success");
+
+                                    } else {
 
                                     }
                                 }
                             });
+                            updateUserPostCountToday();
                         }
                     }
                 }).addOnFailureListener(new OnFailureListener() {
@@ -165,9 +166,9 @@ public class CreatePostActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 progressDialog.showLoadingDialog();
-                new Thread(){
+                new Thread() {
                     @Override
-                    public void run(){
+                    public void run() {
                         uploadImagesToStorage();
                     }
 
@@ -178,6 +179,7 @@ public class CreatePostActivity extends AppCompatActivity {
 
     /**
      * CreatePostActivity 에 있는 모든 View 초기화 및 바인딩 하는 작업
+     *
      * @author Seunggun Sin, 2022-05-06
      */
     private void bindingView() {
@@ -297,30 +299,29 @@ public class CreatePostActivity extends AppCompatActivity {
             FireStorage.uploadPostImage(getBitmapFromViewImage(imageContainer.getChildAt(i))
                     , User.currentUser.getUid())
                     .addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                    if (task.isSuccessful()) {
-                        task.getResult().getStorage().getDownloadUrl()
-                                .addOnCompleteListener(new OnCompleteListener<Uri>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Uri> task) {
-                                if (task.isSuccessful()) {
-                                    // Storage 에 저장한 경로 주소 값을 받아와서 List 에 저장
-                                    imgUrlList.add(task.getResult().toString());
+                        @Override
+                        public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                            if (task.isSuccessful()) {
+                                task.getResult().getStorage().getDownloadUrl()
+                                        .addOnCompleteListener(new OnCompleteListener<Uri>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Uri> task) {
+                                                if (task.isSuccessful()) {
+                                                    // Storage 에 저장한 경로 주소 값을 받아와서 List 에 저장
+                                                    imgUrlList.add(task.getResult().toString());
 
-                                    bundle.putInt("finish_count", 1);
-                                    Message msg = handler.obtainMessage();
-                                    msg.setData(bundle);
-                                    handler.sendMessage(msg); // 메세지 전달
-                                }
-                                else{
-                                    Log.e("get image download url", "Failure");
-                                }
+                                                    bundle.putInt("finish_count", 1);
+                                                    Message msg = handler.obtainMessage();
+                                                    msg.setData(bundle);
+                                                    handler.sendMessage(msg); // 메세지 전달
+                                                } else {
+                                                    Log.e("get image download url", "Failure");
+                                                }
+                                            }
+                                        });
                             }
-                        });
-                    }
-                }
-            });
+                        }
+                    });
         }
     }
 
@@ -334,5 +335,67 @@ public class CreatePostActivity extends AppCompatActivity {
     private Bitmap getBitmapFromViewImage(View image) {
         return ((BitmapDrawable) ((ImageView) image).getDrawable()).getBitmap();
     }
+
+    public void updateUserPostCountToday() {
+        Firestore.getUserAllPostData(User.currentUser.getUid())
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            int count = -1;
+                            Calendar getToday = Calendar.getInstance();
+                            getToday.setTime(new Date());
+
+                            for (QueryDocumentSnapshot documentSnapshots : task.getResult()) {
+                                PostData curPost = documentSnapshots.toObject(PostData.class);
+                                Calendar cmpDate = Calendar.getInstance();
+                                cmpDate.setTime(curPost.getWriteDate());
+                                long diffSec = (getToday.getTimeInMillis() - cmpDate.getTimeInMillis()) / 1000;
+                                long diffDay = diffSec / (24 * 60 * 60);
+                                Log.d("compare date", diffDay + "");
+                                if (diffDay == 0) {
+                                    count++;
+                                }
+                            }
+
+                            Toast.makeText(CreatePostActivity.this, "today count " + count, Toast.LENGTH_SHORT).show();
+                            int nextPoint = LevelSystem.obtainNextPointForPost(count, INITIAL_POST_POINT);
+                            Firestore.updateUserPoint(User.currentUser.getUid(), nextPoint)
+                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (task.isSuccessful()) {
+                                                if (User.currentUser.getExp() + nextPoint > LevelSystem.expCumulativeList[User.currentUser.getLevel() + 1]) {
+                                                    Firestore.updateUserLevel(User.currentUser.getUid())
+                                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                @Override
+                                                                public void onComplete(@NonNull Task<Void> task) {
+                                                                    if (task.isSuccessful()) {
+                                                                        User.currentUser.setLevel(User.currentUser.getLevel() + 1);
+                                                                        User.currentUser.setExp(User.currentUser.getExp() + nextPoint);
+                                                                        progressDialog.dismissDialog();
+                                                                        finish();
+                                                                    }
+                                                                }
+                                                            });
+                                                } else {
+                                                    progressDialog.dismissDialog();
+                                                    finish();
+                                                }
+                                                /*
+                                                    게시글 업로드 끝나는 시점
+                                                 */
+                                            } else {
+
+                                            }
+                                        }
+                                    });
+                        } else {
+
+                        }
+                    }
+                });
+    }
+
 }
 

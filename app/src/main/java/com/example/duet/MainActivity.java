@@ -15,6 +15,7 @@ import android.widget.Button;
 import com.example.duet.board.CreatePostActivity;
 import com.example.duet.model.User;
 import com.example.duet.util.Firestore;
+import com.example.duet.util.LevelSystem;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -28,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        LevelSystem.initExp();
         findViewById(R.id.btn_sign_in).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

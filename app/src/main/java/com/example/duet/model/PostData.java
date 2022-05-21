@@ -14,6 +14,7 @@ public class PostData implements Serializable {
     private int likeCount;
     private int allocPoint;
     private int stateAllowReply;
+    private int limitGroupCount;
     private ArrayList<String> postImageUrls;
 
     public PostData() {
@@ -30,6 +31,7 @@ public class PostData implements Serializable {
         this.stateAllowReply = stateAllowReply;
         this.postImageUrls = postImageUrls;
         this.writeDate = new Date();
+        this.limitGroupCount = -1;
     }
 
     public ArrayList<String> getPostImageUrls() {
@@ -110,6 +112,14 @@ public class PostData implements Serializable {
 
     public void setStateAllowReply(int stateAllowReply) {
         this.stateAllowReply = stateAllowReply;
+    }
+
+    public int getLimitGroupCount() {
+        return limitGroupCount;
+    }
+
+    public void setLimitGroupCount(int limitGroupCount) {
+        this.limitGroupCount = limitGroupCount;
     }
 
     @Override
