@@ -24,7 +24,7 @@ public class PostData implements Serializable {
     public PostData(User writer, String title, ArrayList<String> category, String body, int allocPoint, int stateAllowReply, ArrayList<String> postImageUrls) {
         this.writer = writer;
         this.title = title;
-        this.category = null; // 임시 처리, 카테고리 데이터 만들면 변경하기
+        this.category = category; // 임시 처리, 카테고리 데이터 만들면 변경하기
         this.body = body;
         this.likeCount = 0;
         this.allocPoint = allocPoint;
