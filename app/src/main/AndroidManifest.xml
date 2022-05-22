@@ -23,6 +23,9 @@
             android:name=".board.CreatePostActivity"
             android:exported="false" />
         <activity
+            android:name=".board.TestUpdateProfile"
+            android:exported="false"/>
+        <activity
             android:name=".activity.testbed.PostActivity"
             android:exported="false" />
         <activity

@@ -13,6 +13,7 @@ import android.graphics.Matrix;
 import androidx.exifinterface.media.ExifInterface;
 
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.PaintDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -20,11 +21,17 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
+import android.util.SparseBooleanArray;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
@@ -32,6 +39,7 @@ import android.widget.Toast;
 import com.example.duet.R;
 import com.example.duet.model.PostData;
 import com.example.duet.model.User;
+import com.example.duet.util.CategoryList;
 import com.example.duet.util.CustomProgressDialog;
 import com.example.duet.util.FireStorage;
 import com.example.duet.util.Firestore;
@@ -80,6 +88,8 @@ public class CreatePostActivity extends AppCompatActivity {
     private Bundle bundle;
     private CustomProgressDialog progressDialog;
     private RadioGroup radioGroup;
+    private ListView categoryListView;
+    private ArrayList<String> selectedCategoryList;
     private Handler handler = new Handler(Looper.myLooper()) {
         /**
          * 이미지를 갤러리에서 추가한 개수만큼 Storage 에 저장할 때 message sign 을 받는 곳
@@ -103,11 +113,18 @@ public class CreatePostActivity extends AppCompatActivity {
                     state = 2;
                 }
 
+                SparseBooleanArray checkItems = categoryListView.getCheckedItemPositions();
+
+                for(int i=0; i<CategoryList.items.length; ++i){
+                    if(checkItems.get(i)) {
+                        selectedCategoryList.add(CategoryList.items[i]);
+                    }
+                }
                 // 새로운 게시글 데이터 생성 요청
                 Firestore.createNewPost(
                         new PostData(User.currentUser
                                 , inputTitle.getText().toString()
-                                , imgUrlList
+                                , selectedCategoryList
                                 , inputBody.getText().toString()
                                 , Integer.parseInt(inputSubtractPoint.getText().toString())
                                 , state
@@ -148,8 +165,18 @@ public class CreatePostActivity extends AppCompatActivity {
         setContentView(R.layout.activity_create_post);
         bindingView();
         imgUrlList = new ArrayList<>();
+        selectedCategoryList = new ArrayList<>();
         bundle = new Bundle();
         progressDialog = new CustomProgressDialog(CreatePostActivity.this);
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_multiple_choice,CategoryList.items);
+        categoryListView.setAdapter(arrayAdapter);
+        setListViewHeightBasedOnChildren(categoryListView);
+
+        categoryListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            }
+        });
 
         addImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -193,6 +220,7 @@ public class CreatePostActivity extends AppCompatActivity {
         radioAlwaysButton = findViewById(R.id.radio_always);
         radioOptionalButton = findViewById(R.id.radio_optional);
         radioNeverButton = findViewById(R.id.radio_never);
+        categoryListView = findViewById(R.id.category_list);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -395,6 +423,27 @@ public class CreatePostActivity extends AppCompatActivity {
                         }
                     }
                 });
+    }
+    public static void setListViewHeightBasedOnChildren(ListView listView) {
+        ListAdapter listAdapter = listView.getAdapter();
+        if (listAdapter == null) {
+            // pre-condition
+            return;
+        }
+
+        int totalHeight = 0;
+        int desiredWidth = View.MeasureSpec.makeMeasureSpec(listView.getWidth(), View.MeasureSpec.AT_MOST);
+
+        for (int i = 0; i < listAdapter.getCount(); i++) {
+            View listItem = listAdapter.getView(i, null, listView);
+            listItem.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
+            totalHeight += listItem.getMeasuredHeight();
+        }
+
+        ViewGroup.LayoutParams params = listView.getLayoutParams();
+        params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+        listView.setLayoutParams(params);
+        listView.requestLayout();
     }
 
 }
