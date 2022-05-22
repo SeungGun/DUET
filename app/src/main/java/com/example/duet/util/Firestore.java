@@ -45,11 +45,12 @@ public class Firestore {
      * @param nickname   유저 닉네임
      * @param userName   유저 이름
      * @param profileUrl 유저 프로필 이미지 Url
+     * @param token      유저 FCM 토큰
      * @return Task<Void>
      */
-    public static Task<Void> createNewUser(String uid, String email, String nickname, String userName, String profileUrl) {
+    public static Task<Void> createNewUser(String uid, String email, String nickname, String userName, String profileUrl, String token) {
         return getFirestoreInstance().collection("user").document(uid).set(
-                new User(uid, email, nickname, userName, profileUrl));
+                new User(uid, email, nickname, userName, profileUrl, token));
     }
 
     /**
@@ -86,11 +87,11 @@ public class Firestore {
 
     /**
      * Firestore 에 저장되어 있는 모든 게시글 데이터를 가져오는 요청
-     *
+     * ※ 날짜별로 데이터 정렬(내림차순)
      * @return Task<QuerySnapshot> 게시글 데이터 집합
      */
     public static Task<QuerySnapshot> getAllPostData() {
-        return getFirestoreInstance().collection("post").get();
+        return getFirestoreInstance().collection("post").orderBy("writeDate", Query.Direction.DESCENDING).get();
     }
 
     /**
@@ -200,20 +201,26 @@ public class Firestore {
         return getFirestoreInstance().collection("user").document(uid).update("reliability", FieldValue.increment(updateReliability));
     }
 
-    public static Task<Void> updateGroupLimitCount(String pid, int count){
+    public static Task<Void> updateGroupLimitCount(String pid, int count) {
         return getFirestoreInstance().collection("post").document(pid).update("limitGroupCount", count);
     }
+
     public static Task<Void> updateUserInfoForReply(String rid, User user) {
         return getFirestoreInstance().collection("user").document(user.getUid()).set(user);
+    }
+
+    public static Task<Void> updateUserToken(String uid, String token) {
+        return getFirestoreInstance().collection("user").document(uid).update("token", token);
     }
 
     public static Task<Void> updateUserPoint(String uid, int point) {
         return getFirestoreInstance().collection("user").document(uid).update("exp", FieldValue.increment(point));
     }
 
-    public static Task<Void> updateUserLevel(String uid){
+    public static Task<Void> updateUserLevel(String uid) {
         return getFirestoreInstance().collection("user").document(uid).update("level", FieldValue.increment(1));
     }
+
     public static Task<Void> updateUserExpForPosting(String uid) {
         return getFirestoreInstance().collection("user").document(uid).update("exp", FieldValue.increment(200));
     }
