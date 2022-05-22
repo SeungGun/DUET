@@ -12,7 +12,7 @@ import android.view.View;
 import com.example.duet.ui.main.SectionsPagerAdapter;
 import com.example.duet.databinding.ActivityMyPostBinding;
 
-public class MyPostActivity extends AppCompatActivity {
+public class ProfileMyPostActivity extends AppCompatActivity {
 
 private ActivityMyPostBinding binding;
 
