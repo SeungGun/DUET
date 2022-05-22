@@ -21,12 +21,16 @@ public class SignInActivity extends AppCompatActivity {
     private EditText inputPassword;
     private Button loginButton;
     private FirebaseAuth firebaseAuth;
-
+    private String token;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
         bindingView();
+        Intent intent = getIntent();
+        if(intent != null){
+            token = intent.getStringExtra("token");
+        }
         firebaseAuth = FirebaseAuth.getInstance();
 
         loginButton.setOnClickListener(new View.OnClickListener() {
@@ -67,6 +71,7 @@ public class SignInActivity extends AppCompatActivity {
                      */
                             Intent intent = new Intent(getApplicationContext(), MainMenuActivity.class);
                             intent.putExtra("uid", uid);
+                            intent.putExtra("token", token);
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             startActivity(intent);
                         } else {
