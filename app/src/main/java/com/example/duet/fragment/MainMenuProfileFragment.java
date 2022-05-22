@@ -66,6 +66,7 @@ public class MainMenuProfileFragment extends Fragment {
     private ArrayList<PostData> userPostList;
     private ProgressBar levelProgress;
     private TextView levelText;
+    private TextView nicknameText;
     private Handler handler = new Handler(Looper.myLooper()) {
         @Override
         public void handleMessage(@NonNull Message msg) {
@@ -105,6 +106,8 @@ public class MainMenuProfileFragment extends Fragment {
         profileImage.setAdjustViewBounds(true); // 깔끔한 공간과 비율을 위해 필요
         levelProgress = rootView.findViewById(R.id.level_progress);
         levelText = rootView.findViewById(R.id.profile_level);
+        nicknameText = rootView.findViewById(R.id.profile_nickname);
+        nicknameText.setText(User.currentUser.getNickname());
         setLevelProgress();
         /*
          현재 사용자의 모든 게시글 데이터를 가져오는 요청 {userPostList 이름의 ArrayList 에 PostData 저장}
