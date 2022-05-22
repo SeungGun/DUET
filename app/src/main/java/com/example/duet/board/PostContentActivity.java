@@ -41,6 +41,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 public class PostContentActivity extends AppCompatActivity {
@@ -331,7 +332,8 @@ public class PostContentActivity extends AppCompatActivity {
                 .into(userProfileImage);
         writerNicknameTextView.setText(data.getWriter().getNickname());
         titleTextView.setText(data.getTitle());
-        dateTextView.setText(data.getWriteDate().toString());
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd a HH:mm:ss");
+        dateTextView.setText(simpleDateFormat.format(data.getWriteDate()));
         bodyTextView.setText(data.getBody());
 
         for (int i = 0; i < data.getPostImageUrls().size(); ++i) {
