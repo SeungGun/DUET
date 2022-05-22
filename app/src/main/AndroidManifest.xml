@@ -14,7 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.DUET" >
         <activity
-            android:name=".activity.testbed.MessageListActivity"
+            android:name=".MessageListActivity"
             android:exported="false" />
         <activity
             android:name=".ChattingRoomActivity"
@@ -33,14 +33,12 @@
             android:exported="false" />
         <activity
             android:name=".activity.testbed.CardActivity"
-            android:exported="true" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+            android:exported="false" >
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
 
         </activity>
+
+
         <activity
             android:name=".SignInActivity"
             android:exported="false" />
@@ -52,7 +50,13 @@
             android:exported="false" />
         <activity
             android:name=".MainActivity"
-            android:exported="false" >
+            android:exported="true" >
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
 
         </activity>
 
