@@ -1,41 +1,52 @@
 package com.example.duet;
 
 import android.os.Bundle;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
-import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import com.example.duet.ui.main.SectionsPagerAdapter;
-import com.example.duet.databinding.ActivityMyPostBinding;
+import androidx.viewpager.widget.ViewPager;
 
 public class ProfileMyPostActivity extends AppCompatActivity {
-
-private ActivityMyPostBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
 
-     binding = ActivityMyPostBinding.inflate(getLayoutInflater());
-     setContentView(binding.getRoot());
+        androidx.appcompat.widget.Toolbar toolbar =
+                findViewById(R.id.toolbar);
 
-        SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
-        ViewPager viewPager = binding.viewPager;
-        viewPager.setAdapter(sectionsPagerAdapter);
-        TabLayout tabs = binding.tabs;
-        tabs.setupWithViewPager(viewPager);
-        FloatingActionButton fab = binding.fab;
+        setSupportActionBar(toolbar);
 
-        fab.setOnClickListener(new View.OnClickListener() {
+        TabLayout tabLayout = findViewById(R.id.tab_layout);
+
+        tabLayout.addTab(tabLayout.newTab().setText("Fragment1"));
+        tabLayout.addTab(tabLayout.newTab().setText("Fragment2"));
+
+        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+
+        final ViewPager viewPager = findViewById(R.id.pager);
+        final PagerAdapter adapter = new PagerAdapter
+                (getSupportFragmentManager(), tabLayout.getTabCount());
+
+        viewPager.setAdapter(adapter);
+
+        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener(){
             @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+            public void onTabSelected(TabLayout.Tab tab){
+                viewPager.setCurrentItem(tab.getPosition());
             }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab){
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab){
+            }
+
         });
+
     }
 }
