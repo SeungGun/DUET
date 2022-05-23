@@ -176,6 +176,9 @@ public class PostContentActivity extends AppCompatActivity {
 
                                                         //TODO content, title null checking
                                                         //TODO Button invisible to Bulletin board owner
+                                                        //TODO Clean up with data model object
+
+                                                        //create group 할 경우 본인의 FCM 토큰, uid, username을 database의 채팅 메타데이터에 저장함
 
                                                         String sendTitle = data.getTitle();
                                                         String userId = User.currentUser.getUid();
