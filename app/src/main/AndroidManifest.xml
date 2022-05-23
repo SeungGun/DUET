@@ -14,7 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.DUET">
         <activity
-            android:name=".ProfileMyPost"
+            android:name=".myPost.ProfileMyPost"
             android:exported="false" />
         <activity
             android:name=".activity.testbed.MessageListActivity"

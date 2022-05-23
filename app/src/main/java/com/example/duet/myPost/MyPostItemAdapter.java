@@ -1,4 +1,4 @@
-package com.example.duet;
+package com.example.duet.myPost;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.example.duet.util.MyPostItem;
+import com.example.duet.R;
 
 import java.util.ArrayList;
 
@@ -40,8 +40,8 @@ public class MyPostItemAdapter extends BaseAdapter {
         }
 
         // 화면에 표시될 View(Layout이 inflate된)으로부터 위젯에 대한 참조 획득
-        TextView titleTextView = (TextView) convertView.findViewById(R.id.textView1) ;
-        TextView descTextView = (TextView) convertView.findViewById(R.id.textView2) ;
+        TextView titleTextView = (TextView) convertView.findViewById(R.id.title1) ;
+        TextView descTextView = (TextView) convertView.findViewById(R.id.context1) ;
 
         // Data Set(listViewItemList)에서 position에 위치한 데이터 참조 획득
         MyPostItem myPostItem = myPostItemList.get(position);

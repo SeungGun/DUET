@@ -1,4 +1,4 @@
-package com.example.duet.util;
+package com.example.duet.myPost;
 
 public class MyPostItem {
     private String titleStr ;
@@ -11,9 +11,8 @@ public class MyPostItem {
         descStr = desc ;
     }
 
-    public String getTitle() {
-        return this.titleStr ;
-    }
+    public String getTitle() { return titleStr; }
+
     public String getDesc() {
         return this.descStr ;
     }

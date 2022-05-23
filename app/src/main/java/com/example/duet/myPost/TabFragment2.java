@@ -1,26 +1,22 @@
-package com.example.duet;
+package com.example.duet.myPost;
 
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ListView;
 
-import com.example.duet.fragment.ChatRoomItem;
-import com.example.duet.fragment.ChatRoomItemAdapter;
+import com.example.duet.R;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link TabFragment1#newInstance} factory method to
+ * Use the {@link TabFragment2#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class TabFragment1 extends Fragment {
+public class TabFragment2 extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -31,7 +27,7 @@ public class TabFragment1 extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public TabFragment1() {
+    public TabFragment2() {
         // Required empty public constructor
     }
 
@@ -67,7 +63,7 @@ public class TabFragment1 extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
-        ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_tab1, container, false);
+        ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_tab2, container, false);
 
         ListView listview ;
         MyPostItemAdapter adapter;
@@ -76,15 +72,15 @@ public class TabFragment1 extends Fragment {
         adapter = new MyPostItemAdapter() ;
 
         // 리스트뷰 참조 및 Adapter달기
-        listview = (ListView) rootView.findViewById(R.id.my_post_list_1);
+        listview = (ListView) rootView.findViewById(R.id.my_post_list_2);
         listview.setAdapter(adapter);
 
         // 첫 번째 아이템 추가.
-        adapter.addItem("Box", "Account Box Black 36dp") ;
+        adapter.addItem("Title 1", "Context 1 Context 1 Context 1 Context 1 ") ;
         // 두 번째 아이템 추가.
-        adapter.addItem("Box", "Account Box Black 36dp") ;
+        adapter.addItem("Title 2", "Context 2 Context 2 Context 2 Context 2 ") ;
         // 세 번째 아이템 추가.
-        adapter.addItem("Box", "Account Box Black 36dp") ;
+        adapter.addItem("Title 3", "Context 3 Context 3 Context 3 Context 3 ") ;
 
         return rootView;
     }

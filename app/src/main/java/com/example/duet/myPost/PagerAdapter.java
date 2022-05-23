@@ -1,4 +1,4 @@
-package com.example.duet;
+package com.example.duet.myPost;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
