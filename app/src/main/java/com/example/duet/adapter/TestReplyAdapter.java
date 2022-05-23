@@ -19,6 +19,7 @@ import com.example.duet.util.Firestore;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import androidx.annotation.NonNull;
@@ -59,9 +60,10 @@ public class TestReplyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             } else {
                 ((NormalViewHolder) holder).writerNickname.setTextColor(Color.parseColor("#000000"));
             }
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd a HH:mm:ss");
             ((NormalViewHolder) holder).writerNickname.setText(replyDataArrayList.get(position).getWriter().getNickname());
             ((NormalViewHolder) holder).body.setText((replyDataArrayList.get(position).getBody()));
-            ((NormalViewHolder) holder).writeDate.setText(replyDataArrayList.get(position).getReplyDate().toString());
+            ((NormalViewHolder) holder).writeDate.setText(simpleDateFormat.format(replyDataArrayList.get(position).getReplyDate()));
             Glide.with(context)
                     .load(replyDataArrayList.get(position).getWriter().getProfileUrl())
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -69,9 +71,21 @@ public class TestReplyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     .into(((NormalViewHolder) holder).profileImage);
         } else if (holder instanceof WaitingViewHolder) {
             ((WaitingViewHolder) holder).writerNickname.setText(replyDataArrayList.get(position).getWriter().getNickname());
-            ((WaitingViewHolder) holder).writeDate.setText(replyDataArrayList.get(position).getReplyDate().toString());
-            ((WaitingViewHolder) holder).reliability.setText(replyDataArrayList.get(position).getWriter().getReliability() + "");
-            ((WaitingViewHolder) holder).level.setText(replyDataArrayList.get(position).getWriter().getLevel() + "");
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd a HH:mm:ss");
+            ((WaitingViewHolder) holder).writeDate.setText(simpleDateFormat.format(replyDataArrayList.get(position).getReplyDate()));
+
+            ((WaitingViewHolder) holder).reliability.setText("[신뢰도: "+replyDataArrayList.get(position).getWriter().getReliability()+"]");
+
+            if(replyDataArrayList.get(position).getWriter().getReliability() < 0){
+                ((WaitingViewHolder) holder).reliability.setTextColor(Color.parseColor("#FF0000"));
+            }
+            else if(replyDataArrayList.get(position).getWriter().getReliability() > 0){
+                ((WaitingViewHolder) holder).reliability.setTextColor(Color.parseColor("#00FF00"));
+            }
+            else{
+                ((WaitingViewHolder) holder).reliability.setTextColor(Color.parseColor("#888888"));
+            }
+            ((WaitingViewHolder) holder).level.setText("Lv "+replyDataArrayList.get(position).getWriter().getLevel());
             ((WaitingViewHolder) holder).allowButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
