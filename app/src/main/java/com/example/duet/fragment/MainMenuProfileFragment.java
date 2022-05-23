@@ -23,6 +23,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -31,6 +32,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.example.duet.ProfileMyPost;
 import com.example.duet.R;
 import com.example.duet.board.TestUpdateProfile;
 import com.example.duet.model.PostData;
@@ -205,6 +207,13 @@ public class MainMenuProfileFragment extends Fragment {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, activities);
         listView.setAdapter(adapter);
 
+        Button btn_my_post = rootView.findViewById(R.id.btn_myPost);
+        btn_my_post.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getContext(), ProfileMyPost.class));
+            }
+        });
 
         return rootView;
     }
