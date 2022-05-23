@@ -69,6 +69,23 @@ public class TabFragment1 extends Fragment {
 
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_tab1, container, false);
 
+        ListView listview ;
+        MyPostItemAdapter adapter;
+
+        // Adapter 생성
+        adapter = new MyPostItemAdapter() ;
+
+        // 리스트뷰 참조 및 Adapter달기
+        listview = (ListView) rootView.findViewById(R.id.my_post_list_1);
+        listview.setAdapter(adapter);
+
+        // 첫 번째 아이템 추가.
+        adapter.addItem("Box", "Account Box Black 36dp") ;
+        // 두 번째 아이템 추가.
+        adapter.addItem("Box", "Account Box Black 36dp") ;
+        // 세 번째 아이템 추가.
+        adapter.addItem("Box", "Account Box Black 36dp") ;
+
         return rootView;
     }
 }
