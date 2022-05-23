@@ -20,12 +20,13 @@ public class User implements Serializable {
     private int reliability;
     public static User currentUser;
     private String profileUrl;
+    private String token;
 
     public User() {
         // 데이터에서 클래스로 deserialize 할 때 default constructor 필요
     }
 
-    public User(String uid, String email, String nickname, String registerDate, String userName, int level, int exp, int reliability, String profileUrl) {
+    public User(String uid, String email, String nickname, String registerDate, String userName, int level, int exp, int reliability, String profileUrl, String token) {
         this.uid = uid;
         this.email = email;
         this.nickname = nickname;
@@ -35,6 +36,7 @@ public class User implements Serializable {
         this.exp = exp;
         this.reliability = reliability;
         this.profileUrl = profileUrl;
+        this.token = token;
     }
 
     /**
@@ -46,7 +48,7 @@ public class User implements Serializable {
      * @param userName
      * @param profileUrl
      */
-    public User(String uid, String email, String nickname, String userName, String profileUrl) {
+    public User(String uid, String email, String nickname, String userName, String profileUrl, String token) {
         this.uid = uid;
         this.email = email;
         this.nickname = nickname;
@@ -54,8 +56,9 @@ public class User implements Serializable {
         this.profileUrl = profileUrl;
         this.registerDate = new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime()); // 회원가입 날짜
         this.level = 1; // 유저 레벨 = 1
-        this.exp = 1000; // 유저 경험치 = 1000
+        this.exp = 0; // 유저 경험치 = 1000
         this.reliability = 0; // 유저 신뢰도 0
+        this.token = token;
     }
 
     public String getUid() {
@@ -128,6 +131,14 @@ public class User implements Serializable {
 
     public void setProfileUrl(String profileUrl) {
         this.profileUrl = profileUrl;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 
     @Override

@@ -35,12 +35,17 @@ public class SignUpActivity extends AppCompatActivity {
 
     private Button joinButton;
     private FirebaseAuth firebaseAuth;
+    private String token;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
         bindingView();
+        Intent intent = getIntent();
+        if(intent != null){
+            token = intent.getStringExtra("token");
+        }
         firebaseAuth = FirebaseAuth.getInstance();
         joinButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -101,7 +106,8 @@ public class SignUpActivity extends AppCompatActivity {
                                                                             , inputEmail.getText().toString()
                                                                             , inputNickname.getText().toString()
                                                                             , inputUserName.getText().toString()
-                                                                            , task.getResult().toString())
+                                                                            , task.getResult().toString()
+                                                                            , token)
                                                                             .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                                                 @Override
                                                                                 public void onComplete(@NonNull Task<Void> task) {

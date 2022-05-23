@@ -15,11 +15,15 @@ import android.widget.Button;
 import com.example.duet.board.CreatePostActivity;
 import com.example.duet.model.User;
 import com.example.duet.util.Firestore;
+import com.example.duet.util.LevelSystem;
 import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -28,21 +32,36 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        LevelSystem.initExp();
+        FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(new OnCompleteListener<String>() {
+                    @Override
+                    public void onComplete(@NonNull Task<String> task) {
+                        if(task.isSuccessful()){
+                            String token = task.getResult();
+                            findViewById(R.id.btn_sign_in).setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    Intent intent = new Intent(getApplicationContext(), SignInActivity.class);
+                                    intent.putExtra("token", token);
+                                    startActivity(intent);
+                                }
+                            });
+                            findViewById(R.id.btn_sign_up).setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    Intent intent = new Intent(getApplicationContext(), SignUpActivity.class);
+                                    intent.putExtra("token", token);
+                                    startActivity(intent);
+                                }
+                            });
+                        }
+                        else{
+                            Log.w("token error", "Fetching FCM registration token failed", task.getException());
+                        }
+                    }
+                });
 
-        findViewById(R.id.btn_sign_in).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), SignInActivity.class);
-                startActivity(intent);
-            }
-        });
-        findViewById(R.id.btn_sign_up).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), SignUpActivity.class);
-                startActivity(intent);
-            }
-        });
 
     }
 

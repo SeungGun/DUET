@@ -12,6 +12,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.duet.R;
 import com.example.duet.model.PostData;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import androidx.annotation.NonNull;
@@ -26,7 +27,6 @@ public class TestPostDataAdapter extends RecyclerView.Adapter<TestPostDataAdapte
         public ImageView mainImage;
         public TextView nickname;
         public TextView title;
-        public TextView body;
         public TextView date;
 
         public ViewHolder(View itemView){
@@ -35,7 +35,6 @@ public class TestPostDataAdapter extends RecyclerView.Adapter<TestPostDataAdapte
             mainImage = itemView.findViewById(R.id.bulletin_main_image);
             nickname = itemView.findViewById(R.id.bulletin_profile_nickname);
             title = itemView.findViewById(R.id.bulletin_main_title);
-            body = itemView.findViewById(R.id.bulletin_main_body);
             date = itemView.findViewById(R.id.bulletin_post_date);
         }
 
@@ -85,8 +84,8 @@ public class TestPostDataAdapter extends RecyclerView.Adapter<TestPostDataAdapte
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(holder.userProfileImage);
         holder.title.setText(postDataArrayList.get(position).getTitle());
-        holder.body.setText(postDataArrayList.get(position).getBody());
-        holder.date.setText(postDataArrayList.get(position).getWriteDate().toString());
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd a HH:mm:ss");
+        holder.date.setText(simpleDateFormat.format(postDataArrayList.get(position).getWriteDate()));
         holder.nickname.setText(postDataArrayList.get(position).getWriter().getNickname());
     }
 

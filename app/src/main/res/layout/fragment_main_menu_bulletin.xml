@@ -13,11 +13,18 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
         <ToggleButton
-            android:id="@+id/toggleButton"
+            android:id="@+id/toggleButton1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:textOn="자기계발"
+            android:textOff="자기계발"/>
+        <ToggleButton
+            android:id="@+id/toggleButton2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textOn="질문"
             android:textOff="질문"/>
 
         <Spinner
@@ -35,7 +42,7 @@
 
         <EditText
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:layout_weight="1"
             android:hint="search" />
 
