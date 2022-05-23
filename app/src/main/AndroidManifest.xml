@@ -17,7 +17,7 @@
             android:name=".myPost.ProfileMyPost"
             android:exported="false" />
         <activity
-            android:name=".activity.testbed.MessageListActivity"
+            android:name=".MessageListActivity"
             android:exported="false" />
         <activity
             android:name=".ChattingRoomActivity"

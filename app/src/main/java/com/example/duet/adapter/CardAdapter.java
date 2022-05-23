@@ -1,4 +1,4 @@
-package com.example.duet.cardview;
+package com.example.duet.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -7,7 +7,6 @@ import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -18,14 +17,12 @@ import androidx.annotation.RequiresApi;
 
 import com.example.duet.ChattingRoomActivity;
 import com.example.duet.R;
+import com.example.duet.model.CardData;
 import com.example.duet.util.RealTimeDatabase;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @auther Me

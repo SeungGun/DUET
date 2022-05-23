@@ -13,15 +13,11 @@ import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ListView;
 
-import com.example.duet.cardview.BulletData;
-import com.example.duet.cardview.MessageAdapter;
-import com.example.duet.cardview.MessageData;
-import com.example.duet.util.CustomProgressDialog;
+import com.example.duet.adapter.MessageAdapter;
+import com.example.duet.model.MessageData;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -30,7 +26,6 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 

@@ -1,4 +1,4 @@
-package com.example.duet.activity.testbed;
+package com.example.duet;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -8,11 +8,8 @@ import android.util.Log;
 import android.widget.ListView;
 
 import com.example.duet.R;
-import com.example.duet.cardview.BulletData;
-import com.example.duet.cardview.CardAdapter;
-import com.example.duet.cardview.CardData;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import com.example.duet.adapter.CardAdapter;
+import com.example.duet.model.CardData;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -22,7 +19,6 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class MessageListActivity extends AppCompatActivity {

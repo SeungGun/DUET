@@ -1,18 +1,30 @@
 package com.example.duet.fragment;
 
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
-import androidx.core.content.ContextCompat;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.example.duet.R;
+import com.example.duet.adapter.CardAdapter;
+import com.example.duet.model.CardData;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -29,6 +41,12 @@ public class MainMenuStudyRoomFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    DatabaseReference mRef = FirebaseDatabase.getInstance().getReference();
+    ChildEventListener mChildEventListener;
+    CardAdapter mAdapter;
+    ArrayList<CardData> cardDataArrayList;
+    FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
     public MainMenuStudyRoomFragment() {
         // Required empty public constructor
@@ -66,39 +84,80 @@ public class MainMenuStudyRoomFragment extends Fragment {
                              Bundle savedInstanceState) {
         ViewGroup rootView = (ViewGroup)inflater.inflate(R.layout.fragment_main_menu_study_room, container, false);
 
-        ListView listview ;
-        ChatRoomItemAdapter adapter;
+        ListView listView = (ListView) rootView.findViewById(R.id.listView);
 
-        // Adapter 생성
-        adapter = new ChatRoomItemAdapter() ;
+        cardDataArrayList = new ArrayList<>();
+        mAdapter = new CardAdapter(rootView.getContext(), cardDataArrayList);
+        listView.setAdapter(mAdapter);
 
-        // 리스트뷰 참조 및 Adapter달기
-        listview = (ListView) rootView.findViewById(R.id.chatroom_list);
-        listview.setAdapter(adapter);
-
-        // 첫 번째 아이템 추가.
-        adapter.addItem(ContextCompat.getDrawable(getActivity(), R.mipmap.ic_account_circle),
-                "김원", "최근 대화 내용 어쩌고~") ;
-        // 두 번째 아이템 추가.
-        adapter.addItem(ContextCompat.getDrawable(getActivity(), R.mipmap.ic_account_circle),
-                "정윤현", "최근 대화 내용 어쩌고~") ;
-        // 세 번째 아이템 추가.
-        adapter.addItem(ContextCompat.getDrawable(getActivity(), R.mipmap.ic_account_circle),
-                "정옥란", "최근 대화 내용 어쩌고~") ;
-
-        // 위에서 생성한 listview에 클릭 이벤트 핸들러 정의.
-        listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView parent, View v, int position, long id) {
-                // get item
-                ChatRoomItem item = (ChatRoomItem) parent.getItemAtPosition(position) ;
-
-                String titleStr = item.getTitle() ;
-                String descStr = item.getDesc() ;
-                Drawable iconDrawable = item.getIcon() ;
-            }
-        }) ;
 
         return rootView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        recvChatRoom();
+
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        cardDataArrayList.clear();
+        mChildEventListener = null;
+    }
+
+    private void recvChatRoom() {
+        if (mChildEventListener == null) {
+            mChildEventListener = new ChildEventListener() {
+                @Override
+                public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+                    Map<String, Boolean> member = new HashMap<String, Boolean>();
+                    Boolean AmIIn = false;
+
+                    for (DataSnapshot ds: snapshot.getChildren()) {
+
+
+                        if (ds.getKey().equals("members")) {
+                            for (DataSnapshot dsMember: ds.getChildren()) {
+                                if(dsMember.getKey().equals(mAuth.getUid())) {
+                                    AmIIn = true;
+                                }
+                                member.put(dsMember.getKey(), dsMember.getValue(Boolean.class));
+                            }
+
+                            Log.d("user", member.toString());
+                        }
+                    }
+
+                    if (AmIIn) {
+                        CardData cd = snapshot.getValue(CardData.class);
+                        cd.setMembers(member);
+                        cd.setConvKey(snapshot.getKey());
+                        cardDataArrayList.add(cd);
+                        mAdapter.notifyDataSetChanged();
+                    }
+
+
+                }
+
+                @Override
+                public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) { }
+
+                @Override
+                public void onChildRemoved(@NonNull DataSnapshot snapshot) { }
+
+                @Override
+                public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) { }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) { }
+            };
+            mRef.child("chat_meta").addChildEventListener(mChildEventListener);
+
+        }
+
     }
 }

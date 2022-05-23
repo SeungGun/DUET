@@ -8,7 +8,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.duet.R;
 import com.example.duet.cardview.BulletAdapter;
 import com.example.duet.cardview.BulletData;
-import com.example.duet.cardview.CardData;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
