@@ -73,11 +73,13 @@ public class TestPostDataAdapter extends RecyclerView.Adapter<TestPostDataAdapte
 
     @Override
     public void onBindViewHolder(@NonNull TestPostDataAdapter.ViewHolder holder, int position) {
-        Glide.with(context)
-                .load(postDataArrayList.get(position).getPostImageUrls().get(0))
-                .error(R.drawable.logo)
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(holder.mainImage);
+        if(postDataArrayList.get(position).getPostImageUrls().size() > 0) {
+            Glide.with(context)
+                    .load(postDataArrayList.get(position).getPostImageUrls().get(0))
+                    .error(R.drawable.logo)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(holder.mainImage);
+        }
         Glide.with(context)
                 .load(postDataArrayList.get(position).getWriter().getProfileUrl())
                 .error(R.drawable.ic_profile_foreground)

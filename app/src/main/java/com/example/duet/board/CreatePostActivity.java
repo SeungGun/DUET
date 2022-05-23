@@ -115,8 +115,8 @@ public class CreatePostActivity extends AppCompatActivity {
 
                 SparseBooleanArray checkItems = categoryListView.getCheckedItemPositions();
 
-                for(int i=0; i<CategoryList.items.length; ++i){
-                    if(checkItems.get(i)) {
+                for (int i = 0; i < CategoryList.items.length; ++i) {
+                    if (checkItems.get(i)) {
                         selectedCategoryList.add(CategoryList.items[i]);
                     }
                 }
@@ -168,7 +168,7 @@ public class CreatePostActivity extends AppCompatActivity {
         selectedCategoryList = new ArrayList<>();
         bundle = new Bundle();
         progressDialog = new CustomProgressDialog(CreatePostActivity.this);
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_multiple_choice,CategoryList.items);
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_multiple_choice, CategoryList.items);
         categoryListView.setAdapter(arrayAdapter);
         setListViewHeightBasedOnChildren(categoryListView);
 
@@ -322,6 +322,15 @@ public class CreatePostActivity extends AppCompatActivity {
      */
     private void uploadImagesToStorage() {
         int imageCount = imageContainer.getChildCount();
+
+        // 사진을 선택하지 않았다면 count 가 0에 대한 메세지 전달
+        if (imageCount == 0) {
+            bundle.putInt("finish_count", 0);
+            Message msg = handler.obtainMessage();
+            msg.setData(bundle);
+            handler.sendMessage(msg); // 메세지 전달
+            return;
+        }
         for (int i = 0; i < imageCount; ++i) {
             // image 를 Storage 에 저장하는 요청
             FireStorage.uploadPostImage(getBitmapFromViewImage(imageContainer.getChildAt(i))
@@ -364,6 +373,9 @@ public class CreatePostActivity extends AppCompatActivity {
         return ((BitmapDrawable) ((ImageView) image).getDrawable()).getBitmap();
     }
 
+    /**
+     * 오늘날 기준으로 게시글 업로드에 따른 유저의 포인트 업데이트
+     */
     public void updateUserPostCountToday() {
         Firestore.getUserAllPostData(User.currentUser.getUid())
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -380,13 +392,11 @@ public class CreatePostActivity extends AppCompatActivity {
                                 cmpDate.setTime(curPost.getWriteDate());
                                 long diffSec = (getToday.getTimeInMillis() - cmpDate.getTimeInMillis()) / 1000;
                                 long diffDay = diffSec / (24 * 60 * 60);
-                                Log.d("compare date", diffDay + "");
                                 if (diffDay == 0) {
                                     count++;
                                 }
                             }
 
-                            Toast.makeText(CreatePostActivity.this, "today count " + count, Toast.LENGTH_SHORT).show();
                             int nextPoint = LevelSystem.obtainNextPointForPost(count, INITIAL_POST_POINT);
                             Firestore.updateUserPoint(User.currentUser.getUid(), nextPoint)
                                     .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -413,17 +423,19 @@ public class CreatePostActivity extends AppCompatActivity {
                                                 /*
                                                     게시글 업로드 끝나는 시점
                                                  */
-                                            } else {
-
                                             }
                                         }
                                     });
-                        } else {
-
                         }
                     }
                 });
     }
+
+    /**
+     * 카테고리 ListView 의 contents 만큼 높이를 구해서 지정하는 작업
+     *
+     * @param listView 높이 변경할 listview
+     */
     public static void setListViewHeightBasedOnChildren(ListView listView) {
         ListAdapter listAdapter = listView.getAdapter();
         if (listAdapter == null) {
