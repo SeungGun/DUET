@@ -30,19 +30,25 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.duet.R;
 import com.example.duet.adapter.TestReplyAdapter;
+import com.example.duet.cardview.BulletData;
 import com.example.duet.model.PostData;
 import com.example.duet.model.ReplyData;
 import com.example.duet.model.User;
 import com.example.duet.util.Firestore;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class PostContentActivity extends AppCompatActivity {
 
@@ -61,6 +67,7 @@ public class PostContentActivity extends AppCompatActivity {
     private DividerItemDecoration dividerItemDecoration;
     private TestReplyAdapter adapter;
     private Button createGroupButton;
+    private DatabaseReference mRef;
     private int checkSum = 0;
     private int arrSize = 0;
     private Handler handler = new Handler(Looper.myLooper()) {
@@ -133,6 +140,8 @@ public class PostContentActivity extends AppCompatActivity {
         replyRecyclerView = findViewById(R.id.reply_recycler_view);
         userProfileImage = findViewById(R.id.content_user_profile);
         createGroupButton = findViewById(R.id.create_group_btn);
+        mRef = FirebaseDatabase.getInstance().getReference();
+
         createGroupButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -158,7 +167,55 @@ public class PostContentActivity extends AppCompatActivity {
                                         public void onComplete(@NonNull Task<Void> task) {
                                             if(task.isSuccessful()){
                                                 data.setLimitGroupCount(Integer.parseInt(editText.getText().toString()));
+
+                                                Map<String, Object> update = new HashMap<>();
+                                                mRef.child("bulletin").push();
+
+                                                String key = data.getPostID();
+
+                                                //TODO content, title null checking
+                                                //TODO Button invisible to Bulletin board owner
+
+                                                String sendTitle = data.getTitle();
+                                                String userId = User.currentUser.getUid();
+                                                String userName = User.currentUser.getUserName();
+
+                                                update.put(userId, true);
+                                                mRef.child("members"+"/"+key).setValue(update);
+
+                                                update.clear();
+                                                update.put("title", sendTitle);
+                                                mRef.child("chat_meta"+"/"+key).setValue(update);
+                                                update.clear();
+                                                update.put(userName, true);
+                                                mRef.child("chat_meta"+ "/"+key +"/" + "members").setValue(update);
+                                                update.clear();
+                                                update.put("conv_key", key);
+                                                mRef.child("user_in"+ "/"+userId).push().setValue(update);
+                                                update.clear();
+                                                update.put("user_name", key);
+                                                mRef.child("user_name"+ "/"+userName).push().setValue(update);
+
+
+                                                /*FirebaseMessaging.getInstance().getToken()
+                                                        .addOnCompleteListener(new OnCompleteListener<String>() {
+                                                            @Override
+                                                            public void onComplete(@NonNull Task<String> task) {
+                                                                if (!task.isSuccessful()) {
+                                                                    Log.w("TAG", "Fetching FCM registration token failed", task.getException());
+                                                                    return;
+                                                                }
+
+                                                                // Get new FCM registration token
+                                                                String token = task.getResult();
+                                                                Map<String, Object> update = new HashMap<>();
+                                                                update.put(userName, token);
+                                                                mRef.child("chat_meta").child(key).child("FCM").updateChildren(update);
+                                                            }
+                                                        });
+                                                */
                                                 dialog.dismiss();
+
                                             }
                                         }
                                     });
