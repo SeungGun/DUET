@@ -1,7 +1,3 @@
-
-
-
-
 <com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -25,9 +21,9 @@
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="194dp"
-            app:srcCompat="@drawable/md"
             android:scaleType="centerCrop"
             android:id="@+id/imgView"
+            android:src="@drawable/md"
             android:contentDescription="@string/content_description_media"
             />
 

@@ -1,4 +1,4 @@
-package com.example.duet.cardview;
+package com.example.duet.model;
 
 public class MessageData {
     private String text;

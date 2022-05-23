@@ -1,19 +1,16 @@
-package com.example.duet.cardview;
+package com.example.duet.adapter;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.duet.R;
-
-import org.w3c.dom.Text;
+import com.example.duet.model.MessageData;
 
 import java.util.ArrayList;
 
