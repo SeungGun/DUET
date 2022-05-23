@@ -29,8 +29,8 @@ public class ProfileMyPost extends AppCompatActivity {
 
         TabLayout tabLayout = findViewById(R.id.tab_layout);
 
-        tabLayout.addTab(tabLayout.newTab().setText("Fragment1"));
-        tabLayout.addTab(tabLayout.newTab().setText("Fragment2"));
+        tabLayout.addTab(tabLayout.newTab().setText("게시글"));
+        tabLayout.addTab(tabLayout.newTab().setText("멘토링"));
 
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
