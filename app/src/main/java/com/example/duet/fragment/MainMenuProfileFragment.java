@@ -200,7 +200,7 @@ public class MainMenuProfileFragment extends Fragment {
 //            }
 //        }
 
-        String[] activities = {"made a study room with 정윤현", "uploaded new activities"};
+        String[] activities = {"made a study room with Doe", "uploaded new activities"};
         ListView listView = (ListView) rootView.findViewById(R.id.profile_list);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, activities);
         listView.setAdapter(adapter);
