@@ -1,7 +1,9 @@
 package com.example.duet.board;
 
 import androidx.annotation.NonNull;
+
 import android.app.AlertDialog;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -136,7 +138,7 @@ public class PostContentActivity extends AppCompatActivity {
         createGroupButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(data.getLimitGroupCount() == -1){
+                if (data.getLimitGroupCount() == -1) {
                     FrameLayout container = new FrameLayout(getApplicationContext());
                     FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
                     params.leftMargin = 60;
@@ -147,34 +149,33 @@ public class PostContentActivity extends AppCompatActivity {
                     container.addView(editText);
                     AlertDialog.Builder builder = new AlertDialog.Builder(PostContentActivity.this);
                     builder.setTitle("그룹 인원 제한 설정")
-                    .setCancelable(false)
-                    .setView(container)
-                    .setPositiveButton("확인", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            Firestore.updateGroupLimitCount(data.getPostID(), Integer.parseInt(editText.getText().toString()))
-                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            if(task.isSuccessful()){
-                                                data.setLimitGroupCount(Integer.parseInt(editText.getText().toString()));
-                                                dialog.dismiss();
-                                            }
-                                        }
-                                    });
-                        }
-                    })
-                    .setNegativeButton("취소", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
+                            .setCancelable(false)
+                            .setView(container)
+                            .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Firestore.updateGroupLimitCount(data.getPostID(), Integer.parseInt(editText.getText().toString()))
+                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
+                                                    if (task.isSuccessful()) {
+                                                        data.setLimitGroupCount(Integer.parseInt(editText.getText().toString()));
+                                                        dialog.dismiss();
+                                                    }
+                                                }
+                                            });
+                                }
+                            })
+                            .setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
                     AlertDialog alertDialog = builder.create();
                     alertDialog.show();
-                }
-                else{
-                    Toast.makeText(PostContentActivity.this, data.getLimitGroupCount()+"명 제한 설정됨", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(PostContentActivity.this, data.getLimitGroupCount() + "명 제한 설정됨", Toast.LENGTH_SHORT).show();
                     /*
                         그룹 인원 수 제한 설정되어 있는 상태, 그 후 처리 로직 작성
                      */
@@ -292,34 +293,53 @@ public class PostContentActivity extends AppCompatActivity {
             submitReplyButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ReplyData newData = new ReplyData(data.getPostID()
-                            , data.getWriter().getUid()
-                            , User.currentUser
-                            , inputReply.getText().toString()
-                            , true, 1);
-                    replyDataArrayList.add(newData);
-                    Firestore.addReplyData(newData)
-                            .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(PostContentActivity.this);
+                    builder.setTitle("댓글 작성")
+                            .setMessage("이 게시글은 작성자가 댓글을 승인해야 정식으로 댓글이 게시됩니다. 작성하시겠습니까?")
+                            .setCancelable(false)
+                            .setPositiveButton("확인", new DialogInterface.OnClickListener() {
                                 @Override
-                                public void onComplete(@NonNull Task<DocumentReference> task) {
-                                    if (task.isSuccessful()) {
-                                        subtractPointByReplying();
-                                        Firestore.insertReplyId(task.getResult().getId())
-                                                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                    @Override
-                                                    public void onComplete(@NonNull Task<Void> task) {
-                                                        if (task.isSuccessful()) {
-                                                            Toast.makeText(PostContentActivity.this, "success", Toast.LENGTH_SHORT).show();
-                                                        } else {
-                                                            Log.e("update reply id in field", "failure");
-                                                        }
+                                public void onClick(DialogInterface dialog, int which) {
+                                    ReplyData newData = new ReplyData(data.getPostID()
+                                            , data.getWriter().getUid()
+                                            , User.currentUser
+                                            , inputReply.getText().toString()
+                                            , true, 1);
+                                    replyDataArrayList.add(newData);
+                                    Firestore.addReplyData(newData)
+                                            .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<DocumentReference> task) {
+                                                    if (task.isSuccessful()) {
+                                                        subtractPointByReplying();
+                                                        Firestore.insertReplyId(task.getResult().getId())
+                                                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                    @Override
+                                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                                        if (task.isSuccessful()) {
+                                                                            dialog.dismiss();
+                                                                            Toast.makeText(PostContentActivity.this, "success", Toast.LENGTH_SHORT).show();
+                                                                        } else {
+                                                                            Log.e("update reply id in field", "failure");
+                                                                        }
+                                                                    }
+                                                                });
+                                                    } else {
+                                                        Log.e("add reply", "failure");
                                                     }
-                                                });
-                                    } else {
-                                        Log.e("add reply", "failure");
-                                    }
+                                                }
+                                            });
+                                }
+                            })
+                            .setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
                                 }
                             });
+                    AlertDialog alertDialog = builder.create();
+                    alertDialog.show();
+
                 }
             });
         } else {
@@ -380,8 +400,7 @@ public class PostContentActivity extends AppCompatActivity {
                                     public void onComplete(@NonNull Task<Void> task) {
                                         if (task.isSuccessful()) {
                                             Log.d("update user point by reply adoption", "success");
-                                        }
-                                        else{
+                                        } else {
                                             Log.d("update user point by reply adoption", "failure");
                                         }
                                     }
@@ -390,10 +409,9 @@ public class PostContentActivity extends AppCompatActivity {
                                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
-                                        if(task.isSuccessful()){
+                                        if (task.isSuccessful()) {
                                             Log.d("update post owner point by adoption", "success");
-                                        }
-                                        else{
+                                        } else {
                                             Log.d("update post owner point by adoption", "failure");
                                         }
                                     }
@@ -402,10 +420,9 @@ public class PostContentActivity extends AppCompatActivity {
                                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
-                                        if(task.isSuccessful()){
+                                        if (task.isSuccessful()) {
                                             Log.d("update user reliability by reply", "success");
-                                        }
-                                        else{
+                                        } else {
                                             Log.d("update user reliability by reply", "failure");
                                         }
                                     }
