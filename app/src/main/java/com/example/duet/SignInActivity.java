@@ -61,7 +61,7 @@ public class SignInActivity extends AppCompatActivity {
      * 유저로부터 입력받은 이메일과 비밀번호로 로그인 처리 요청
      * @author Seunggun Sin, 2022-05-01
      */
-    protected void doSignIn(String id, String password) {
+    private void doSignIn(String id, String password) {
         /*
             입력 defensive 처리 필요
          */
