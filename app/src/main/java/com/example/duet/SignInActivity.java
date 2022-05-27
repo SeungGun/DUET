@@ -33,7 +33,15 @@ public class SignInActivity extends AppCompatActivity {
         if(intent != null){
             token = intent.getStringExtra("token");
         }
+
         firebaseAuth = FirebaseAuth.getInstance();
+
+        if(intent.getBooleanExtra("auto", false)){
+            SharedPreferences auto = getSharedPreferences("autoLogin", Activity.MODE_PRIVATE);
+            String id = auto.getString("id", null);
+            String password = auto.getString("password", null);
+            doSignIn(id, password);
+        }
 
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -3,7 +3,9 @@ package com.example.duet;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -28,6 +30,8 @@ import com.google.firebase.messaging.FirebaseMessaging;
 public class MainActivity extends AppCompatActivity {
 
     private Button createPostButton;
+    String token;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,12 +42,13 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<String> task) {
                         if(task.isSuccessful()){
-                            String token = task.getResult();
+                            token = task.getResult();
                             findViewById(R.id.btn_sign_in).setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
                                     Intent intent = new Intent(getApplicationContext(), SignInActivity.class);
                                     intent.putExtra("token", token);
+                                    intent.putExtra("auto", false);
                                     startActivity(intent);
                                 }
                             });
@@ -62,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
+        doAutoLogin();
 
     }
 
@@ -83,6 +89,19 @@ public class MainActivity extends AppCompatActivity {
 
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    protected void doAutoLogin() {
+        SharedPreferences auto = getSharedPreferences("autoLogin", Activity.MODE_PRIVATE);
+        String id = auto.getString("id", null);
+        String password = auto.getString("password", null);
+
+        if (id != null && password != null) {
+            Intent intent = new Intent(getApplicationContext(), SignInActivity.class);
+            intent.putExtra("token", token);
+            intent.putExtra("auto", true);
+            startActivity(intent);
         }
     }
 }
