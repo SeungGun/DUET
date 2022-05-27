@@ -24,6 +24,8 @@ public class SignInActivity extends AppCompatActivity {
     private Button loginButton;
     private FirebaseAuth firebaseAuth;
     private String token;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,13 +37,6 @@ public class SignInActivity extends AppCompatActivity {
         }
 
         firebaseAuth = FirebaseAuth.getInstance();
-
-        if(intent.getBooleanExtra("auto", false)){
-            SharedPreferences auto = getSharedPreferences("autoLogin", Activity.MODE_PRIVATE);
-            String id = auto.getString("id", null);
-            String password = auto.getString("password", null);
-            doSignIn(id, password);
-        }
 
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
