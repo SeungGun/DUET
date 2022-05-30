@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -33,6 +34,8 @@ public class MainActivity extends AppCompatActivity {
 
     private Button createPostButton;
     String token;
+
+    ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(CONNECTIVITY_SERVICE);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +71,10 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-        doAutoLogin();
+        if(checkInternetState())
+            doAutoLogin();
+        else
+            offlineMode();
 
     }
 
@@ -122,5 +128,17 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
         }
+    }
+
+    private boolean checkInternetState(){
+        connectivityManager = (ConnectivityManager)getSystemService(CONNECTIVITY_SERVICE);
+        assert connectivityManager != null;
+        if(!(connectivityManager.getActiveNetworkInfo() != null && connectivityManager.getActiveNetworkInfo().isConnected()))
+            return false;
+        return true;
+    }
+
+    protected void offlineMode(){
+
     }
 }
