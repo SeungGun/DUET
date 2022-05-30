@@ -35,12 +35,14 @@ public class MainActivity extends AppCompatActivity {
     private Button createPostButton;
     String token;
 
-    ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(CONNECTIVITY_SERVICE);
+    ConnectivityManager connectivityManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        connectivityManager = (ConnectivityManager)getSystemService(CONNECTIVITY_SERVICE);
         LevelSystem.initExp();
         FirebaseMessaging.getInstance().getToken()
                 .addOnCompleteListener(new OnCompleteListener<String>() {
