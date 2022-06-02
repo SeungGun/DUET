@@ -23,7 +23,7 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-        moveMain(2);
+        moveMain(0);
 
     }
 
@@ -34,7 +34,6 @@ public class SplashActivity extends AppCompatActivity {
             public void run()
             {
                 doAutoLogin();
-                finish();	//현재 액티비티 종료
             }
         }, 1000 * sec); // sec초 정도 딜레이를 준 후 시작
     }
@@ -62,6 +61,7 @@ public class SplashActivity extends AppCompatActivity {
                                 intent.putExtra("token", token);
                                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                 startActivity(intent);
+                                finish();
                             } else {
 
                             }
@@ -72,6 +72,7 @@ public class SplashActivity extends AppCompatActivity {
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
+            finish();
         }
     }
 }
