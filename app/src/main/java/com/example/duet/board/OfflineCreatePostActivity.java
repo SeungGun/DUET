@@ -58,6 +58,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.InputStream;
+import java.io.OutputStreamWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -228,6 +229,14 @@ public class OfflineCreatePostActivity extends AppCompatActivity {
 
                 String jsonString = jsonObject.toString();
                 Log.d("dddddddd", jsonString);
+
+                try {
+                    OutputStreamWriter out = new OutputStreamWriter(openFileOutput("offline.txt", 0));
+                    out.write(jsonString);
+                    out.close();
+                } catch (Throwable t) {
+                    Toast.makeText(getApplicationContext(), "Exception: " + t.toString(), Toast.LENGTH_SHORT).show();
+                }
 
                 finish();
             }
