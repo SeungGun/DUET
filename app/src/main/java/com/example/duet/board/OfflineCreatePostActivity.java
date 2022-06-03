@@ -287,7 +287,6 @@ public class OfflineCreatePostActivity extends AppCompatActivity {
 
                     // 원본 bitmap 을 올바르게 회전한 bitmap 으로 변환
                     bitmap = rotateBitmap(bitmap, orientation);
-                    Log.d("aaa", bitmap.toString());
 
                     inputStream.close();
                     inputStream2.close();

@@ -537,21 +537,17 @@ public class CreatePostActivity extends AppCompatActivity {
             }
 
             for(String i : image){
-//                imageSet(i);
+                imageSet(Uri.parse(i));
             }
 
         } catch (JSONException e) {
             Log.d("aaaaaaa", String.valueOf(e));
         }
-
-
     }
 
 
     private void imageSet(Uri selectedImageUri){
         try {
-
-
             InputStream inputStream = getContentResolver().openInputStream(selectedImageUri);
             InputStream inputStream2 = getContentResolver().openInputStream(selectedImageUri);
 
