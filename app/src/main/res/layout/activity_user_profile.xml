@@ -7,10 +7,12 @@
     android:orientation="vertical"
     tools:context=".UserProfileActivity">
     <LinearLayout
+        android:layout_marginTop="15dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
         <ImageView
+            android:layout_margin="5dp"
             android:id="@+id/profile_photo"
             android:layout_width="100dp"
             android:layout_height="100dp"
@@ -19,6 +21,7 @@
             android:cropToPadding="false"
             app:srcCompat="@drawable/ic_profile_foreground"/>
         <LinearLayout
+            android:padding="5dp"
             android:layout_marginLeft="20dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -31,7 +34,7 @@
                 android:textColor="#000000"
                 android:textStyle="bold"
                 android:text="NickName"
-                android:textSize="30dp" />
+                android:textSize="25dp" />
             <TextView
                 android:id="@+id/profile_level"
                 android:layout_width="wrap_content"

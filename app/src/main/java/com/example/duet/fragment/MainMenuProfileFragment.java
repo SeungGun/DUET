@@ -31,6 +31,8 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.duet.myPost.ProfileMyPost;
 import com.example.duet.R;
 import com.example.duet.board.TestUpdateProfile;
@@ -117,6 +119,8 @@ public class MainMenuProfileFragment extends Fragment {
         // 현재 사용자의 데이터에 있는 프로필 이미지 url 을 통해 프로필 이미지를 보여줌
         Glide.with(getActivity())
                 .load(User.currentUser.getProfileUrl())
+                .fitCenter()
+                .apply(RequestOptions.bitmapTransform(new RoundedCorners(24)))
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(profileImage);
 
@@ -244,6 +248,8 @@ public class MainMenuProfileFragment extends Fragment {
                             // 갱신한 유저 데이터에 대한 프로필 이미지를 다시 보여줌
                             Glide.with(getActivity())
                                     .load(User.currentUser.getProfileUrl())
+                                    .fitCenter()
+                                    .apply(RequestOptions.bitmapTransform(new RoundedCorners(24)))
                                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                                     .into(profileImage);
                         }
@@ -253,7 +259,7 @@ public class MainMenuProfileFragment extends Fragment {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void setLevelProgress() {
-        levelProgress.setProgress(Math.toIntExact(Math.round(
+        levelProgress.setProgress((int)(Math.round(
                 (User.currentUser.getExp() * 1.0 - (int) LevelSystem.expCumulativeList[User.currentUser.getLevel()])
                         / ((int) LevelSystem.expCumulativeList[User.currentUser.getLevel() + 1] - (int) LevelSystem.expCumulativeList[User.currentUser.getLevel()])
                         * 100)));

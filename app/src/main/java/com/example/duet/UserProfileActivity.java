@@ -14,6 +14,8 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.duet.model.User;
 import com.example.duet.util.Firestore;
 import com.example.duet.util.LevelSystem;
@@ -46,12 +48,14 @@ public class UserProfileActivity extends AppCompatActivity {
                         levelProgress = findViewById(R.id.level_progress);
                         nicknameTextView.setText(user.getNickname());
                         levelText.setText("Lv " + user.getLevel() + " ("+user.getExp()+"/"+ LevelSystem.expCumulativeList[user.getLevel() + 1]+")");
-                        levelProgress.setProgress(Math.toIntExact(Math.round(
+                        levelProgress.setProgress((int)(Math.round(
                                 (user.getExp() * 1.0 - (int) LevelSystem.expCumulativeList[user.getLevel()])
                                         / ((int) LevelSystem.expCumulativeList[user.getLevel() + 1] - (int) LevelSystem.expCumulativeList[user.getLevel()])
                                         * 100)));
                         Glide.with(getApplicationContext())
                                 .load(user.getProfileUrl())
+                                .fitCenter()
+                                .apply(RequestOptions.bitmapTransform(new RoundedCorners(24)))
                                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                                 .into(profileImage);
                     }
