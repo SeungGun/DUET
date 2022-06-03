@@ -9,6 +9,9 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.duet.R;
 import com.example.duet.model.PostData;
 
@@ -73,10 +76,13 @@ public class TestPostDataAdapter extends RecyclerView.Adapter<TestPostDataAdapte
 
     @Override
     public void onBindViewHolder(@NonNull TestPostDataAdapter.ViewHolder holder, int position) {
+        RequestOptions requestOptions = new RequestOptions();
+        requestOptions.transforms(new CenterCrop(), new RoundedCorners(32));
         if(postDataArrayList.get(position).getPostImageUrls().size() > 0) {
             Glide.with(context)
                     .load(postDataArrayList.get(position).getPostImageUrls().get(0))
                     .error(R.drawable.logo)
+                    .apply(requestOptions)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(holder.mainImage);
         }
@@ -84,6 +90,7 @@ public class TestPostDataAdapter extends RecyclerView.Adapter<TestPostDataAdapte
                 .load(postDataArrayList.get(position).getWriter().getProfileUrl())
                 .error(R.drawable.ic_profile_foreground)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .apply(requestOptions)
                 .into(holder.userProfileImage);
         holder.title.setText(postDataArrayList.get(position).getTitle());
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd a HH:mm:ss");
