@@ -32,15 +32,22 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="20dp"
-            android:text="sign_in" />
+            android:text="sign_in"/>
 
         <Button
             android:id="@+id/btn_sign_up"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
-            android:text="sign_up" />
+            android:text="sign_up"/>
     </LinearLayout>
+    <Button
+        android:id="@+id/btn_offline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="offline mode"
+        android:visibility="invisible"/>
 
 
 </LinearLayout>

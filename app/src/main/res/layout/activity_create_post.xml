@@ -71,6 +71,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="카테고리"/>
+
             <ListView
                 android:choiceMode="multipleChoice"
                 android:id="@+id/category_list"

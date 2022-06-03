@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -15,6 +16,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.example.duet.board.CreatePostActivity;
+import com.example.duet.board.OfflineCreatePostActivity;
 import com.example.duet.fragment.MainMenuActivity;
 import com.example.duet.model.User;
 import com.example.duet.util.Firestore;
@@ -31,13 +33,21 @@ import com.google.firebase.messaging.FirebaseMessaging;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Button createPostButton;
     String token;
+    ConnectivityManager connectivityManager;
+
+    Button btn_in;
+    Button btn_up;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        btn_up = findViewById(R.id.btn_sign_up);
+        btn_in = findViewById(R.id.btn_sign_in);
+
+        connectivityManager = (ConnectivityManager)getSystemService(CONNECTIVITY_SERVICE);
         LevelSystem.initExp();
         FirebaseMessaging.getInstance().getToken()
                 .addOnCompleteListener(new OnCompleteListener<String>() {
@@ -45,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<String> task) {
                         if(task.isSuccessful()){
                             token = task.getResult();
-                            findViewById(R.id.btn_sign_in).setOnClickListener(new View.OnClickListener() {
+                            btn_in.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
                                     Intent intent = new Intent(getApplicationContext(), SignInActivity.class);
@@ -53,7 +63,8 @@ public class MainActivity extends AppCompatActivity {
                                     startActivity(intent);
                                 }
                             });
-                            findViewById(R.id.btn_sign_up).setOnClickListener(new View.OnClickListener() {
+
+                            btn_up.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
                                     Intent intent = new Intent(getApplicationContext(), SignUpActivity.class);
@@ -68,7 +79,10 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-        doAutoLogin();
+        if(checkInternetState())
+            doAutoLogin();
+        else
+            offlineMode();
 
     }
 
@@ -122,5 +136,27 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
         }
+    }
+
+    private boolean checkInternetState(){
+        connectivityManager = (ConnectivityManager)getSystemService(CONNECTIVITY_SERVICE);
+        assert connectivityManager != null;
+        if(!(connectivityManager.getActiveNetworkInfo() != null && connectivityManager.getActiveNetworkInfo().isConnected()))
+            return false;
+        return true;
+    }
+
+    protected void offlineMode(){
+        Button btn_offline = findViewById(R.id.btn_offline);
+        btn_offline.setVisibility(View.VISIBLE);
+        btn_in.setVisibility(View.INVISIBLE);
+        btn_up.setVisibility(View.INVISIBLE);
+
+        btn_offline.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(), OfflineCreatePostActivity.class));
+            }
+        });
     }
 }

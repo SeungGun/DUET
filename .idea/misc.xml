@@ -40,9 +40,29 @@
         <entry key="..\:/Users/SeoungGun/AndroidStudioProjects/DUET/app/src/main/res/menu/main_menu_bottom.xml" value="0.22135416666666666" />
         <entry key="..\:/Users/SeoungGun/AndroidStudioProjects/DUET/app/src/main/res/menu/main_menu_top.xml" value="0.22135416666666666" />
         <entry key="..\:/Users/trave/git/DUET/app/src/main/res/drawable/ic_profile_foreground.xml" value="0.116" />
+        <entry key="..\:/Users/trave/git/DUET/app/src/main/res/layout/activity_card.xml" value="0.22395833333333334" />
+        <entry key="..\:/Users/trave/git/DUET/app/src/main/res/layout/activity_chatting_room.xml" value="0.20729166666666668" />
+        <entry key="..\:/Users/trave/git/DUET/app/src/main/res/layout/activity_create_post.xml" value="0.264" />
+        <entry key="..\:/Users/trave/git/DUET/app/src/main/res/layout/activity_create_question.xml" value="0.14895833333333333" />
+        <entry key="..\:/Users/trave/git/DUET/app/src/main/res/layout/activity_main.xml" value="0.2" />
+        <entry key="..\:/Users/trave/git/DUET/app/src/main/res/layout/activity_post.xml" value="0.22291666666666668" />
+        <entry key="..\:/Users/trave/git/DUET/app/src/main/res/layout/activity_post_content.xml" value="0.22291666666666668" />
+        <entry key="..\:/Users/trave/git/DUET/app/src/main/res/layout/activity_profile_my_post.xml" value="0.22291666666666668" />
         <entry key="..\:/Users/trave/git/DUET/app/src/main/res/layout/activity_sign_in.xml" value="0.1" />
         <entry key="..\:/Users/trave/git/DUET/app/src/main/res/layout/activity_sign_up.xml" value="0.19010416666666666" />
+        <entry key="..\:/Users/trave/git/DUET/app/src/main/res/layout/activity_test_show_post.xml" value="0.22291666666666668" />
+        <entry key="..\:/Users/trave/git/DUET/app/src/main/res/layout/activity_test_update_profile.xml" value="0.22291666666666668" />
+        <entry key="..\:/Users/trave/git/DUET/app/src/main/res/layout/admin_layout.xml" value="0.22291666666666668" />
+        <entry key="..\:/Users/trave/git/DUET/app/src/main/res/layout/auths_layout.xml" value="0.22291666666666668" />
+        <entry key="..\:/Users/trave/git/DUET/app/src/main/res/layout/bullet_list_layout.xml" value="0.22291666666666668" />
+        <entry key="..\:/Users/trave/git/DUET/app/src/main/res/layout/bulletin_list_item.xml" value="0.22395833333333334" />
+        <entry key="..\:/Users/trave/git/DUET/app/src/main/res/layout/bulletin_post_item.xml" value="0.22395833333333334" />
+        <entry key="..\:/Users/trave/git/DUET/app/src/main/res/layout/chatroom_item.xml" value="0.22395833333333334" />
+        <entry key="..\:/Users/trave/git/DUET/app/src/main/res/layout/fragment_bulletin_post.xml" value="0.22291666666666668" />
+        <entry key="..\:/Users/trave/git/DUET/app/src/main/res/layout/fragment_main_menu_bulletin.xml" value="0.22291666666666668" />
         <entry key="..\:/Users/trave/git/DUET/app/src/main/res/layout/fragment_main_menu_profile.xml" value="0.176" />
+        <entry key="..\:/Users/trave/git/DUET/app/src/main/res/layout/my_post_item.xml" value="0.22395833333333334" />
+        <entry key="..\:/Users/trave/git/DUET/app/src/main/res/layout/post_reply_item.xml" value="0.22395833333333334" />
         <entry key="app/src/main/res/layout/activity_card.xml" value="0.2125" />
         <entry key="app/src/main/res/layout/activity_chatting_room.xml" value="0.20833333333333334" />
         <entry key="app/src/main/res/layout/activity_create_post.xml" value="0.2125" />
