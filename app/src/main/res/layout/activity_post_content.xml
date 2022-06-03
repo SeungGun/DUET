@@ -19,7 +19,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:clickable="true">
+                android:clickable="true"
+                android:layout_margin="10dp"
+                >
                 <ImageView
                     android:id="@+id/content_user_profile"
                     android:layout_width="80dp"
@@ -31,24 +33,31 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:layout_marginStart="10dp"
+                    >
+
                     <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Title"
+                        android:textColor="@color/black"
+                        android:fontFamily="sans-serif-condensed-light"
+                        android:textSize="30dp"
+                        android:layout_marginLeft="20dp"
                         android:id="@+id/content_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="5dp"
-                        android:textColor="#000000"
-                        android:textStyle="bold"
-                        android:textSize="28dp"/>
+                        />
                     <TextView
-                        android:id="@+id/content_profile_nickname"
+
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center|left"
-                        android:layout_marginLeft="5dp"
-                        android:textColor="#00ff00"
-                        android:textStyle="bold"
-                        android:textSize="20dp" />
+                        android:textColor="@color/gray"
+                        android:textSize="20dp"
+                        android:layout_marginLeft="20dp"
+                        android:id="@+id/content_profile_nickname"
+                        android:text="NickName"
+                        />
+
                 </LinearLayout>
             </LinearLayout>
             <LinearLayout
@@ -75,7 +84,17 @@
                 android:textSize="16dp"
                 android:padding="4dp"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="group join"
+                android:id="@+id/joinBtn"
+                android:visibility="gone"
+                />
             <View
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
