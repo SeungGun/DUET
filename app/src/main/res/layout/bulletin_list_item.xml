@@ -19,26 +19,39 @@
             android:clickable="false"
             android:cropToPadding="false"
             android:src="@drawable/ic_profile_foreground"
+            android:background="@drawable/round_image"
             />
-        <TextView
-            android:id="@+id/bulletin_profile_nickname"
-            android:layout_width="wrap_content"
-            android:layout_weight="1"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:text="NickName"
-            android:textColor="#000000"
-            android:textStyle="bold"
-            android:textSize="18dp"/>
-        <TextView
-            android:layout_weight="3"
-            android:gravity="center"
-            android:id="@+id/bulletin_post_date"
+
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:textSize="16dp"
-            android:layout_gravity="right"/>
+            android:orientation="vertical"
+            >
+
+            <TextView
+                android:id="@+id/bulletin_profile_nickname"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="NickName"
+                android:textColor="@color/black"
+                android:fontFamily="sans-serif-condensed-light"
+                android:textSize="20dp"
+                android:layout_marginLeft="20dp"
+                />
+            <TextView
+                android:id="@+id/bulletin_post_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/gray"
+                android:textSize="16dp"
+                android:layout_marginLeft="20dp"
+
+                android:text="123"
+                />
+
+
+        </LinearLayout>
+
     </LinearLayout>
     <TextView
         android:id="@+id/bulletin_main_title"
@@ -55,5 +68,7 @@
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
         android:clickable="false"
-        android:cropToPadding="false" />
+        android:cropToPadding="false"
+
+        />
 </LinearLayout>

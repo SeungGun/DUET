@@ -60,11 +60,11 @@ public class MainMenuBulletinFragment extends Fragment {
         dividerItemDecoration = new DividerItemDecoration(postRecyclerView.getContext(), new LinearLayoutManager(getContext()).getOrientation());
         postRecyclerView.addItemDecoration(dividerItemDecoration);
 
-        String[] items = {"수학", "과학", "프로그래밍", "미술", "음악", "국어"};
-        Spinner spinner = (Spinner) rootView.findViewById(R.id.spinner);
-        ArrayAdapter <String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, items);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
+        //String[] items = {"수학", "과학", "프로그래밍", "미술", "음악", "국어"};
+        //Spinner spinner = (Spinner) rootView.findViewById(R.id.spinner);
+        //ArrayAdapter <String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, items);
+        //adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        //spinner.setAdapter(adapter);
 
 //        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 //            @Override

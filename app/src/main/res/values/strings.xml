@@ -8,6 +8,15 @@
     <string name="supporting_text">멘토: mentor님</string>
     <string name="action_1">참여하기</string>
     <string name="loading_message">로딩 중…</string>
+    <string name="math">수학</string>
+    <string name="science">과학</string>
+    <string name="programming">프로그래밍</string>
+    <string name="art">미술</string>
+    <string name="music">음악</string>
+    <string name="korean">국어</string>
+    <string name="self_improve">자기계발</string>
+    <string name="label">Search</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
