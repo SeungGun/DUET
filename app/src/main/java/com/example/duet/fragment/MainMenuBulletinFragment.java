@@ -30,12 +30,18 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class MainMenuBulletinFragment extends Fragment {
     private FloatingActionButton createPostFab;
     private String[] items = {"코딩", "수학", "과학", "미술", "음악"};
-    private ArrayList<PostData> postDataArrayList;
+    private ArrayList<PostData> postDataArrayList; // 게시글 전체 리스트
+    private ArrayList<PostData> activityArrayList; // 자기계발 글 리스트
+    private ArrayList<PostData> questionArrayList; // 질문 글 리스트
+    /*
+        위 3개의 ArrayList 를 이용하여 자기계발, 질문 구분 버튼을 통해 게시판 분리
+     */
     private RecyclerView postRecyclerView;
     private TestPostDataAdapter adapter;
     private DividerItemDecoration dividerItemDecoration;
@@ -46,6 +52,8 @@ public class MainMenuBulletinFragment extends Fragment {
                              Bundle savedInstanceState) {
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_main_menu_bulletin, container, false);
         postDataArrayList = new ArrayList<>();
+        activityArrayList = new ArrayList<>();
+        questionArrayList = new ArrayList<>();
         postRecyclerView = rootView.findViewById(R.id.post_recyclerview);
         postRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         createPostFab = rootView.findViewById(R.id.fab_create_post);
@@ -86,10 +94,20 @@ public class MainMenuBulletinFragment extends Fragment {
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
                     postDataArrayList.clear();
+                    questionArrayList.clear();
+                    activityArrayList.clear();
+                    int i=0;
                     for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
                         postDataArrayList.add(documentSnapshot.toObject(PostData.class));
+                        if(postDataArrayList.get(i).getPostType() == 1){ // 게시글 유형이 질문 글이라면
+                            questionArrayList.add(postDataArrayList.get(i)); // 게시글 데이터를 질문 list 에 추가
+                        }
+                        else{
+                            activityArrayList.add(postDataArrayList.get(i)); // 게시글 데이터를 자기계발 list 에 추가
+                        }
+                        i++;
                     }
-                    adapter = new TestPostDataAdapter(postDataArrayList, getContext());
+                    adapter = new TestPostDataAdapter(activityArrayList, getContext());
                     adapter.setOnItemClickListener(new TestPostDataAdapter.OnItemClickListener() {
                         @Override
                         public void onItemClicked(int position, PostData data) {

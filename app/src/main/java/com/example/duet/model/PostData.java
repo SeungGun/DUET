@@ -15,13 +15,14 @@ public class PostData implements Serializable {
     private int allocPoint;
     private int stateAllowReply;
     private int limitGroupCount;
+    private int postType;
     private ArrayList<String> postImageUrls;
 
     public PostData() {
 
     }
 
-    public PostData(User writer, String title, ArrayList<String> category, String body, int allocPoint, int stateAllowReply, ArrayList<String> postImageUrls) {
+    public PostData(User writer, String title, ArrayList<String> category, String body, int allocPoint, int stateAllowReply, ArrayList<String> postImageUrls,int postType ,int limitGroupCount) {
         this.writer = writer;
         this.title = title;
         this.category = category; // 임시 처리, 카테고리 데이터 만들면 변경하기
@@ -31,7 +32,8 @@ public class PostData implements Serializable {
         this.stateAllowReply = stateAllowReply;
         this.postImageUrls = postImageUrls;
         this.writeDate = new Date();
-        this.limitGroupCount = -1;
+        this.postType = postType; // 0: 자기계발, 1: 질문
+        this.limitGroupCount = limitGroupCount;
     }
 
     public ArrayList<String> getPostImageUrls() {
@@ -120,6 +122,14 @@ public class PostData implements Serializable {
 
     public void setLimitGroupCount(int limitGroupCount) {
         this.limitGroupCount = limitGroupCount;
+    }
+
+    public int getPostType() {
+        return postType;
+    }
+
+    public void setPostType(int postType) {
+        this.postType = postType;
     }
 
     @Override
