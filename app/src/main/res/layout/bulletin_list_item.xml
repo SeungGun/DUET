@@ -62,9 +62,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
     <ImageView
-        android:padding="20dp"
+        android:padding="25dp"
+        android:layout_gravity="center"
         android:id="@+id/bulletin_main_image"
-        android:layout_width="match_parent"
+        android:layout_width="350dp"
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
         android:clickable="false"
