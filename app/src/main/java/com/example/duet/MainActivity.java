@@ -48,7 +48,6 @@ public class MainActivity extends AppCompatActivity {
         btn_in = findViewById(R.id.btn_sign_in);
 
         connectivityManager = (ConnectivityManager)getSystemService(CONNECTIVITY_SERVICE);
-        LevelSystem.initExp();
         FirebaseMessaging.getInstance().getToken()
                 .addOnCompleteListener(new OnCompleteListener<String>() {
                     @Override
