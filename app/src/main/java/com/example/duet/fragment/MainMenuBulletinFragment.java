@@ -10,12 +10,11 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
+import android.widget.CompoundButton;
 
 import com.example.duet.R;
 import com.example.duet.adapter.TestPostDataAdapter;
@@ -25,12 +24,11 @@ import com.example.duet.model.PostData;
 import com.example.duet.util.Firestore;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.chip.Chip;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class MainMenuBulletinFragment extends Fragment {
@@ -45,6 +43,16 @@ public class MainMenuBulletinFragment extends Fragment {
     private RecyclerView postRecyclerView;
     private TestPostDataAdapter adapter;
     private DividerItemDecoration dividerItemDecoration;
+    private Chip postType;
+    private Chip questionType;
+    private Chip categoryMath;
+    private Chip categoryScience;
+    private Chip categoryProgramming;
+    private Chip categoryArt;
+    private Chip categoryKorean;
+    private ArrayList<PostData> selectArrayList;
+    private boolean isInitial = true;
+    private ArrayList<String> currentSelectedCategoryList;
 
     @Nullable
     @Override
@@ -54,30 +62,126 @@ public class MainMenuBulletinFragment extends Fragment {
         postDataArrayList = new ArrayList<>();
         activityArrayList = new ArrayList<>();
         questionArrayList = new ArrayList<>();
+        selectArrayList = new ArrayList<>();
+        currentSelectedCategoryList = new ArrayList<>();
+        postType = rootView.findViewById(R.id.sefChip);
+        categoryMath = rootView.findViewById(R.id.mathChip);
+        categoryMath.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                String title = "수학";
+                if (isChecked) {
+                    currentSelectedCategoryList.add(title);
+                } else {
+                    currentSelectedCategoryList.remove(title);
+                }
+                changeTagState();
+            }
+        });
+        categoryScience = rootView.findViewById(R.id.scienceChip);
+        categoryScience.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                String title = "과학";
+                if (isChecked) {
+                    currentSelectedCategoryList.add(title);
+                } else {
+                    currentSelectedCategoryList.remove(title);
+                }
+                changeTagState();
+            }
+        });
+        categoryProgramming = rootView.findViewById(R.id.programChip);
+        categoryProgramming.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                String title = "프로그래밍";
+                if (isChecked) {
+                    currentSelectedCategoryList.add(title);
+                } else {
+                    currentSelectedCategoryList.remove(title);
+                }
+                changeTagState();
+            }
+        });
+        categoryArt = rootView.findViewById(R.id.artChip);
+        categoryArt.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                String title = "미술";
+                if (isChecked) {
+                    currentSelectedCategoryList.add(title);
+                } else {
+                    currentSelectedCategoryList.remove(title);
+                }
+                changeTagState();
+            }
+        });
+        categoryKorean = rootView.findViewById(R.id.koreanChip);
+        categoryKorean.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                String title = "국어";
+                if (isChecked) {
+                    currentSelectedCategoryList.add(title);
+                } else {
+                    currentSelectedCategoryList.remove(title);
+                }
+                changeTagState();
+            }
+        });
+        questionType = rootView.findViewById(R.id.questionChip);
+        questionType.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    postType.setChecked(false);
+                    adapter = new TestPostDataAdapter(questionArrayList, getContext());
+                    adapter.setOnItemClickListener(new TestPostDataAdapter.OnItemClickListener() {
+                        @Override
+                        public void onItemClicked(int position, PostData data) {
+                            Intent intent = new Intent(getContext(), PostContentActivity.class);
+                            intent.putExtra("position", position);
+                            intent.putExtra("data", data);
+                            startActivity(intent);
+                        }
+                    });
+                    postRecyclerView.setAdapter(adapter);
+                } else {
+                    postType.setChecked(true);
+                }
+                changeTagState();
+            }
+        });
+        postType.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    questionType.setChecked(false);
+                    adapter = new TestPostDataAdapter(activityArrayList, getContext());
+                    adapter.setOnItemClickListener(new TestPostDataAdapter.OnItemClickListener() {
+                        @Override
+                        public void onItemClicked(int position, PostData data) {
+                            Intent intent = new Intent(getContext(), PostContentActivity.class);
+                            intent.putExtra("position", position);
+                            intent.putExtra("data", data);
+                            startActivity(intent);
+                        }
+                    });
+                    postRecyclerView.setAdapter(adapter);
+                } else {
+                    questionType.setChecked(true);
+                }
+                changeTagState();
+            }
+        });
         postRecyclerView = rootView.findViewById(R.id.post_recyclerview);
         postRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         createPostFab = rootView.findViewById(R.id.fab_create_post);
         dividerItemDecoration = new DividerItemDecoration(postRecyclerView.getContext(), new LinearLayoutManager(getContext()).getOrientation());
         postRecyclerView.addItemDecoration(dividerItemDecoration);
 
-        //String[] items = {"수학", "과학", "프로그래밍", "미술", "음악", "국어"};
-        //Spinner spinner = (Spinner) rootView.findViewById(R.id.spinner);
-        //ArrayAdapter <String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, items);
-        //adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        //spinner.setAdapter(adapter);
-
-//        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//            @Override
-//            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-//                String item = String.valueOf(adapterView.getItemAtPosition(i));
-//
-//            }
-//
-//            @Override
-//            public void onNothingSelected(AdapterView<?> adapterView) {
-//
-//            }
-//        });
+        isInitial = true;
         getAllPostDataAndSetting();
         createPostFab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -93,31 +197,62 @@ public class MainMenuBulletinFragment extends Fragment {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
-                    postDataArrayList.clear();
-                    questionArrayList.clear();
-                    activityArrayList.clear();
-                    int i=0;
-                    for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
-                        postDataArrayList.add(documentSnapshot.toObject(PostData.class));
-                        if(postDataArrayList.get(i).getPostType() == 1){ // 게시글 유형이 질문 글이라면
-                            questionArrayList.add(postDataArrayList.get(i)); // 게시글 데이터를 질문 list 에 추가
+                    if (isInitial) {
+                        int i = 0;
+                        for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+
+                            postDataArrayList.add(documentSnapshot.toObject(PostData.class));
+
+                            if (postDataArrayList.get(i).getPostType() == 1) { // 게시글 유형이 질문 글이라면
+                                questionArrayList.add(postDataArrayList.get(i)); // 게시글 데이터를 질문 list 에 추가
+                            } else {
+                                activityArrayList.add(postDataArrayList.get(i)); // 게시글 데이터를 자기계발 list 에 추가
+                            }
+                            i++;
                         }
-                        else{
-                            activityArrayList.add(postDataArrayList.get(i)); // 게시글 데이터를 자기계발 list 에 추가
+                        adapter = new TestPostDataAdapter(activityArrayList, getContext());
+                        adapter.setOnItemClickListener(new TestPostDataAdapter.OnItemClickListener() {
+                            @Override
+                            public void onItemClicked(int position, PostData data) {
+                                Intent intent = new Intent(getContext(), PostContentActivity.class);
+                                intent.putExtra("position", position);
+                                intent.putExtra("data", data);
+                                startActivity(intent);
+                            }
+                        });
+                        postRecyclerView.setAdapter(adapter);
+                        isInitial = false;
+                    } else {
+                        int currentSize = activityArrayList.size() + questionArrayList.size();
+                        int i = 0;
+                        PostData init = null;
+                        for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+                            if (i == 0) {
+                                init = documentSnapshot.toObject(PostData.class);
+                            }
+                            i++;
                         }
-                        i++;
+                        if (currentSize < i) {
+                            postDataArrayList.add(init);
+                            if (init.getPostType() == 1) {
+                                questionArrayList.add(0, init);
+                                adapter = new TestPostDataAdapter(questionArrayList, getContext());
+                            } else {
+                                activityArrayList.add(0, init);
+                                adapter = new TestPostDataAdapter(activityArrayList, getContext());
+                            }
+                            adapter.setOnItemClickListener(new TestPostDataAdapter.OnItemClickListener() {
+                                @Override
+                                public void onItemClicked(int position, PostData data) {
+                                    Intent intent = new Intent(getContext(), PostContentActivity.class);
+                                    intent.putExtra("position", position);
+                                    intent.putExtra("data", data);
+                                    startActivity(intent);
+                                }
+                            });
+                            postRecyclerView.setAdapter(adapter);
+                        }
                     }
-                    adapter = new TestPostDataAdapter(activityArrayList, getContext());
-                    adapter.setOnItemClickListener(new TestPostDataAdapter.OnItemClickListener() {
-                        @Override
-                        public void onItemClicked(int position, PostData data) {
-                            Intent intent = new Intent(getContext(), PostContentActivity.class);
-                            intent.putExtra("position", position);
-                            intent.putExtra("data", data);
-                            startActivity(intent);
-                        }
-                    });
-                    postRecyclerView.setAdapter(adapter);
                 }
             }
         });
@@ -127,5 +262,62 @@ public class MainMenuBulletinFragment extends Fragment {
     public void onResume() {
         super.onResume();
         getAllPostDataAndSetting();
+    }
+
+    /**
+     * 카테고리에 해당하는 Chip 클릭 시 호출, 현재 선택된 카테고리들과 자기계발 or 질문에 따른 게시글 분류해서 보여주는 작업
+     */
+    public void changeTagState() {
+        selectArrayList.clear();
+        if (questionType.isChecked()) {
+            for (int i = 0; i < questionArrayList.size(); ++i) {
+                boolean isAddable = true;
+                for (int j = 0; j < currentSelectedCategoryList.size(); ++j) {
+                    if (!questionArrayList.get(i).getCategory().contains(currentSelectedCategoryList.get(j))) {
+                        isAddable = false;
+                        break;
+                    }
+                }
+                if (isAddable) {
+                    selectArrayList.add(questionArrayList.get(i));
+                }
+            }
+            adapter = new TestPostDataAdapter(selectArrayList, getContext());
+            postRecyclerView.setAdapter(adapter);
+            adapter.setOnItemClickListener(new TestPostDataAdapter.OnItemClickListener() {
+                @Override
+                public void onItemClicked(int position, PostData data) {
+                    Intent intent = new Intent(getContext(), PostContentActivity.class);
+                    intent.putExtra("position", position);
+                    intent.putExtra("data", data);
+                    startActivity(intent);
+                }
+            });
+        } else {
+            for (int i = 0; i < activityArrayList.size(); ++i) {
+                boolean isAddable = true;
+                for (int j = 0; j < currentSelectedCategoryList.size(); ++j) {
+                    if (!activityArrayList.get(i).getCategory().contains(currentSelectedCategoryList.get(j))) {
+                        isAddable = false;
+                        break;
+                    }
+                }
+                if (isAddable) {
+                    selectArrayList.add(activityArrayList.get(i));
+                }
+            }
+            adapter = new TestPostDataAdapter(selectArrayList, getContext());
+            postRecyclerView.setAdapter(adapter);
+            adapter.setOnItemClickListener(new TestPostDataAdapter.OnItemClickListener() {
+                @Override
+                public void onItemClicked(int position, PostData data) {
+                    Intent intent = new Intent(getContext(), PostContentActivity.class);
+                    intent.putExtra("position", position);
+                    intent.putExtra("data", data);
+                    startActivity(intent);
+                }
+            });
+        }
+
     }
 }
