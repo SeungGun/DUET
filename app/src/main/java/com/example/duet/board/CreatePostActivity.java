@@ -5,6 +5,8 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -13,13 +15,13 @@ import android.graphics.Matrix;
 import androidx.exifinterface.media.ExifInterface;
 
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.PaintDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.text.InputType;
 import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.View;
@@ -27,7 +29,9 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
@@ -47,18 +51,20 @@ import com.example.duet.util.LevelSystem;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.UploadTask;
-import com.prolificinteractive.materialcalendarview.CalendarDay;
 
 import java.io.InputStream;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 새로운 게시글을 추가할 수 있는 Activity
@@ -73,6 +79,7 @@ import java.util.Date;
  */
 public class CreatePostActivity extends AppCompatActivity {
     private LinearLayout imageContainer;
+    private LinearLayout subtractPointLayout;
     private Button addImageButton;
     private EditText inputTitle;
     private EditText inputBody;
@@ -81,15 +88,21 @@ public class CreatePostActivity extends AppCompatActivity {
     private RadioButton radioAlwaysButton;
     private RadioButton radioOptionalButton;
     private RadioButton radioNeverButton;
+    private RadioGroup replyRadioGroup;
+    private RadioGroup typeRadioGroup;
+    private RadioButton radioActivityButton;
+    private RadioButton radioQuestionButton;
+    private Button createGroupButton;
     private ArrayList<String> imgUrlList;
     public static final int REQUEST_CODE = 0;
     public static final int INITIAL_POST_POINT = 200;
     private int checkSum = 0;
+    private int inputLimitGroupCount = -1;
     private Bundle bundle;
     private CustomProgressDialog progressDialog;
-    private RadioGroup radioGroup;
     private ListView categoryListView;
     private ArrayList<String> selectedCategoryList;
+    private DatabaseReference mRef;
     private Handler handler = new Handler(Looper.myLooper()) {
         /**
          * 이미지를 갤러리에서 추가한 개수만큼 Storage 에 저장할 때 message sign 을 받는 곳
@@ -103,7 +116,7 @@ public class CreatePostActivity extends AppCompatActivity {
 
             if (imageContainer.getChildCount() == checkSum) {
                 // Firestore 에 이미지 url 정보들과 입력한 데이터를 함께 Post 데이터 저장 요청
-                int id = radioGroup.getCheckedRadioButtonId();
+                int id = replyRadioGroup.getCheckedRadioButtonId();
                 int state = 0;
                 if (radioAlwaysButton.getId() == id) {
                     state = 0;
@@ -113,6 +126,14 @@ public class CreatePostActivity extends AppCompatActivity {
                     state = 2;
                 }
 
+                int id2 = typeRadioGroup.getCheckedRadioButtonId();
+                int typeState = 0;
+                int point = 0;
+                if(radioQuestionButton.getId() == id2){
+                    typeState = 1;
+                    point = Integer.parseInt(inputSubtractPoint.getText().toString());
+                    state = 0;
+                }
                 SparseBooleanArray checkItems = categoryListView.getCheckedItemPositions();
 
                 for (int i = 0; i < CategoryList.items.length; ++i) {
@@ -126,20 +147,25 @@ public class CreatePostActivity extends AppCompatActivity {
                                 , inputTitle.getText().toString()
                                 , selectedCategoryList
                                 , inputBody.getText().toString()
-                                , Integer.parseInt(inputSubtractPoint.getText().toString())
+                                , point
                                 , state
-                                , imgUrlList)).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                                , imgUrlList
+                                , typeState
+                                , inputLimitGroupCount)).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
                     @Override
                     public void onComplete(@NonNull Task<DocumentReference> task) {
                         if (task.isSuccessful()) {
                             Log.d("create post", "success, id:" + task.getResult().getId());
-
+                            String id = task.getResult().getId();
                             // 생성한 게시글 데이터의 post id 필드 값 채우기
-                            Firestore.insertPostId(task.getResult().getId()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            Firestore.insertPostId(id).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if (task.isSuccessful()) {
                                         Log.d("pid update", "success");
+                                        if (inputLimitGroupCount != -1) {
+                                            createGroupSetting(id);
+                                        }
 
                                     } else {
 
@@ -167,11 +193,61 @@ public class CreatePostActivity extends AppCompatActivity {
         imgUrlList = new ArrayList<>();
         selectedCategoryList = new ArrayList<>();
         bundle = new Bundle();
+        mRef = FirebaseDatabase.getInstance().getReference();
         progressDialog = new CustomProgressDialog(CreatePostActivity.this);
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_multiple_choice, CategoryList.items);
         categoryListView.setAdapter(arrayAdapter);
         setListViewHeightBasedOnChildren(categoryListView);
-
+        radioActivityButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+                    subtractPointLayout.setVisibility(View.GONE);
+                    replyRadioGroup.setVisibility(View.VISIBLE);
+                }
+                else{
+                    subtractPointLayout.setVisibility(View.VISIBLE);
+                    replyRadioGroup.setVisibility(View.GONE);
+                }
+            }
+        });
+        createGroupButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FrameLayout container = new FrameLayout(getApplicationContext());
+                FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+                params.leftMargin = 60;
+                params.rightMargin = 60;
+                EditText editText = new EditText(getApplicationContext());
+                editText.setHint("제한할 인원 수를 입력하세요.");
+                editText.setInputType(InputType.TYPE_CLASS_NUMBER);
+                editText.setLayoutParams(params);
+                if(inputLimitGroupCount != -1){
+                    editText.setText(inputLimitGroupCount+"");
+                }
+                container.addView(editText);
+                AlertDialog.Builder builder = new AlertDialog.Builder(CreatePostActivity.this);
+                builder.setTitle("그룹 인원 제한 설정")
+                        .setCancelable(false)
+                        .setView(container)
+                        .setPositiveButton("설정", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                inputLimitGroupCount = Integer.parseInt(editText.getText().toString());
+                                dialog.dismiss();
+                            }
+                        })
+                        .setNegativeButton("설정 취소", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                inputLimitGroupCount = -1;
+                                dialog.dismiss();
+                            }
+                        });
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
+            }
+        });
         categoryListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -216,11 +292,16 @@ public class CreatePostActivity extends AppCompatActivity {
         inputBody = findViewById(R.id.input_body);
         inputSubtractPoint = findViewById(R.id.input_alloc_point);
         uploadButton = findViewById(R.id.upload_post_btn);
-        radioGroup = findViewById(R.id.reply_range_radio_group);
+        replyRadioGroup = findViewById(R.id.reply_range_radio_group);
         radioAlwaysButton = findViewById(R.id.radio_always);
         radioOptionalButton = findViewById(R.id.radio_optional);
         radioNeverButton = findViewById(R.id.radio_never);
         categoryListView = findViewById(R.id.category_list);
+        createGroupButton = findViewById(R.id.create_group_btn);
+        typeRadioGroup = findViewById(R.id.post_type_radio_group);
+        radioActivityButton = findViewById(R.id.radio_activity);
+        radioQuestionButton = findViewById(R.id.radio_question);
+        subtractPointLayout = findViewById(R.id.sub_point_layout);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -396,21 +477,27 @@ public class CreatePostActivity extends AppCompatActivity {
                                     count++;
                                 }
                             }
-
-                            int nextPoint = LevelSystem.obtainNextPointForPost(count, INITIAL_POST_POINT);
+                            int nextPoint = 0;
+                            if(radioQuestionButton.isChecked()){
+                                nextPoint = Integer.parseInt(inputSubtractPoint.getText().toString());
+                            }
+                            else {
+                                nextPoint = LevelSystem.obtainNextPointForPost(count, INITIAL_POST_POINT);
+                            }
+                            int point = nextPoint;
                             Firestore.updateUserPoint(User.currentUser.getUid(), nextPoint)
                                     .addOnCompleteListener(new OnCompleteListener<Void>() {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
                                             if (task.isSuccessful()) {
-                                                if (User.currentUser.getExp() + nextPoint > LevelSystem.expCumulativeList[User.currentUser.getLevel() + 1]) {
+                                                if (User.currentUser.getExp() + point > LevelSystem.expCumulativeList[User.currentUser.getLevel() + 1]) {
                                                     Firestore.updateUserLevel(User.currentUser.getUid())
                                                             .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                                 @Override
                                                                 public void onComplete(@NonNull Task<Void> task) {
                                                                     if (task.isSuccessful()) {
                                                                         User.currentUser.setLevel(User.currentUser.getLevel() + 1);
-                                                                        User.currentUser.setExp(User.currentUser.getExp() + nextPoint);
+                                                                        User.currentUser.setExp(User.currentUser.getExp() + point);
                                                                         progressDialog.dismissDialog();
                                                                         finish();
                                                                     }
@@ -458,5 +545,51 @@ public class CreatePostActivity extends AppCompatActivity {
         listView.requestLayout();
     }
 
+    public void createGroupSetting(String pid) {
+        Map<String, Object> update = new HashMap<>();
+        mRef.child("bulletin").push();
+
+        String key = pid;
+
+        //TODO content, title null checking
+        //TODO Button invisible to Bulletin board owner
+        //TODO Clean up with data model object
+
+        //create group 할 경우 본인의 FCM 토큰, uid, username을 database의 채팅 메타데이터에 저장함
+
+        String sendTitle = inputTitle.getText().toString();
+        String userId = User.currentUser.getUid();
+        String userName = User.currentUser.getUserName();
+
+        update.clear();
+        update.put("title", sendTitle);
+        mRef.child("chat_meta" + "/" + key).setValue(update);
+        update.clear();
+        update.put(userId, true);
+        mRef.child("chat_meta" + "/" + key + "/" + "members").setValue(update);
+        update.clear();
+        update.put("conv_key", key);
+        mRef.child("user_in" + "/" + userId).push().setValue(update);
+        update.clear();
+        update.put("user_name", userName);
+        mRef.child("chat_meta/" + key + "/user_names").setValue(update);
+
+
+        FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(new OnCompleteListener<String>() {
+                    @Override
+                    public void onComplete(@NonNull Task<String> task) {
+                        if (!task.isSuccessful()) {
+                            Log.w("TAG", "Fetching FCM registration token failed", task.getException());
+                            return;
+                        }
+                        // Get new FCM registration token
+                        String token = task.getResult();
+                        Map<String, Object> update = new HashMap<>();
+                        update.put(userName, token);
+                        mRef.child("chat_meta").child(key).child("FCM").updateChildren(update);
+                    }
+                });
+    }
 }
 
