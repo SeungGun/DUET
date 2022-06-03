@@ -49,12 +49,6 @@
                         android:textColor="#00ff00"
                         android:textStyle="bold"
                         android:textSize="20dp" />
-                    <Button
-                        android:id="@+id/create_group_btn"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="13dp"
-                        android:text="create group"/>
                 </LinearLayout>
             </LinearLayout>
             <LinearLayout
