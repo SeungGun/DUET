@@ -16,6 +16,146 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:textColor="@color/black"
+                android:textSize="21sp"
+                android:text="글 생성하기"/>
+            <RadioGroup
+                android:id="@+id/post_type_radio_group"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    android:textSize="15sp"
+                    android:text="게시글 유형"/>
+                <RadioButton
+                    android:id="@+id/radio_activity"
+                    android:text="자기계발"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:checked="true"
+                    android:layout_height="wrap_content"/>
+                <RadioButton
+                    android:id="@+id/radio_question"
+                    android:text="질문"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"/>
+            </RadioGroup>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:text="게시글 제목: "/>
+                <EditText
+                    android:id="@+id/input_title"
+                    android:hint="title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:text="게시글 글 내용: "/>
+                <EditText
+                    android:id="@+id/input_body"
+                    android:hint="body"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:visibility="gone"
+                android:id="@+id/sub_point_layout"
+                >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:text="차감할 포인트: "/>
+                <EditText
+                    android:id="@+id/input_alloc_point"
+                    android:hint="point to subtract"
+                    android:inputType="number"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+            <RadioGroup
+                android:id="@+id/reply_range_radio_group"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_weight="0.8"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    android:textSize="15sp"
+                    android:text="댓글 여부"/>
+                <RadioButton
+                    android:id="@+id/radio_always"
+                    android:text="항상 허용"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"/>
+                <RadioButton
+                    android:id="@+id/radio_optional"
+                    android:checked="true"
+                    android:text="선택적 허용"
+                    android:layout_weight="1.2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"/>
+                <RadioButton
+                    android:id="@+id/radio_never"
+                    android:text="비허용"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"/>
+            </RadioGroup>
+            <Button
+                android:id="@+id/create_group_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14dp"
+                android:text="그룹 사용하기"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:layout_margin="3dp"
+                android:text="* 카테고리"/>
+            <ListView
+                android:choiceMode="multipleChoice"
+                android:id="@+id/category_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -24,60 +164,10 @@
                     android:id="@+id/btn_add_image"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="addImage from gallery"/>
+                    android:text="이미지 추가하기"/>
             </LinearLayout>
-
-            <EditText
-                android:id="@+id/input_title"
-                android:hint="title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-
-            <EditText
-                android:id="@+id/input_body"
-                android:hint="body"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-
-            <EditText
-                android:id="@+id/input_alloc_point"
-                android:hint="point to subtract"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-            <RadioGroup
-                android:id="@+id/reply_range_radio_group"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-                <RadioButton
-                    android:id="@+id/radio_always"
-                    android:text="Always Allow"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-                <RadioButton
-                    android:id="@+id/radio_optional"
-                    android:checked="true"
-                    android:text="Optional Allow"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-                <RadioButton
-                    android:id="@+id/radio_never"
-                    android:text="Never"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-            </RadioGroup>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="카테고리"/>
-            <ListView
-                android:choiceMode="multipleChoice"
-                android:id="@+id/category_list"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-
             <LinearLayout
+                android:padding="5dp"
                 android:id="@+id/container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -85,9 +175,9 @@
             </LinearLayout>
 
             <Button
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="upload"
+                android:text="생성하기"
                 android:id="@+id/upload_post_btn"/>
 
         </LinearLayout>
