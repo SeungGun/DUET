@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -77,7 +78,7 @@ public class PostContentActivity extends AppCompatActivity {
         public void handleMessage(Message msg) {
             checkSum += msg.getData().getInt("count");
             if (arrSize == checkSum) {
-                adapter = new TestReplyAdapter(replyDataArrayList, getApplicationContext());
+                adapter = new TestReplyAdapter(replyDataArrayList, getApplicationContext(), data.getPostType(), data.getWriter().getUid().equals(User.currentUser.getUid()));
                 replyRecyclerView.setAdapter(adapter);
                 return;
             }
@@ -142,102 +143,101 @@ public class PostContentActivity extends AppCompatActivity {
         replyContainer = findViewById(R.id.reply_container);
         replyRecyclerView = findViewById(R.id.reply_recycler_view);
         userProfileImage = findViewById(R.id.content_user_profile);
-        createGroupButton = findViewById(R.id.create_group_btn);
-        createGroupButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (data.getLimitGroupCount() == -1) {
-                    FrameLayout container = new FrameLayout(getApplicationContext());
-                    FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
-                    params.leftMargin = 60;
-                    params.rightMargin = 60;
-                    EditText editText = new EditText(getApplicationContext());
-                    editText.setHint("제한할 인원 수를 입력하세요.");
-                    editText.setLayoutParams(params);
-                    container.addView(editText);
-                    AlertDialog.Builder builder = new AlertDialog.Builder(PostContentActivity.this);
-                    builder.setTitle("그룹 인원 제한 설정")
-                            .setCancelable(false)
-                            .setView(container)
-                            .setPositiveButton("확인", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    Firestore.updateGroupLimitCount(data.getPostID(), Integer.parseInt(editText.getText().toString()))
-                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                @Override
-                                                public void onComplete(@NonNull Task<Void> task) {
-                                                    if (task.isSuccessful()) {
-                                                        data.setLimitGroupCount(Integer.parseInt(editText.getText().toString()));
 
-                                                        Map<String, Object> update = new HashMap<>();
-                                                        mRef.child("bulletin").push();
-
-                                                        String key = data.getPostID();
-
-                                                        //TODO content, title null checking
-                                                        //TODO Button invisible to Bulletin board owner
-                                                        //TODO Clean up with data model object
-
-                                                        //create group 할 경우 본인의 FCM 토큰, uid, username을 database의 채팅 메타데이터에 저장함
-
-                                                        String sendTitle = data.getTitle();
-                                                        String userId = User.currentUser.getUid();
-                                                        String userName = User.currentUser.getUserName();
-
-                                                        update.clear();
-                                                        update.put("title", sendTitle);
-                                                        mRef.child("chat_meta"+"/"+key).setValue(update);
-                                                        update.clear();
-                                                        update.put(userId, true);
-                                                        mRef.child("chat_meta"+ "/"+key +"/" + "members").setValue(update);
-                                                        update.clear();
-                                                        update.put("conv_key", key);
-                                                        mRef.child("user_in"+ "/"+userId).push().setValue(update);
-                                                        update.clear();
-                                                        update.put("user_name", userName);
-                                                        mRef.child("chat_meta/" + key + "/user_names").setValue(update);
-
-
-                                                        FirebaseMessaging.getInstance().getToken()
-                                                                .addOnCompleteListener(new OnCompleteListener<String>() {
-                                                                    @Override
-                                                                    public void onComplete(@NonNull Task<String> task) {
-                                                                        if (!task.isSuccessful()) {
-                                                                            Log.w("TAG", "Fetching FCM registration token failed", task.getException());
-                                                                            return;
-                                                                        }
-                                                                        // Get new FCM registration token
-                                                                        String token = task.getResult();
-                                                                        Map<String, Object> update = new HashMap<>();
-                                                                        update.put(userName, token);
-                                                                        mRef.child("chat_meta").child(key).child("FCM").updateChildren(update);
-                                                                    }
-                                                                });
-
-
-
-                                                        dialog.dismiss();
-                                                    }
-                                                }
-                                            });
-                                }
-                            })
-                            .setNegativeButton("취소", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            });
-                    AlertDialog alertDialog = builder.create();
-                    alertDialog.show();
-                } else {
-                    Toast.makeText(PostContentActivity.this, data.getLimitGroupCount() + "명 제한 설정됨", Toast.LENGTH_SHORT).show();
-                    /*
-                        그룹 인원 수 제한 설정되어 있는 상태, 그 후 처리 로직 작성
-                     */
-                }
-            }
-        });
+//        createGroupButton = findViewById(R.id.create_group_btn);
+//        createGroupButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (data.getLimitGroupCount() == -1) {
+//                    FrameLayout container = new FrameLayout(getApplicationContext());
+//                    FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+//                    params.leftMargin = 60;
+//                    params.rightMargin = 60;
+//                    EditText editText = new EditText(getApplicationContext());
+//                    editText.setHint("제한할 인원 수를 입력하세요.");
+//                    editText.setInputType(InputType.TYPE_CLASS_NUMBER);
+//                    editText.setLayoutParams(params);
+//                    container.addView(editText);
+//                    AlertDialog.Builder builder = new AlertDialog.Builder(PostContentActivity.this);
+//                    builder.setTitle("그룹 인원 제한 설정")
+//                            .setCancelable(false)
+//                            .setView(container)
+//                            .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+//                                @Override
+//                                public void onClick(DialogInterface dialog, int which) {
+//                                    Firestore.updateGroupLimitCount(data.getPostID(), Integer.parseInt(editText.getText().toString()))
+//                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+//                                                @Override
+//                                                public void onComplete(@NonNull Task<Void> task) {
+//                                                    if (task.isSuccessful()) {
+//                                                        data.setLimitGroupCount(Integer.parseInt(editText.getText().toString()));
+//
+//                                                        Map<String, Object> update = new HashMap<>();
+//                                                        mRef.child("bulletin").push();
+//
+//                                                        String key = data.getPostID();
+//
+//
+//                                                        //create group 할 경우 본인의 FCM 토큰, uid, username을 database의 채팅 메타데이터에 저장함
+//
+//                                                        String sendTitle = data.getTitle();
+//                                                        String userId = User.currentUser.getUid();
+//                                                        String userName = User.currentUser.getUserName();
+//
+//                                                        update.clear();
+//                                                        update.put("title", sendTitle);
+//                                                        mRef.child("chat_meta"+"/"+key).setValue(update);
+//                                                        update.clear();
+//                                                        update.put(userId, true);
+//                                                        mRef.child("chat_meta"+ "/"+key +"/" + "members").setValue(update);
+//                                                        update.clear();
+//                                                        update.put("conv_key", key);
+//                                                        mRef.child("user_in"+ "/"+userId).push().setValue(update);
+//                                                        update.clear();
+//                                                        update.put("user_name", userName);
+//                                                        mRef.child("chat_meta/" + key + "/user_names").setValue(update);
+//
+//
+//                                                        FirebaseMessaging.getInstance().getToken()
+//                                                                .addOnCompleteListener(new OnCompleteListener<String>() {
+//                                                                    @Override
+//                                                                    public void onComplete(@NonNull Task<String> task) {
+//                                                                        if (!task.isSuccessful()) {
+//                                                                            Log.w("TAG", "Fetching FCM registration token failed", task.getException());
+//                                                                            return;
+//                                                                        }
+//                                                                        // Get new FCM registration token
+//                                                                        String token = task.getResult();
+//                                                                        Map<String, Object> update = new HashMap<>();
+//                                                                        update.put(userName, token);
+//                                                                        mRef.child("chat_meta").child(key).child("FCM").updateChildren(update);
+//                                                                    }
+//                                                                });
+//
+//
+//
+//                                                        dialog.dismiss();
+//                                                    }
+//                                                }
+//                                            });
+//                                }
+//                            })
+//                            .setNegativeButton("취소", new DialogInterface.OnClickListener() {
+//                                @Override
+//                                public void onClick(DialogInterface dialog, int which) {
+//                                    dialog.dismiss();
+//                                }
+//                            });
+//                    AlertDialog alertDialog = builder.create();
+//                    alertDialog.show();
+//                } else {
+//                    Toast.makeText(PostContentActivity.this, data.getLimitGroupCount() + "명 제한 설정됨", Toast.LENGTH_SHORT).show();
+//                    /*
+//                        그룹 인원 수 제한 설정되어 있는 상태, 그 후 처리 로직 작성
+//                     */
+//                }
+//            }
+//        });
         replyRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         replyDataArrayList = new ArrayList<>();
         dividerItemDecoration = new DividerItemDecoration(replyRecyclerView.getContext(), new LinearLayoutManager(getBaseContext()).getOrientation());
@@ -285,7 +285,7 @@ public class PostContentActivity extends AppCompatActivity {
                         for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
                             replyDataArrayList.add(documentSnapshot.toObject(ReplyData.class));
                         }
-                        adapter = new TestReplyAdapter(replyDataArrayList, getApplicationContext());
+                        adapter = new TestReplyAdapter(replyDataArrayList, getApplicationContext(), data.getPostType(), data.getWriter().getUid().equals(User.currentUser.getUid()));
                         replyRecyclerView.setAdapter(adapter);
                     }
                 }
@@ -450,7 +450,7 @@ public class PostContentActivity extends AppCompatActivity {
                                 });
 
                         Firestore.updateUserPoint(replyDataArrayList.get((item.getGroupId()))
-                                .getWriter().getUid(), data.getAllocPoint())
+                                .getWriter().getUid(), data.getAllocPoint() * 2)
                                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
@@ -461,7 +461,21 @@ public class PostContentActivity extends AppCompatActivity {
                                         }
                                     }
                                 });
-                        Firestore.updateUserPoint(data.getWriter().getUid(), data.getAllocPoint() * -1)
+                        boolean existSelected = false;
+                        for(int i=0; i<replyDataArrayList.size(); ++i){
+                            if(replyDataArrayList.get(i).isSelected()){
+                                existSelected = true;
+                                break;
+                            }
+                        }
+                        int point = 0;
+                        if(existSelected){
+                            point = data.getAllocPoint() * -1;
+                        }
+                        else{
+                            point = (int)(data.getAllocPoint() * 1.2);
+                        }
+                        Firestore.updateUserPoint(data.getWriter().getUid(), point)
                                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
@@ -568,7 +582,14 @@ public class PostContentActivity extends AppCompatActivity {
     }
 
     public void subtractPointByReplying() {
-        Firestore.updateUserPoint(User.currentUser.getUid(), -20)
+        int point = 0;
+        if(data.getPostType() == 0){
+            point = 20;
+        }
+        else{
+            point = data.getAllocPoint() * -1;
+        }
+        Firestore.updateUserPoint(User.currentUser.getUid(), point)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {

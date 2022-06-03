@@ -28,10 +28,14 @@ import androidx.recyclerview.widget.RecyclerView;
 public class TestReplyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private ArrayList<ReplyData> replyDataArrayList;
     private final Context context;
+    private int postType;
+    private boolean isOwner;
 
-    public TestReplyAdapter(ArrayList<ReplyData> dataArrayList, Context context) {
+    public TestReplyAdapter(ArrayList<ReplyData> dataArrayList, Context context, int postType, boolean isOwner) {
         this.replyDataArrayList = dataArrayList;
         this.context = context;
+        this.postType = postType;
+        this.isOwner = isOwner;
     }
 
     @NonNull
@@ -42,13 +46,13 @@ public class TestReplyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         if (viewType == 0) {
             view = inflater.inflate(R.layout.post_reply_item, parent, false);
-            return new NormalViewHolder(view);
+            return new NormalViewHolder(view, postType, isOwner);
         } else if (viewType == 1) {
             view = inflater.inflate(R.layout.reply_waiting_layout, parent, false);
             return new TestReplyAdapter.WaitingViewHolder(view);
         }
         view = inflater.inflate(R.layout.post_reply_item, parent, false);
-        return new NormalViewHolder(view);
+        return new NormalViewHolder(view, postType, isOwner);
     }
 
     @Override
@@ -159,9 +163,12 @@ public class TestReplyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         public TextView body;
         public TextView writeDate;
         public ImageView profileImage;
-
-        public NormalViewHolder(View itemView) {
+        private int postType;
+        private boolean isOwner;
+        public NormalViewHolder(View itemView, int postType, boolean isOwner) {
             super(itemView);
+            this.postType = postType;
+            this.isOwner = isOwner;
             profileImage = itemView.findViewById(R.id.reply_profile_image);
             writerNickname = itemView.findViewById(R.id.reply_item_writer);
             body = itemView.findViewById(R.id.reply_item_body);
@@ -171,9 +178,22 @@ public class TestReplyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
         @Override
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-            menu.add(this.getAdapterPosition(), R.id.action_adopt, 0, "채택하기");
-            menu.add(this.getAdapterPosition(), R.id.action_delete, 1, "삭제하기");
-            menu.add(this.getAdapterPosition(), R.id.action_report, 2, "신고하기");
+            if(postType == 0) {
+                if(isOwner) {
+                    menu.add(this.getAdapterPosition(), R.id.action_delete, 1, "삭제하기");
+                }
+                menu.add(this.getAdapterPosition(), R.id.action_report, 2, "신고하기");
+            }
+            else{
+                if(isOwner){
+                    menu.add(this.getAdapterPosition(), R.id.action_adopt, 0, "채택하기");
+                    menu.add(this.getAdapterPosition(), R.id.action_delete, 1, "삭제하기");
+                    menu.add(this.getAdapterPosition(), R.id.action_report, 2, "신고하기");
+                }
+                else{
+                    menu.add(this.getAdapterPosition(), R.id.action_report, 2, "신고하기");
+                }
+            }
         }
     }
 
