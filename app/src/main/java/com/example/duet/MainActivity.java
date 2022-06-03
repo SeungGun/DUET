@@ -61,15 +61,13 @@ public class MainActivity extends AppCompatActivity {
                                     startActivity(intent);
                                 }
                             });
+                            doAutoLogin();
                         }
                         else{
                             Log.w("token error", "Fetching FCM registration token failed", task.getException());
                         }
                     }
                 });
-
-        doAutoLogin();
-
     }
 
 
