@@ -84,23 +84,28 @@ public class TestPostDataAdapter extends RecyclerView.Adapter<TestPostDataAdapte
     @Override
     public void onBindViewHolder(@NonNull TestPostDataAdapter.ViewHolder holder, int position) {
         int curPos = position;
+        RequestOptions requestOptions = new RequestOptions();
+        requestOptions.transforms(new CenterCrop(), new RoundedCorners(24));
         if (postDataArrayList.get(position).getPostImageUrls().size() > 0) {
-            RequestOptions requestOptions = new RequestOptions();
-            requestOptions.transforms(new CenterCrop(), new RoundedCorners(32));
-            if (postDataArrayList.get(position).getPostImageUrls().size() > 0) {
-                Glide.with(context)
-                        .load(postDataArrayList.get(position).getPostImageUrls().get(0))
-                        .error(R.drawable.logo)
-                        .apply(requestOptions)
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .into(holder.mainImage);
-            }
+            Glide.with(context)
+                    .load(postDataArrayList.get(position).getPostImageUrls().get(0))
+                    .error(R.drawable.logo)
+                    .fitCenter()
+                    .apply(RequestOptions.bitmapTransform(new RoundedCorners(32)))
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(holder.mainImage);
+        }
+        else{
+            Glide.with(context)
+                    .clear(holder.mainImage);
+        }
             Glide.with(context)
                     .load(postDataArrayList.get(position).getWriter().getProfileUrl())
                     .error(R.drawable.ic_profile_foreground)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .apply(requestOptions)
                     .into(holder.userProfileImage);
+
             holder.userProfileImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -123,7 +128,6 @@ public class TestPostDataAdapter extends RecyclerView.Adapter<TestPostDataAdapte
                     context.startActivity(intent);
                 }
             });
-        }
     }
 
     @Override
