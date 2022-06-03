@@ -91,7 +91,7 @@ public class OfflineCreatePostActivity extends AppCompatActivity {
     public static final int INITIAL_POST_POINT = 200;
     private int checkSum = 0;
     int state;
-    ArrayList<String> img;
+    ArrayList<String> img = new ArrayList<>();
 
     private Bundle bundle;
     private CustomProgressDialog progressDialog;
@@ -164,6 +164,7 @@ public class OfflineCreatePostActivity extends AppCompatActivity {
             }
         });
 
+        uploadButton.setText("off-line Save");
         uploadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -194,7 +195,7 @@ public class OfflineCreatePostActivity extends AppCompatActivity {
 
                 for (int i = 0; i < CategoryList.items.length; ++i) {
                     if (checkItems.get(i)) {
-                        selectedCategoryList.add(CategoryList.items[i]);
+                        selectedCategoryList.add(Integer.toString(i));
                         Log.d("ddddddd", CategoryList.items[i]);
                     }
                 }
@@ -203,7 +204,7 @@ public class OfflineCreatePostActivity extends AppCompatActivity {
                     jsonObject.put("title", title);
                     jsonObject.put("body", body);
                     jsonObject.put("point", point);
-                    jsonObject.put("state", state);
+                    jsonObject.put("state", Integer.toString(state));
 
                     for(String s : selectedCategoryList){
                         if(cat.equals(""))
@@ -228,7 +229,7 @@ public class OfflineCreatePostActivity extends AppCompatActivity {
                 }
 
                 String jsonString = jsonObject.toString();
-                Log.d("dddddddd", jsonString);
+                Log.d("aaa", jsonString);
 
                 try {
                     OutputStreamWriter out = new OutputStreamWriter(openFileOutput("offline.txt", 0));
@@ -286,6 +287,7 @@ public class OfflineCreatePostActivity extends AppCompatActivity {
 
                     // 원본 bitmap 을 올바르게 회전한 bitmap 으로 변환
                     bitmap = rotateBitmap(bitmap, orientation);
+                    Log.d("aaa", bitmap.toString());
 
                     inputStream.close();
                     inputStream2.close();

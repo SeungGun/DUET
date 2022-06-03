@@ -53,7 +53,13 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.UploadTask;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -83,6 +89,7 @@ public class CreatePostActivity extends AppCompatActivity {
     private RadioButton radioNeverButton;
     private ArrayList<String> imgUrlList;
     public static final int REQUEST_CODE = 0;
+    public static final int URI_REQUEST_CODE = 7;
     public static final int INITIAL_POST_POINT = 200;
     private int checkSum = 0;
     private Bundle bundle;
@@ -192,6 +199,17 @@ public class CreatePostActivity extends AppCompatActivity {
         uploadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                try {
+                    OutputStreamWriter out = new OutputStreamWriter(openFileOutput("offline.txt", 0));
+                    out.write("");
+                    out.close();
+                } catch (Throwable t) {
+                    Toast.makeText(getApplicationContext(), "Exception: " + t.toString(), Toast.LENGTH_SHORT).show();
+                }
+
+
+
                 progressDialog.showLoadingDialog();
                 new Thread() {
                     @Override
@@ -202,6 +220,9 @@ public class CreatePostActivity extends AppCompatActivity {
                 }.start();
             }
         });
+
+        readOffline();
+
     }
 
     /**
@@ -456,6 +477,112 @@ public class CreatePostActivity extends AppCompatActivity {
         params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
         listView.setLayoutParams(params);
         listView.requestLayout();
+    }
+
+    private void readOffline(){
+        String str = "";
+        StringBuffer buf = new StringBuffer();
+
+        try {
+            InputStream in = openFileInput("offline.txt");
+            if (in != null) {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+                while ((str = reader.readLine()) != null) {
+                    buf.append(str + "\n");
+                }
+                in.close();
+
+            }//if
+            else
+                return;
+        } catch (java.io.FileNotFoundException e) {
+            Log.d("aaaaaaa", String.valueOf(e));
+        } catch (Throwable t) {
+            Toast.makeText(this, "Exception: " + t.toString(), Toast.LENGTH_SHORT).show();
+        }
+
+        if(buf.toString() == "")
+            return;
+
+        Log.d("aaaaaaa", buf.toString());
+
+
+        JSONObject jObject = null;
+        try {
+            jObject = new JSONObject(buf.toString());
+            String title = jObject.getString("title");
+            String body = jObject.getString("body");
+            String point = jObject.getString("point");
+            String state = jObject.getString("state");
+            String cat = jObject.getString("category");
+            String img = jObject.getString("image");
+
+            String[] category = cat.split(",");
+
+            String[] image = img.split(",");
+
+            inputTitle.setText(title);
+            inputBody.setText(body);
+            inputSubtractPoint.setText(point);
+
+            if(Integer.parseInt(state) == 0)
+                radioGroup.check(R.id.radio_always);
+            else if(Integer.parseInt(state) == 1)
+                radioGroup.check(R.id.radio_optional);
+            else if(Integer.parseInt(state) == 2)
+                radioGroup.check(R.id.radio_never);
+
+            for(String c : category){
+                categoryListView.setItemChecked(Integer.parseInt(c), true);
+            }
+
+            for(String i : image){
+//                imageSet(i);
+            }
+
+        } catch (JSONException e) {
+            Log.d("aaaaaaa", String.valueOf(e));
+        }
+
+
+    }
+
+
+    private void imageSet(Uri selectedImageUri){
+        try {
+
+
+            InputStream inputStream = getContentResolver().openInputStream(selectedImageUri);
+            InputStream inputStream2 = getContentResolver().openInputStream(selectedImageUri);
+
+            // 선택한 이미지를 Bitmap 형태로 생성
+            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+
+            // 선택한 이미지의 절대 경로를 통해 이미지의 메타데이터 값 추출
+            ExifInterface exifInterface = new ExifInterface(inputStream2);
+            int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+
+            // 원본 bitmap 을 올바르게 회전한 bitmap 으로 변환
+            bitmap = rotateBitmap(bitmap, orientation);
+
+            inputStream.close();
+            inputStream2.close();
+
+            ImageView imageView = new ImageView(getApplicationContext()); // 동적 ImageView 생성
+            imageView.setImageBitmap(bitmap); // ImageView 로 보여줄 이미지 설정
+            imageView.setScaleType(ImageView.ScaleType.FIT_XY); // 깔끔한 공간과 비율을 위해 필요
+            imageView.setAdjustViewBounds(true); // 깔끔한 공간과 비율을 위해 필요
+
+            // 동적 레이아웃 속성 지정
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT
+                    , LinearLayout.LayoutParams.WRAP_CONTENT);
+            params.bottomMargin = 20;
+
+            // LinearLayout 의 child 로 새로만든 ImageView 동적으로 추가
+            imageContainer.addView(imageView, params);
+        } catch (Exception e) {
+            Log.d("aaaaaaa", e.toString());
+        }
     }
 
 }
