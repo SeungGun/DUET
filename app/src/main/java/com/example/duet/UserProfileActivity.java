@@ -55,6 +55,7 @@ public class UserProfileActivity extends AppCompatActivity {
     private ImageView profileImage;
     private TextView nicknameTextView;
     private TextView levelText;
+    private TextView defensiveText;
     private ProgressBar levelProgress;
     private MaterialCalendarView materialCalendarView;
     private ArrayList<CalendarDay> calendars;
@@ -92,16 +93,24 @@ public class UserProfileActivity extends AppCompatActivity {
                 }
             }
             selectDate.setText(CalendarDay.today().getYear() + "년 " + CalendarDay.today().getMonth() + "월 " + CalendarDay.today().getDay() + "일 활동");
-            ArrayAdapter<String> stringArrayAdapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_list_item_1, selectedPostTitleList);
-            dayListView.setAdapter(stringArrayAdapter);
-            dayListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    Intent contentIntent = new Intent(getApplicationContext(), PostContentActivity.class);
-                    contentIntent.putExtra("data", selectedPostDataList.get(position));
-                    startActivity(contentIntent);
-                }
-            });
+            if(selectedPostTitleList.size() == 0){
+                dayListView.setVisibility(View.GONE);
+                defensiveText.setVisibility(View.VISIBLE);
+            }
+            else {
+                dayListView.setVisibility(View.VISIBLE);
+                defensiveText.setVisibility(View.GONE);
+                ArrayAdapter<String> stringArrayAdapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_list_item_1, selectedPostTitleList);
+                dayListView.setAdapter(stringArrayAdapter);
+                dayListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        Intent contentIntent = new Intent(getApplicationContext(), PostContentActivity.class);
+                        contentIntent.putExtra("data", selectedPostDataList.get(position));
+                        startActivity(contentIntent);
+                    }
+                });
+            }
         }
     };
 
@@ -124,6 +133,7 @@ public class UserProfileActivity extends AppCompatActivity {
                         selectedPostTitleList = new ArrayList<>();
                         selectedPostDataList = new ArrayList<>();
                         dayListView = findViewById(R.id.profile_list);
+                        defensiveText = findViewById(R.id.defensive_text);
                         selectDate = findViewById(R.id.current_date_text);
                         materialCalendarView = findViewById(R.id.profile_calendar);
                         materialCalendarView.setSelectionMode(MaterialCalendarView.SELECTION_MODE_SINGLE);
@@ -143,16 +153,24 @@ public class UserProfileActivity extends AppCompatActivity {
                                     }
                                 }
                                 selectDate.setText(date.getYear() + "년 " + date.getMonth() + "월 " + date.getDay() + "일 활동");
-                                ArrayAdapter<String> stringArrayAdapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_list_item_1, selectedPostTitleList);
-                                dayListView.setAdapter(stringArrayAdapter);
-                                dayListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                                    @Override
-                                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                        Intent contentIntent = new Intent(getApplicationContext(), PostContentActivity.class);
-                                        contentIntent.putExtra("data", selectedPostDataList.get(position));
-                                        startActivity(contentIntent);
-                                    }
-                                });
+                                if(selectedPostTitleList.size() == 0){
+                                    dayListView.setVisibility(View.GONE);
+                                    defensiveText.setVisibility(View.VISIBLE);
+                                }
+                                else {
+                                    dayListView.setVisibility(View.VISIBLE);
+                                    defensiveText.setVisibility(View.GONE);
+                                    ArrayAdapter<String> stringArrayAdapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_list_item_1, selectedPostTitleList);
+                                    dayListView.setAdapter(stringArrayAdapter);
+                                    dayListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                        @Override
+                                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                            Intent contentIntent = new Intent(getApplicationContext(), PostContentActivity.class);
+                                            contentIntent.putExtra("data", selectedPostDataList.get(position));
+                                            startActivity(contentIntent);
+                                        }
+                                    });
+                                }
                             }
                         });
                         materialCalendarView.setSelectedDate(CalendarDay.today());
