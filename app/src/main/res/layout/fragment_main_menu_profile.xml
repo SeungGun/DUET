@@ -1,32 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     >
 
-    <LinearLayout
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        >
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Profile"
-            android:fontFamily="serif"
-            android:textColor="@color/black"
-            android:textSize="40dp"
-            android:textStyle="bold"
-            android:layout_marginTop="20dp"
-            android:layout_marginLeft="15dp"
-            android:id="@+id/title"
-            />
-
+        android:orientation="vertical">
         <LinearLayout
             android:layout_marginTop="7dp"
             android:layout_width="match_parent"
@@ -52,8 +38,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="0dp"
                     android:layout_weight="1"
-                    android:textColor="@color/black"
-                    android:fontFamily="sans-serif-condensed-light"
+                    android:fontFamily="serif"
+                    android:textColor="#000000"
+                    android:textStyle="bold"
                     android:text="NickName"
                     android:textSize="25dp"/>
                 <TextView
@@ -62,9 +49,8 @@
                     android:layout_height="0dp"
                     android:layout_weight="1"
                     android:text="Level"
-                    android:fontFamily="sans-serif-condensed-light"
                     android:textSize="18dp"
-                    android:gravity="bottom"
+                    android:gravity="center"
                     android:textStyle="bold"/>
                 <ProgressBar
                     android:max="100"
@@ -79,7 +65,7 @@
         <com.prolificinteractive.materialcalendarview.MaterialCalendarView
             android:id="@+id/profile_calendar"
             android:layout_width="match_parent"
-            android:layout_height="300dp"
+            android:layout_height="360dp"
             android:layout_marginTop="10dp"
             />
 
@@ -95,7 +81,6 @@
             android:layout_width="match_parent"
             android:gravity="center"
             android:layout_height="wrap_content"
-            android:fontFamily="sans-serif-condensed-light"
             android:textStyle="bold"
             android:textSize="15sp"
             android:textColor="#000000"/>
@@ -109,8 +94,20 @@
             android:id="@+id/profile_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/defensive_text"
+            android:text="활동 내역이 없습니다."
+            android:visibility="gone"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
 
 
     </LinearLayout>
 
 </ScrollView>
+
+

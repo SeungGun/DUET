@@ -19,23 +19,29 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="5dp"
+                android:layout_margin="15dp"
                 android:textColor="@color/black"
-                android:textSize="21sp"
+                android:textSize="23sp"
                 android:text="글 생성하기"/>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/teal_700"
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="2dp"/>
             <RadioGroup
                 android:id="@+id/post_type_radio_group"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
                 <TextView
-                    android:layout_weight="1"
+                    android:layout_weight="0.7"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:gravity="center"
                     android:textColor="@color/black"
                     android:textStyle="bold"
-                    android:textSize="15sp"
+                    android:textSize="13sp"
                     android:text="게시글 유형"/>
                 <RadioButton
                     android:id="@+id/radio_activity"
@@ -51,39 +57,58 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"/>
             </RadioGroup>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/teal_700"
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="2dp"/>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 >
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_margin="3dp"
+                    android:layout_width="0dp"
+                    android:layout_weight="2"
                     android:layout_height="wrap_content"
                     android:textColor="@color/black"
-                    android:text="게시글 제목: "/>
+                    android:gravity="center"
+                    android:textStyle="bold"
+                    android:text="제목: "/>
                 <EditText
+                    android:layout_margin="3dp"
                     android:id="@+id/input_title"
                     android:hint="title"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
+                    android:layout_weight="8"
                     android:layout_height="wrap_content"/>
             </LinearLayout>
 
 
             <LinearLayout
+                android:layout_marginTop="5dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 >
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_margin="3dp"
+                    android:gravity="top|center_horizontal"
+                    android:layout_width="0dp"
+                    android:layout_weight="2"
+                    android:layout_height="match_parent"
                     android:textColor="@color/black"
-                    android:text="게시글 글 내용: "/>
+                    android:textStyle="bold"
+                    android:text="글 내용: "/>
                 <EditText
                     android:id="@+id/input_body"
                     android:hint="body"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
+                    android:gravity="top"
+                    android:layout_width="0dp"
+                    android:layout_weight="8"
+                    android:layout_height="200dp"/>
             </LinearLayout>
 
             <LinearLayout
@@ -97,6 +122,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/black"
+                    android:textStyle="bold"
                     android:text="차감할 포인트: "/>
                 <EditText
                     android:id="@+id/input_alloc_point"
@@ -105,6 +131,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
             </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/teal_700"
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="2dp"/>
             <RadioGroup
                 android:id="@+id/reply_range_radio_group"
                 android:layout_width="match_parent"
@@ -117,7 +149,7 @@
                     android:gravity="center"
                     android:textColor="@color/black"
                     android:textStyle="bold"
-                    android:textSize="15sp"
+                    android:textSize="13sp"
                     android:text="댓글 여부"/>
                 <RadioButton
                     android:id="@+id/radio_always"
@@ -139,36 +171,59 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"/>
             </RadioGroup>
-            <Button
-                android:id="@+id/create_group_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="14dp"
-                android:text="그룹 사용하기"/>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/teal_700"
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="2dp"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="15sp"
-                android:layout_margin="3dp"
+                android:layout_margin="5dp"
                 android:text="* 카테고리"/>
             <ListView
                 android:choiceMode="multipleChoice"
                 android:id="@+id/category_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/teal_700"
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="2dp"/>
+            <Button
+                android:id="@+id/create_group_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="15dp"
+                android:layout_marginLeft="6dp"
+                android:background="@drawable/button_radius"
+                android:text="그룹 사용하기"/>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/teal_700"
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="2dp"/>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
                 <Button
+                    android:textSize="15dp"
                     android:id="@+id/btn_add_image"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="6dp"
+                    android:background="@drawable/button_radius"
                     android:text="이미지 추가하기"/>
             </LinearLayout>
 
             <LinearLayout
-                android:padding="5dp"
+                android:padding="15dp"
                 android:id="@+id/container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -179,6 +234,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="생성하기"
+                android:background="@drawable/button_radius"
                 android:id="@+id/upload_post_btn"/>
 
         </LinearLayout>

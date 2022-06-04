@@ -28,7 +28,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class TestUpdateProfile extends AppCompatActivity {
+public class UpdateProfile extends AppCompatActivity {
     public static final int REQUEST_CODE = 0;
     private Handler handler = new Handler(Looper.myLooper()){
         @Override
@@ -43,7 +43,7 @@ public class TestUpdateProfile extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test_update_profile);
-        progressDialog = new CustomProgressDialog(TestUpdateProfile.this);
+        progressDialog = new CustomProgressDialog(UpdateProfile.this);
         Intent intent = new Intent();
         intent.setType("image/* video/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);

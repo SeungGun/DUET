@@ -32,6 +32,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="20dp"
+            android:background="@drawable/button_radius"
             android:text="sign_in"/>
 
         <Button
@@ -39,6 +40,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
+            android:background="@drawable/button_radius"
             android:text="sign_up"/>
     </LinearLayout>
     <Button

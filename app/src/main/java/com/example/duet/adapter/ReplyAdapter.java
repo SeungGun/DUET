@@ -14,6 +14,8 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.duet.R;
 import com.example.duet.UserProfileActivity;
 import com.example.duet.model.ReplyData;
@@ -27,13 +29,13 @@ import java.util.ArrayList;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class TestReplyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class ReplyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private ArrayList<ReplyData> replyDataArrayList;
     private final Context context;
     private int postType;
     private boolean isOwner;
 
-    public TestReplyAdapter(ArrayList<ReplyData> dataArrayList, Context context, int postType, boolean isOwner) {
+    public ReplyAdapter(ArrayList<ReplyData> dataArrayList, Context context, int postType, boolean isOwner) {
         this.replyDataArrayList = dataArrayList;
         this.context = context;
         this.postType = postType;
@@ -51,7 +53,7 @@ public class TestReplyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             return new NormalViewHolder(view, postType, isOwner);
         } else if (viewType == 1) {
             view = inflater.inflate(R.layout.reply_waiting_layout, parent, false);
-            return new TestReplyAdapter.WaitingViewHolder(view);
+            return new ReplyAdapter.WaitingViewHolder(view);
         }
         view = inflater.inflate(R.layout.post_reply_item, parent, false);
         return new NormalViewHolder(view, postType, isOwner);
@@ -82,6 +84,8 @@ public class TestReplyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             normalViewHolder.writeDate.setText(simpleDateFormat.format(replyDataArrayList.get(position).getReplyDate()));
             Glide.with(context)
                     .load(replyDataArrayList.get(position).getWriter().getProfileUrl())
+                    .fitCenter()
+                    .apply(RequestOptions.bitmapTransform(new RoundedCorners(32)))
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .error(R.drawable.ic_profile_foreground)
                     .into(((NormalViewHolder) holder).profileImage);

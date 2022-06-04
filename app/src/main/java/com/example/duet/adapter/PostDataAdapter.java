@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class TestPostDataAdapter extends RecyclerView.Adapter<TestPostDataAdapter.ViewHolder> {
+public class PostDataAdapter extends RecyclerView.Adapter<PostDataAdapter.ViewHolder> {
     private final ArrayList<PostData> postDataArrayList;
     private final Context context;
     private OnItemClickListener itemClickListener;
@@ -46,7 +46,7 @@ public class TestPostDataAdapter extends RecyclerView.Adapter<TestPostDataAdapte
 
     }
 
-    public TestPostDataAdapter(ArrayList<PostData> data, Context context) {
+    public PostDataAdapter(ArrayList<PostData> data, Context context) {
         postDataArrayList = data;
         this.context = context;
     }
@@ -66,7 +66,7 @@ public class TestPostDataAdapter extends RecyclerView.Adapter<TestPostDataAdapte
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         View view = inflater.inflate(R.layout.bulletin_list_item, parent, false);
-        TestPostDataAdapter.ViewHolder viewHolder = new TestPostDataAdapter.ViewHolder(view);
+        PostDataAdapter.ViewHolder viewHolder = new PostDataAdapter.ViewHolder(view);
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -82,7 +82,7 @@ public class TestPostDataAdapter extends RecyclerView.Adapter<TestPostDataAdapte
     }
 
     @Override
-    public void onBindViewHolder(@NonNull TestPostDataAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull PostDataAdapter.ViewHolder holder, int position) {
         int curPos = position;
         RequestOptions requestOptions = new RequestOptions();
         requestOptions.transforms(new CenterCrop(), new RoundedCorners(24));

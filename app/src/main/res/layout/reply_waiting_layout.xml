@@ -48,6 +48,7 @@
         android:textSize="13dp"
         android:text="수락"
         android:layout_marginRight="10dp"
+        android:background="@drawable/button_radius"
         />
     <Button
         android:id="@+id/waiting_reply_deny_btn"
@@ -55,7 +56,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textSize="13dp"
-        android:text="거절"/>
+        android:text="거절"
+        android:background="@drawable/button_radius"/>
 
     </LinearLayout>
 </LinearLayout>

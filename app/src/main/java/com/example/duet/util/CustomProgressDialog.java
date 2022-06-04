@@ -31,6 +31,7 @@ public class CustomProgressDialog{
         LayoutInflater inflater = activity.getLayoutInflater();
         builder.setView(inflater.inflate(R.layout.custom_progress_dialog_layout, null));
         dialog = builder.create();
+        dialog.setCancelable(false);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.show();
     }

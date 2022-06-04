@@ -84,4 +84,14 @@
         android:id="@+id/profile_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+    <TextView
+        android:id="@+id/defensive_text"
+        android:text="활동 내역이 없습니다."
+        android:visibility="gone"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 </LinearLayout>
