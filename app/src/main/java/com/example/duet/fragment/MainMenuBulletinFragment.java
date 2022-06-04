@@ -10,14 +10,13 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 
 import com.example.duet.R;
-import com.example.duet.adapter.TestPostDataAdapter;
+import com.example.duet.adapter.PostDataAdapter;
 import com.example.duet.board.CreatePostActivity;
 import com.example.duet.board.PostContentActivity;
 import com.example.duet.model.PostData;
@@ -41,7 +40,7 @@ public class MainMenuBulletinFragment extends Fragment {
         위 3개의 ArrayList 를 이용하여 자기계발, 질문 구분 버튼을 통해 게시판 분리
      */
     private RecyclerView postRecyclerView;
-    private TestPostDataAdapter adapter;
+    private PostDataAdapter adapter;
     private DividerItemDecoration dividerItemDecoration;
     private Chip postType;
     private Chip questionType;
@@ -136,8 +135,8 @@ public class MainMenuBulletinFragment extends Fragment {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     postType.setChecked(false);
-                    adapter = new TestPostDataAdapter(questionArrayList, getContext());
-                    adapter.setOnItemClickListener(new TestPostDataAdapter.OnItemClickListener() {
+                    adapter = new PostDataAdapter(questionArrayList, getContext());
+                    adapter.setOnItemClickListener(new PostDataAdapter.OnItemClickListener() {
                         @Override
                         public void onItemClicked(int position, PostData data) {
                             Intent intent = new Intent(getContext(), PostContentActivity.class);
@@ -158,8 +157,8 @@ public class MainMenuBulletinFragment extends Fragment {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     questionType.setChecked(false);
-                    adapter = new TestPostDataAdapter(activityArrayList, getContext());
-                    adapter.setOnItemClickListener(new TestPostDataAdapter.OnItemClickListener() {
+                    adapter = new PostDataAdapter(activityArrayList, getContext());
+                    adapter.setOnItemClickListener(new PostDataAdapter.OnItemClickListener() {
                         @Override
                         public void onItemClicked(int position, PostData data) {
                             Intent intent = new Intent(getContext(), PostContentActivity.class);
@@ -210,8 +209,8 @@ public class MainMenuBulletinFragment extends Fragment {
                             }
                             i++;
                         }
-                        adapter = new TestPostDataAdapter(activityArrayList, getContext());
-                        adapter.setOnItemClickListener(new TestPostDataAdapter.OnItemClickListener() {
+                        adapter = new PostDataAdapter(activityArrayList, getContext());
+                        adapter.setOnItemClickListener(new PostDataAdapter.OnItemClickListener() {
                             @Override
                             public void onItemClicked(int position, PostData data) {
                                 Intent intent = new Intent(getContext(), PostContentActivity.class);
@@ -236,12 +235,12 @@ public class MainMenuBulletinFragment extends Fragment {
                             postDataArrayList.add(init);
                             if (init.getPostType() == 1) {
                                 questionArrayList.add(0, init);
-                                adapter = new TestPostDataAdapter(questionArrayList, getContext());
+                                adapter = new PostDataAdapter(questionArrayList, getContext());
                             } else {
                                 activityArrayList.add(0, init);
-                                adapter = new TestPostDataAdapter(activityArrayList, getContext());
+                                adapter = new PostDataAdapter(activityArrayList, getContext());
                             }
-                            adapter.setOnItemClickListener(new TestPostDataAdapter.OnItemClickListener() {
+                            adapter.setOnItemClickListener(new PostDataAdapter.OnItemClickListener() {
                                 @Override
                                 public void onItemClicked(int position, PostData data) {
                                     Intent intent = new Intent(getContext(), PostContentActivity.class);
@@ -282,9 +281,9 @@ public class MainMenuBulletinFragment extends Fragment {
                     selectArrayList.add(questionArrayList.get(i));
                 }
             }
-            adapter = new TestPostDataAdapter(selectArrayList, getContext());
+            adapter = new PostDataAdapter(selectArrayList, getContext());
             postRecyclerView.setAdapter(adapter);
-            adapter.setOnItemClickListener(new TestPostDataAdapter.OnItemClickListener() {
+            adapter.setOnItemClickListener(new PostDataAdapter.OnItemClickListener() {
                 @Override
                 public void onItemClicked(int position, PostData data) {
                     Intent intent = new Intent(getContext(), PostContentActivity.class);
@@ -306,9 +305,9 @@ public class MainMenuBulletinFragment extends Fragment {
                     selectArrayList.add(activityArrayList.get(i));
                 }
             }
-            adapter = new TestPostDataAdapter(selectArrayList, getContext());
+            adapter = new PostDataAdapter(selectArrayList, getContext());
             postRecyclerView.setAdapter(adapter);
-            adapter.setOnItemClickListener(new TestPostDataAdapter.OnItemClickListener() {
+            adapter.setOnItemClickListener(new PostDataAdapter.OnItemClickListener() {
                 @Override
                 public void onItemClicked(int position, PostData data) {
                     Intent intent = new Intent(getContext(), PostContentActivity.class);
