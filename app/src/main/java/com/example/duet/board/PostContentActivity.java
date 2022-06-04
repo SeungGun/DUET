@@ -82,7 +82,6 @@ public class PostContentActivity extends AppCompatActivity {
             if (arrSize == checkSum) {
                 adapter = new ReplyAdapter(replyDataArrayList, getApplicationContext(), data.getPostType(), data.getWriter().getUid().equals(User.currentUser.getUid()));
                 replyRecyclerView.setAdapter(adapter);
-                customProgressDialog.dismissDialog();
                 return;
             }
 
@@ -197,7 +196,7 @@ public class PostContentActivity extends AppCompatActivity {
         dividerItemDecoration = new DividerItemDecoration(replyRecyclerView.getContext(), new LinearLayoutManager(getBaseContext()).getOrientation());
         replyRecyclerView.addItemDecoration(dividerItemDecoration);
 
-        if (User.currentUser.getUid().equals(data.getWriter().getUid()) && data.getLimitGroupCount() > 0) {
+        if (User.currentUser.getUid().equals(data.getWriter().getUid())) {
             customProgressDialog.showLoadingDialog();
             Firestore.getAllReplyOnPostForOwner(data.getPostID()).addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override
@@ -226,6 +225,8 @@ public class PostContentActivity extends AppCompatActivity {
                             i++;
                         }
                         arrSize = replyDataArrayList.size();
+                        customProgressDialog.dismissDialog();
+
                     }
                 }
             });
