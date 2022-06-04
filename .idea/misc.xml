@@ -64,6 +64,10 @@
         <entry key="..\:/Users/trave/git/DUET/app/src/main/res/layout/fragment_main_menu_profile.xml" value="0.176" />
         <entry key="..\:/Users/trave/git/DUET/app/src/main/res/layout/my_post_item.xml" value="0.22395833333333334" />
         <entry key="..\:/Users/trave/git/DUET/app/src/main/res/layout/post_reply_item.xml" value="0.22395833333333334" />
+        <entry key="app/src/main/res/drawable/round_image.xml" value="0.2605" />
+        <entry key="app/src/main/res/drawable/rounded_message_gray.xml" value="0.2605" />
+        <entry key="app/src/main/res/drawable/rounded_message_primary.xml" value="0.2155" />
+        <entry key="app/src/main/res/drawable/search_background.xml" value="0.2605" />
         <entry key="app/src/main/res/layout/activity_card.xml" value="0.2125" />
         <entry key="app/src/main/res/layout/activity_chatting_room.xml" value="0.20833333333333334" />
         <entry key="app/src/main/res/layout/activity_create_post.xml" value="0.2125" />
