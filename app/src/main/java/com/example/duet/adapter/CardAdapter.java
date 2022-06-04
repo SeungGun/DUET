@@ -79,6 +79,8 @@ public class CardAdapter extends BaseAdapter {
                 Intent intent = new Intent(mContext, ChattingRoomActivity.class);
                 intent.putExtra("conv_id", sample.get(i).getConvKey());
                 intent.putExtra("uid", mAuth.getUid());
+                intent.putExtra("title", sample.get(i).getTitle());
+                intent.putExtra("members", sample.get(i).getMembers());
                 mContext.startActivity(intent);
             }
         });

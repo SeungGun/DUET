@@ -15,6 +15,7 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.example.duet.adapter.MessageAdapter;
 import com.example.duet.model.MessageData;
@@ -37,6 +38,8 @@ public class ChattingRoomActivity extends AppCompatActivity {
     MessageAdapter messageAdapter;
     String uid;
     String convId;
+    String mTitle;
+    String mMembers;
     DatabaseReference mRef = FirebaseDatabase.getInstance().getReference();
     ChildEventListener mChildEventListener;
     RecyclerView recyclerView;
@@ -48,7 +51,13 @@ public class ChattingRoomActivity extends AppCompatActivity {
         Intent getIntent = getIntent();
         uid = getIntent.getStringExtra("uid");
         convId = getIntent.getStringExtra("conv_id");
+        mMembers = getIntent.getStringExtra("members");
+        mTitle = getIntent.getStringExtra("title");
 
+        ImageButton backBtn = (ImageButton)findViewById(R.id.backBtn);
+        TextView title = (TextView)findViewById(R.id.chatTitle);
+
+        title.setText(mTitle);
 
         EditText mMessageEditText = (EditText)findViewById(R.id.messageEditText);
         ImageButton mSendButton = (ImageButton)findViewById(R.id.sendButton);
@@ -56,6 +65,7 @@ public class ChattingRoomActivity extends AppCompatActivity {
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
+
 
         messageAdapter = new MessageAdapter();
         recyclerView.setAdapter(messageAdapter);
@@ -107,6 +117,13 @@ public class ChattingRoomActivity extends AppCompatActivity {
                 mRef.child("chat_meta/" + convId).updateChildren(update);
                 // Clear input box
                 mMessageEditText.setText("");
+            }
+        });
+
+        backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
             }
         });
 
