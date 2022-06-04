@@ -18,6 +18,7 @@ import android.widget.ImageButton;
 
 import com.example.duet.adapter.MessageAdapter;
 import com.example.duet.model.MessageData;
+import com.example.duet.model.User;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -92,7 +93,7 @@ public class ChattingRoomActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                MessageData message = new MessageData(mMessageEditText.getText().toString(), uid, null);
+                MessageData message = new MessageData(mMessageEditText.getText().toString(), User.currentUser.getUserName(), null);
 
                 //TODO 타임 스탬프 용 data
                 SimpleDateFormat date = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
@@ -127,7 +128,7 @@ public class ChattingRoomActivity extends AppCompatActivity {
                 public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                     MessageData messageData = snapshot.getValue(MessageData.class);
 
-                    if (messageData.getName().equals(uid)){
+                    if (messageData.getName().equals(User.currentUser.getUserName())){
                         messageData.setViewType(1);
                     }
                     else {

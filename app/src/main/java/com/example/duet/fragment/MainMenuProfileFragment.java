@@ -25,7 +25,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -36,13 +35,12 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
-import com.example.duet.UserProfileActivity;
 import com.example.duet.board.PostContentActivity;
-import com.example.duet.myPost.ProfileMyPost;
 import com.example.duet.R;
-import com.example.duet.board.TestUpdateProfile;
+import com.example.duet.board.UpdateProfile;
 import com.example.duet.model.PostData;
 import com.example.duet.model.User;
+import com.example.duet.util.CustomProgressDialog;
 import com.example.duet.util.FireStorage;
 import com.example.duet.util.Firestore;
 import com.example.duet.util.LevelSystem;
@@ -61,7 +59,6 @@ import com.prolificinteractive.materialcalendarview.spans.DotSpan;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -81,6 +78,8 @@ public class MainMenuProfileFragment extends Fragment {
     private ArrayList<String> selectedPostTitleList;
     private ArrayList<PostData> selectedPostDataList;
     private TextView selectDate;
+    private TextView defensiveText;
+    private CustomProgressDialog customProgressDialog;
     private Handler handler = new Handler(Looper.myLooper()) {
         @Override
         public void handleMessage(@NonNull Message msg) {
@@ -110,16 +109,24 @@ public class MainMenuProfileFragment extends Fragment {
                     }
                 }
                 selectDate.setText(CalendarDay.today().getYear() + "년 " + CalendarDay.today().getMonth() + "월 " + CalendarDay.today().getDay() + "일 활동");
-                ArrayAdapter<String> stringArrayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, selectedPostTitleList);
-                dayListView.setAdapter(stringArrayAdapter);
-                dayListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        Intent contentIntent = new Intent(getActivity(), PostContentActivity.class);
-                        contentIntent.putExtra("data", selectedPostDataList.get(position));
-                        startActivity(contentIntent);
-                    }
-                });
+                if (selectedPostTitleList.size() == 0) {
+                    dayListView.setVisibility(View.GONE);
+                    defensiveText.setVisibility(View.VISIBLE);
+                } else {
+                    dayListView.setVisibility(View.VISIBLE);
+                    defensiveText.setVisibility(View.GONE);
+                    ArrayAdapter<String> stringArrayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, selectedPostTitleList);
+                    dayListView.setAdapter(stringArrayAdapter);
+                    dayListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                            Intent contentIntent = new Intent(getActivity(), PostContentActivity.class);
+                            contentIntent.putExtra("data", selectedPostDataList.get(position));
+                            startActivity(contentIntent);
+                        }
+                    });
+                }
+                customProgressDialog.dismissDialog();
                 return;
             }
             if (msg.arg1 == 2) {
@@ -134,6 +141,8 @@ public class MainMenuProfileFragment extends Fragment {
                                     // 새로운 프로필 이미지로 다시 보여주기
                                     Glide.with(getActivity())
                                             .load(User.currentUser.getProfileUrl())
+                                            .fitCenter()
+                                            .apply(RequestOptions.bitmapTransform(new RoundedCorners(24)))
                                             .diskCacheStrategy(DiskCacheStrategy.ALL)
                                             .into(profileImage);
                                 }
@@ -154,6 +163,7 @@ public class MainMenuProfileFragment extends Fragment {
                              Bundle savedInstanceState) {
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_main_menu_profile, container, false);
 
+        customProgressDialog = new CustomProgressDialog(getActivity());
         profileImage = rootView.findViewById(R.id.profile_photo);
         userPostList = new ArrayList<>();
         profileImage.setScaleType(ImageView.ScaleType.FIT_XY); // 깔끔한 공간과 비율을 위해 필요
@@ -161,6 +171,7 @@ public class MainMenuProfileFragment extends Fragment {
         levelProgress = rootView.findViewById(R.id.level_progress);
         levelText = rootView.findViewById(R.id.profile_level);
         nicknameText = rootView.findViewById(R.id.profile_nickname);
+        defensiveText = rootView.findViewById(R.id.defensive_text);
         nicknameText.setText(User.currentUser.getNickname());
         calendars = new ArrayList<>();
         calendarDayIntegerMap = new HashMap<>();
@@ -186,16 +197,23 @@ public class MainMenuProfileFragment extends Fragment {
                     }
                 }
                 selectDate.setText(date.getYear() + "년 " + date.getMonth() + "월 " + date.getDay() + "일 활동");
-                ArrayAdapter<String> stringArrayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, selectedPostTitleList);
-                dayListView.setAdapter(stringArrayAdapter);
-                dayListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        Intent contentIntent = new Intent(getActivity(), PostContentActivity.class);
-                        contentIntent.putExtra("data", selectedPostDataList.get(position));
-                        startActivity(contentIntent);
-                    }
-                });
+                if (selectedPostTitleList.size() == 0) {
+                    dayListView.setVisibility(View.GONE);
+                    defensiveText.setVisibility(View.VISIBLE);
+                } else {
+                    dayListView.setVisibility(View.VISIBLE);
+                    defensiveText.setVisibility(View.GONE);
+                    ArrayAdapter<String> stringArrayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, selectedPostTitleList);
+                    dayListView.setAdapter(stringArrayAdapter);
+                    dayListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                            Intent contentIntent = new Intent(getActivity(), PostContentActivity.class);
+                            contentIntent.putExtra("data", selectedPostDataList.get(position));
+                            startActivity(contentIntent);
+                        }
+                    });
+                }
             }
         });
         materialCalendarView.setSelectedDate(CalendarDay.today());
@@ -204,6 +222,7 @@ public class MainMenuProfileFragment extends Fragment {
         /*
          현재 사용자의 모든 게시글 데이터를 가져오는 요청 {userPostList 이름의 ArrayList 에 PostData 저장}
          */
+        customProgressDialog.showLoadingDialog();
         Firestore.getUserAllPostData(User.currentUser.getUid()).addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -251,7 +270,7 @@ public class MainMenuProfileFragment extends Fragment {
 
                         // "갤러리에서 가져오기" 선택 시, {TestUpdateProfile 액티비티로 이동}
                         if (which == 0) {
-                            startActivity(new Intent(getActivity(), TestUpdateProfile.class));
+                            startActivity(new Intent(getActivity(), UpdateProfile.class));
                         }
                         // "기본 이미지로 변경" 선택 시
                         else {
@@ -316,7 +335,7 @@ public class MainMenuProfileFragment extends Fragment {
     }
 
     /**
-     * 주 목적은 유저의 프로필 이미지를 갤러리에서 가져올 때, {@link TestUpdateProfile} 으로 이동하고
+     * 주 목적은 유저의 프로필 이미지를 갤러리에서 가져올 때, {@link UpdateProfile} 으로 이동하고
      * 변경 후, 다시 이 Fragment 로 되돌아 올 때 변경된 유저의 데이터를 갱신하기 위함
      * 즉, 이 Fragment 가 다시 실행되는 시점에서 유저 갱신 요청
      *
@@ -326,6 +345,7 @@ public class MainMenuProfileFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        materialCalendarView.setSelectedDate(CalendarDay.today());
         Firestore.getUserData(User.currentUser.getUid())
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override

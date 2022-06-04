@@ -41,7 +41,7 @@
             android:exported="false" />
 
         <activity
-            android:name=".board.TestUpdateProfile"
+            android:name=".board.UpdateProfile"
             android:exported="false" />
         <activity
             android:name=".activity.testbed.PostActivity"

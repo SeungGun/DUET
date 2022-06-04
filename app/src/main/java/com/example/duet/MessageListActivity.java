@@ -55,6 +55,7 @@ public class MessageListActivity extends AppCompatActivity {
                 public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
 
                     Map<String, Boolean> member = new HashMap<String, Boolean>();
+
                     Boolean AmIIn = false;
 
                     for (DataSnapshot ds: snapshot.getChildren()) {
@@ -65,7 +66,7 @@ public class MessageListActivity extends AppCompatActivity {
                                 if(dsMember.getKey().equals(mAuth.getUid())) {
                                     AmIIn = true;
                                 }
-                                member.put(dsMember.getKey(), dsMember.getValue(Boolean.class));
+                                member.put(dsMember.getKey(), true);
                             }
 
                             Log.d("user", member.toString());

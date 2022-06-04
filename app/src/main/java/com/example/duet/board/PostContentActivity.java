@@ -16,14 +16,12 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -31,11 +29,15 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.duet.R;
-import com.example.duet.adapter.TestReplyAdapter;
+import com.example.duet.UserProfileActivity;
+import com.example.duet.adapter.ReplyAdapter;
 import com.example.duet.model.PostData;
 import com.example.duet.model.ReplyData;
 import com.example.duet.model.User;
+import com.example.duet.util.CustomProgressDialog;
 import com.example.duet.util.Firestore;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -67,10 +69,10 @@ public class PostContentActivity extends AppCompatActivity {
     private RecyclerView replyRecyclerView;
     private ArrayList<ReplyData> replyDataArrayList;
     private DividerItemDecoration dividerItemDecoration;
-    private TestReplyAdapter adapter;
-    private Button createGroupButton;
+    private ReplyAdapter adapter;
+    private Button groupJoinBtn;
     private DatabaseReference mRef;
-
+    private CustomProgressDialog customProgressDialog;
     private int checkSum = 0;
     private int arrSize = 0;
     private Handler handler = new Handler(Looper.myLooper()) {
@@ -78,8 +80,9 @@ public class PostContentActivity extends AppCompatActivity {
         public void handleMessage(Message msg) {
             checkSum += msg.getData().getInt("count");
             if (arrSize == checkSum) {
-                adapter = new TestReplyAdapter(replyDataArrayList, getApplicationContext(), data.getPostType(), data.getWriter().getUid().equals(User.currentUser.getUid()));
+                adapter = new ReplyAdapter(replyDataArrayList, getApplicationContext(), data.getPostType(), data.getWriter().getUid().equals(User.currentUser.getUid()));
                 replyRecyclerView.setAdapter(adapter);
+                customProgressDialog.dismissDialog();
                 return;
             }
 
@@ -115,9 +118,6 @@ public class PostContentActivity extends AppCompatActivity {
                                 i++;
                             }
                             arrSize = replyDataArrayList.size();
-
-//                            adapter = new TestReplyAdapter(replyDataArrayList, getApplicationContext());
-//                            replyRecyclerView.setAdapter(adapter);
                         }
                     }
                 });
@@ -134,7 +134,7 @@ public class PostContentActivity extends AppCompatActivity {
         Intent intent = getIntent();
         data = (PostData) intent.getSerializableExtra("data");
         mRef = FirebaseDatabase.getInstance().getReference();
-
+        customProgressDialog = new CustomProgressDialog(PostContentActivity.this);
         imageContainer = findViewById(R.id.content_container);
         writerNicknameTextView = findViewById(R.id.content_profile_nickname);
         titleTextView = findViewById(R.id.content_title);
@@ -143,107 +143,62 @@ public class PostContentActivity extends AppCompatActivity {
         replyContainer = findViewById(R.id.reply_container);
         replyRecyclerView = findViewById(R.id.reply_recycler_view);
         userProfileImage = findViewById(R.id.content_user_profile);
+        groupJoinBtn = findViewById(R.id.joinBtn);
 
-//        createGroupButton = findViewById(R.id.create_group_btn);
-//        createGroupButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (data.getLimitGroupCount() == -1) {
-//                    FrameLayout container = new FrameLayout(getApplicationContext());
-//                    FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
-//                    params.leftMargin = 60;
-//                    params.rightMargin = 60;
-//                    EditText editText = new EditText(getApplicationContext());
-//                    editText.setHint("제한할 인원 수를 입력하세요.");
-//                    editText.setInputType(InputType.TYPE_CLASS_NUMBER);
-//                    editText.setLayoutParams(params);
-//                    container.addView(editText);
-//                    AlertDialog.Builder builder = new AlertDialog.Builder(PostContentActivity.this);
-//                    builder.setTitle("그룹 인원 제한 설정")
-//                            .setCancelable(false)
-//                            .setView(container)
-//                            .setPositiveButton("확인", new DialogInterface.OnClickListener() {
-//                                @Override
-//                                public void onClick(DialogInterface dialog, int which) {
-//                                    Firestore.updateGroupLimitCount(data.getPostID(), Integer.parseInt(editText.getText().toString()))
-//                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-//                                                @Override
-//                                                public void onComplete(@NonNull Task<Void> task) {
-//                                                    if (task.isSuccessful()) {
-//                                                        data.setLimitGroupCount(Integer.parseInt(editText.getText().toString()));
-//
-//                                                        Map<String, Object> update = new HashMap<>();
-//                                                        mRef.child("bulletin").push();
-//
-//                                                        String key = data.getPostID();
-//
-//
-//                                                        //create group 할 경우 본인의 FCM 토큰, uid, username을 database의 채팅 메타데이터에 저장함
-//
-//                                                        String sendTitle = data.getTitle();
-//                                                        String userId = User.currentUser.getUid();
-//                                                        String userName = User.currentUser.getUserName();
-//
-//                                                        update.clear();
-//                                                        update.put("title", sendTitle);
-//                                                        mRef.child("chat_meta"+"/"+key).setValue(update);
-//                                                        update.clear();
-//                                                        update.put(userId, true);
-//                                                        mRef.child("chat_meta"+ "/"+key +"/" + "members").setValue(update);
-//                                                        update.clear();
-//                                                        update.put("conv_key", key);
-//                                                        mRef.child("user_in"+ "/"+userId).push().setValue(update);
-//                                                        update.clear();
-//                                                        update.put("user_name", userName);
-//                                                        mRef.child("chat_meta/" + key + "/user_names").setValue(update);
-//
-//
-//                                                        FirebaseMessaging.getInstance().getToken()
-//                                                                .addOnCompleteListener(new OnCompleteListener<String>() {
-//                                                                    @Override
-//                                                                    public void onComplete(@NonNull Task<String> task) {
-//                                                                        if (!task.isSuccessful()) {
-//                                                                            Log.w("TAG", "Fetching FCM registration token failed", task.getException());
-//                                                                            return;
-//                                                                        }
-//                                                                        // Get new FCM registration token
-//                                                                        String token = task.getResult();
-//                                                                        Map<String, Object> update = new HashMap<>();
-//                                                                        update.put(userName, token);
-//                                                                        mRef.child("chat_meta").child(key).child("FCM").updateChildren(update);
-//                                                                    }
-//                                                                });
-//
-//
-//
-//                                                        dialog.dismiss();
-//                                                    }
-//                                                }
-//                                            });
-//                                }
-//                            })
-//                            .setNegativeButton("취소", new DialogInterface.OnClickListener() {
-//                                @Override
-//                                public void onClick(DialogInterface dialog, int which) {
-//                                    dialog.dismiss();
-//                                }
-//                            });
-//                    AlertDialog alertDialog = builder.create();
-//                    alertDialog.show();
-//                } else {
-//                    Toast.makeText(PostContentActivity.this, data.getLimitGroupCount() + "명 제한 설정됨", Toast.LENGTH_SHORT).show();
-//                    /*
-//                        그룹 인원 수 제한 설정되어 있는 상태, 그 후 처리 로직 작성
-//                     */
-//                }
-//            }
-//        });
+        if (!User.currentUser.getUid().equals(data.getWriter().getUid())) {
+            groupJoinBtn.setVisibility(View.VISIBLE);
+        }
+
+        groupJoinBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Map<String, Object> update = new HashMap<>();
+                mRef.child("bulletin").push();
+                String key = data.getPostID();
+
+
+                //create group 할 경우 본인의 FCM 토큰, uid, username을 database의 채팅 메타데이터에 저장함
+                String userId = User.currentUser.getUid();
+                String userName = User.currentUser.getUserName();
+
+                update.clear();
+                update.put(userId, true);
+                mRef.child("chat_meta" + "/" + key + "/" + "members").updateChildren(update);
+                update.clear();
+                update.put("conv_key", key);
+                mRef.child("user_in" + "/" + userId).push().setValue(update);
+                update.clear();
+                update.put(userName, true);
+                mRef.child("chat_meta").child(key).child("user_names").updateChildren(update);
+
+
+                FirebaseMessaging.getInstance().getToken()
+                        .addOnCompleteListener(new OnCompleteListener<String>() {
+                            @Override
+                            public void onComplete(@NonNull Task<String> task) {
+                                if (!task.isSuccessful()) {
+                                    Log.w("TAG", "Fetching FCM registration token failed", task.getException());
+                                    return;
+                                }
+                                // Get new FCM registration token
+                                String token = task.getResult();
+                                Map<String, Object> update = new HashMap<>();
+                                update.put(userName, token);
+                                mRef.child("chat_meta").child(key).child("FCM").updateChildren(update);
+                            }
+                        });
+
+            }
+        });
+
         replyRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         replyDataArrayList = new ArrayList<>();
         dividerItemDecoration = new DividerItemDecoration(replyRecyclerView.getContext(), new LinearLayoutManager(getBaseContext()).getOrientation());
         replyRecyclerView.addItemDecoration(dividerItemDecoration);
 
-        if (User.currentUser.getUid().equals(data.getWriter().getUid())) {
+        if (User.currentUser.getUid().equals(data.getWriter().getUid()) && data.getLimitGroupCount() > 0) {
+            customProgressDialog.showLoadingDialog();
             Firestore.getAllReplyOnPostForOwner(data.getPostID()).addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -271,12 +226,11 @@ public class PostContentActivity extends AppCompatActivity {
                             i++;
                         }
                         arrSize = replyDataArrayList.size();
-//                        adapter = new TestReplyAdapter(replyDataArrayList, getApplicationContext());
-//                        replyRecyclerView.setAdapter(adapter);
                     }
                 }
             });
         } else {
+            customProgressDialog.showLoadingDialog();
             Firestore.getAllReplyOnPostForAnybody(data.getPostID()).addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -285,8 +239,9 @@ public class PostContentActivity extends AppCompatActivity {
                         for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
                             replyDataArrayList.add(documentSnapshot.toObject(ReplyData.class));
                         }
-                        adapter = new TestReplyAdapter(replyDataArrayList, getApplicationContext(), data.getPostType(), data.getWriter().getUid().equals(User.currentUser.getUid()));
+                        adapter = new ReplyAdapter(replyDataArrayList, getApplicationContext(), data.getPostType(), data.getWriter().getUid().equals(User.currentUser.getUid()));
                         replyRecyclerView.setAdapter(adapter);
+                        customProgressDialog.dismissDialog();
                     }
                 }
             });
@@ -302,6 +257,7 @@ public class PostContentActivity extends AppCompatActivity {
             submitReplyButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    customProgressDialog.showLoadingDialog();
                     ReplyData newData = new ReplyData(data.getPostID()
                             , data.getWriter().getUid()
                             , User.currentUser
@@ -320,7 +276,7 @@ public class PostContentActivity extends AppCompatActivity {
                                                     @Override
                                                     public void onComplete(@NonNull Task<Void> task) {
                                                         if (task.isSuccessful()) {
-                                                            Toast.makeText(PostContentActivity.this, "success", Toast.LENGTH_SHORT).show();
+//                                                            Toast.makeText(PostContentActivity.this, "success", Toast.LENGTH_SHORT).show();
                                                             Bundle bundle = new Bundle();
 
                                                             bundle.putBoolean("add_reply", true);
@@ -404,9 +360,27 @@ public class PostContentActivity extends AppCompatActivity {
 
         Glide.with(getApplicationContext())
                 .load(data.getWriter().getProfileUrl())
+                .fitCenter()
+                .apply(RequestOptions.bitmapTransform(new RoundedCorners(24)))
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(userProfileImage);
+        userProfileImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), UserProfileActivity.class);
+                intent.putExtra("uid", data.getWriter().getUid());
+                startActivity(intent);
+            }
+        });
         writerNicknameTextView.setText(data.getWriter().getNickname());
+        writerNicknameTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), UserProfileActivity.class);
+                intent.putExtra("uid", data.getWriter().getUid());
+                startActivity(intent);
+            }
+        });
         titleTextView.setText(data.getTitle());
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd a HH:mm:ss");
         dateTextView.setText(simpleDateFormat.format(data.getWriteDate()));
@@ -420,6 +394,8 @@ public class PostContentActivity extends AppCompatActivity {
             imageContainer.addView(imageView, params);
             Glide.with(getApplicationContext())
                     .load(data.getPostImageUrls().get(i))
+                    .fitCenter()
+                    .apply(RequestOptions.bitmapTransform(new RoundedCorners(18)))
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into((ImageView) imageContainer.getChildAt(i));
         }
@@ -462,18 +438,17 @@ public class PostContentActivity extends AppCompatActivity {
                                     }
                                 });
                         boolean existSelected = false;
-                        for(int i=0; i<replyDataArrayList.size(); ++i){
-                            if(replyDataArrayList.get(i).isSelected()){
+                        for (int i = 0; i < replyDataArrayList.size(); ++i) {
+                            if (replyDataArrayList.get(i).isSelected()) {
                                 existSelected = true;
                                 break;
                             }
                         }
                         int point = 0;
-                        if(existSelected){
+                        if (existSelected) {
                             point = data.getAllocPoint() * -1;
-                        }
-                        else{
-                            point = (int)(data.getAllocPoint() * 1.2);
+                        } else {
+                            point = (int) (data.getAllocPoint() * 1.2);
                         }
                         Firestore.updateUserPoint(data.getWriter().getUid(), point)
                                 .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -560,8 +535,6 @@ public class PostContentActivity extends AppCompatActivity {
                                                 i++;
                                             }
                                             arrSize = replyDataArrayList.size();
-//                            adapter = new TestReplyAdapter(replyDataArrayList, getApplicationContext());
-//                            replyRecyclerView.setAdapter(adapter);
                                         }
                                     }
                                 });
@@ -583,10 +556,9 @@ public class PostContentActivity extends AppCompatActivity {
 
     public void subtractPointByReplying() {
         int point = 0;
-        if(data.getPostType() == 0){
+        if (data.getPostType() == 0) {
             point = 20;
-        }
-        else{
+        } else {
             point = data.getAllocPoint() * -1;
         }
         Firestore.updateUserPoint(User.currentUser.getUid(), point)

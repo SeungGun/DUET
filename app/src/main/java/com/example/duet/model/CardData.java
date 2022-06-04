@@ -45,6 +45,7 @@ public class CardData {
     }
 
     public String getMembers() {
-        return members.keySet().toString();
+        String ks = members.keySet().toString();
+        return ks.substring(1, ks.length() - 1) + " 님 참여중";
     }
 }

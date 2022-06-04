@@ -595,7 +595,7 @@ public class CreatePostActivity extends AppCompatActivity {
         update.put("conv_key", key);
         mRef.child("user_in" + "/" + userId).push().setValue(update);
         update.clear();
-        update.put("user_name", userName);
+        update.put(userName, true);
         mRef.child("chat_meta/" + key + "/user_names").setValue(update);
 
 
