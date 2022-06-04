@@ -29,6 +29,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.example.duet.board.PostContentActivity;
 import com.example.duet.model.PostData;
 import com.example.duet.model.User;
+import com.example.duet.util.CustomProgressDialog;
 import com.example.duet.util.Firestore;
 import com.example.duet.util.LevelSystem;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -65,6 +66,7 @@ public class UserProfileActivity extends AppCompatActivity {
     private ArrayList<String> selectedPostTitleList;
     private ArrayList<PostData> selectedPostDataList;
     private TextView selectDate;
+    private CustomProgressDialog customProgressDialog;
     private Handler handler = new Handler(Looper.myLooper()) {
         @Override
         public void handleMessage(@NonNull Message msg) {
@@ -111,6 +113,7 @@ public class UserProfileActivity extends AppCompatActivity {
                     }
                 });
             }
+            customProgressDialog.dismissDialog();
         }
     };
 
@@ -118,8 +121,10 @@ public class UserProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
+        customProgressDialog = new CustomProgressDialog(UserProfileActivity.this);
         if (intent != null) {
             String uid = intent.getStringExtra("uid");
+            customProgressDialog.showLoadingDialog();
             Firestore.getUserData(uid).addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @RequiresApi(api = Build.VERSION_CODES.N)
                 @Override

@@ -40,6 +40,7 @@ import com.example.duet.R;
 import com.example.duet.board.UpdateProfile;
 import com.example.duet.model.PostData;
 import com.example.duet.model.User;
+import com.example.duet.util.CustomProgressDialog;
 import com.example.duet.util.FireStorage;
 import com.example.duet.util.Firestore;
 import com.example.duet.util.LevelSystem;
@@ -78,6 +79,7 @@ public class MainMenuProfileFragment extends Fragment {
     private ArrayList<PostData> selectedPostDataList;
     private TextView selectDate;
     private TextView defensiveText;
+    private CustomProgressDialog customProgressDialog;
     private Handler handler = new Handler(Looper.myLooper()) {
         @Override
         public void handleMessage(@NonNull Message msg) {
@@ -124,6 +126,7 @@ public class MainMenuProfileFragment extends Fragment {
                         }
                     });
                 }
+                customProgressDialog.dismissDialog();
                 return;
             }
             if (msg.arg1 == 2) {
@@ -160,6 +163,7 @@ public class MainMenuProfileFragment extends Fragment {
                              Bundle savedInstanceState) {
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_main_menu_profile, container, false);
 
+        customProgressDialog = new CustomProgressDialog(getActivity());
         profileImage = rootView.findViewById(R.id.profile_photo);
         userPostList = new ArrayList<>();
         profileImage.setScaleType(ImageView.ScaleType.FIT_XY); // 깔끔한 공간과 비율을 위해 필요
@@ -218,6 +222,7 @@ public class MainMenuProfileFragment extends Fragment {
         /*
          현재 사용자의 모든 게시글 데이터를 가져오는 요청 {userPostList 이름의 ArrayList 에 PostData 저장}
          */
+        customProgressDialog.showLoadingDialog();
         Firestore.getUserAllPostData(User.currentUser.getUid()).addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {

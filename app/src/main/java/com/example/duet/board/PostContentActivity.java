@@ -37,6 +37,7 @@ import com.example.duet.adapter.ReplyAdapter;
 import com.example.duet.model.PostData;
 import com.example.duet.model.ReplyData;
 import com.example.duet.model.User;
+import com.example.duet.util.CustomProgressDialog;
 import com.example.duet.util.Firestore;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -71,7 +72,7 @@ public class PostContentActivity extends AppCompatActivity {
     private ReplyAdapter adapter;
     private Button groupJoinBtn;
     private DatabaseReference mRef;
-
+    private CustomProgressDialog customProgressDialog;
     private int checkSum = 0;
     private int arrSize = 0;
     private Handler handler = new Handler(Looper.myLooper()) {
@@ -81,6 +82,7 @@ public class PostContentActivity extends AppCompatActivity {
             if (arrSize == checkSum) {
                 adapter = new ReplyAdapter(replyDataArrayList, getApplicationContext(), data.getPostType(), data.getWriter().getUid().equals(User.currentUser.getUid()));
                 replyRecyclerView.setAdapter(adapter);
+                customProgressDialog.dismissDialog();
                 return;
             }
 
@@ -116,9 +118,6 @@ public class PostContentActivity extends AppCompatActivity {
                                 i++;
                             }
                             arrSize = replyDataArrayList.size();
-
-//                            adapter = new TestReplyAdapter(replyDataArrayList, getApplicationContext());
-//                            replyRecyclerView.setAdapter(adapter);
                         }
                     }
                 });
@@ -135,7 +134,7 @@ public class PostContentActivity extends AppCompatActivity {
         Intent intent = getIntent();
         data = (PostData) intent.getSerializableExtra("data");
         mRef = FirebaseDatabase.getInstance().getReference();
-
+        customProgressDialog = new CustomProgressDialog(PostContentActivity.this);
         imageContainer = findViewById(R.id.content_container);
         writerNicknameTextView = findViewById(R.id.content_profile_nickname);
         titleTextView = findViewById(R.id.content_title);
@@ -165,30 +164,30 @@ public class PostContentActivity extends AppCompatActivity {
 
                 update.clear();
                 update.put(userId, true);
-                mRef.child("chat_meta"+ "/"+key +"/" + "members").updateChildren(update);
+                mRef.child("chat_meta" + "/" + key + "/" + "members").updateChildren(update);
                 update.clear();
                 update.put("conv_key", key);
-                mRef.child("user_in"+ "/"+userId).push().setValue(update);
+                mRef.child("user_in" + "/" + userId).push().setValue(update);
                 update.clear();
                 update.put(userName, true);
                 mRef.child("chat_meta").child(key).child("user_names").updateChildren(update);
 
 
                 FirebaseMessaging.getInstance().getToken()
-                    .addOnCompleteListener(new OnCompleteListener<String>() {
-                        @Override
-                        public void onComplete(@NonNull Task<String> task) {
-                            if (!task.isSuccessful()) {
-                                Log.w("TAG", "Fetching FCM registration token failed", task.getException());
-                                return;
+                        .addOnCompleteListener(new OnCompleteListener<String>() {
+                            @Override
+                            public void onComplete(@NonNull Task<String> task) {
+                                if (!task.isSuccessful()) {
+                                    Log.w("TAG", "Fetching FCM registration token failed", task.getException());
+                                    return;
+                                }
+                                // Get new FCM registration token
+                                String token = task.getResult();
+                                Map<String, Object> update = new HashMap<>();
+                                update.put(userName, token);
+                                mRef.child("chat_meta").child(key).child("FCM").updateChildren(update);
                             }
-                            // Get new FCM registration token
-                            String token = task.getResult();
-                            Map<String, Object> update = new HashMap<>();
-                            update.put(userName, token);
-                            mRef.child("chat_meta").child(key).child("FCM").updateChildren(update);
-                        }
-                    });
+                        });
 
             }
         });
@@ -199,6 +198,7 @@ public class PostContentActivity extends AppCompatActivity {
         replyRecyclerView.addItemDecoration(dividerItemDecoration);
 
         if (User.currentUser.getUid().equals(data.getWriter().getUid()) && data.getLimitGroupCount() > 0) {
+            customProgressDialog.showLoadingDialog();
             Firestore.getAllReplyOnPostForOwner(data.getPostID()).addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -226,12 +226,11 @@ public class PostContentActivity extends AppCompatActivity {
                             i++;
                         }
                         arrSize = replyDataArrayList.size();
-//                        adapter = new TestReplyAdapter(replyDataArrayList, getApplicationContext());
-//                        replyRecyclerView.setAdapter(adapter);
                     }
                 }
             });
         } else {
+            customProgressDialog.showLoadingDialog();
             Firestore.getAllReplyOnPostForAnybody(data.getPostID()).addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -242,6 +241,7 @@ public class PostContentActivity extends AppCompatActivity {
                         }
                         adapter = new ReplyAdapter(replyDataArrayList, getApplicationContext(), data.getPostType(), data.getWriter().getUid().equals(User.currentUser.getUid()));
                         replyRecyclerView.setAdapter(adapter);
+                        customProgressDialog.dismissDialog();
                     }
                 }
             });
@@ -257,6 +257,7 @@ public class PostContentActivity extends AppCompatActivity {
             submitReplyButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    customProgressDialog.showLoadingDialog();
                     ReplyData newData = new ReplyData(data.getPostID()
                             , data.getWriter().getUid()
                             , User.currentUser
@@ -275,7 +276,7 @@ public class PostContentActivity extends AppCompatActivity {
                                                     @Override
                                                     public void onComplete(@NonNull Task<Void> task) {
                                                         if (task.isSuccessful()) {
-                                                            Toast.makeText(PostContentActivity.this, "success", Toast.LENGTH_SHORT).show();
+//                                                            Toast.makeText(PostContentActivity.this, "success", Toast.LENGTH_SHORT).show();
                                                             Bundle bundle = new Bundle();
 
                                                             bundle.putBoolean("add_reply", true);
@@ -437,18 +438,17 @@ public class PostContentActivity extends AppCompatActivity {
                                     }
                                 });
                         boolean existSelected = false;
-                        for(int i=0; i<replyDataArrayList.size(); ++i){
-                            if(replyDataArrayList.get(i).isSelected()){
+                        for (int i = 0; i < replyDataArrayList.size(); ++i) {
+                            if (replyDataArrayList.get(i).isSelected()) {
                                 existSelected = true;
                                 break;
                             }
                         }
                         int point = 0;
-                        if(existSelected){
+                        if (existSelected) {
                             point = data.getAllocPoint() * -1;
-                        }
-                        else{
-                            point = (int)(data.getAllocPoint() * 1.2);
+                        } else {
+                            point = (int) (data.getAllocPoint() * 1.2);
                         }
                         Firestore.updateUserPoint(data.getWriter().getUid(), point)
                                 .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -556,10 +556,9 @@ public class PostContentActivity extends AppCompatActivity {
 
     public void subtractPointByReplying() {
         int point = 0;
-        if(data.getPostType() == 0){
+        if (data.getPostType() == 0) {
             point = 20;
-        }
-        else{
+        } else {
             point = data.getAllocPoint() * -1;
         }
         Firestore.updateUserPoint(User.currentUser.getUid(), point)
