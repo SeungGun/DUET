@@ -12,12 +12,13 @@
         android:adjustViewBounds="true"
         android:clickable="false"
         android:cropToPadding="false"
-        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
         />
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:layout_marginLeft="-10dp"
         >
         <LinearLayout
             android:layout_width="match_parent"
@@ -41,7 +42,7 @@
         </LinearLayout>
         <TextView
             android:layout_marginTop="6dp"
-            android:paddingLeft="23dp"
+            android:paddingLeft="28dp"
             android:textColor="#000000"
             android:textSize="19dp"
             android:gravity="center_vertical"

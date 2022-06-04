@@ -17,5 +17,10 @@
         android:id="@+id/submit_button"
         android:layout_weight="2"
         android:layout_width="0dp"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:layout_marginLeft="3dp"
+        android:layout_marginRight="3dp"
+        android:layout_marginTop="10px"
+        android:layout_marginBottom="10px"
+        android:background="@drawable/button_radius"/>
 </LinearLayout>

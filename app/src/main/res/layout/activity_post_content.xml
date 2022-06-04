@@ -51,7 +51,7 @@
 
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/gray"
+                        android:textColor="#bfbebe"
                         android:textSize="20dp"
                         android:layout_marginLeft="20dp"
                         android:id="@+id/content_profile_nickname"
@@ -76,9 +76,9 @@
                 android:textColor="#000000"
                 android:textStyle="bold"
                 android:padding="2dp"
-                android:layout_marginLeft="6dp"
+                android:layout_marginLeft="10dp"
                 android:layout_marginBottom="6dp"
-                android:layout_marginRight="6dp"/>
+                android:layout_marginRight="10dp"/>
             <TextView
                 android:id="@+id/content_write_date"
                 android:textSize="16dp"
@@ -93,7 +93,10 @@
                 android:layout_height="wrap_content"
                 android:text="group join"
                 android:id="@+id/joinBtn"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
                 android:visibility="gone"
+                android:background="@drawable/button_radius"
                 />
             <View
                 android:layout_width="match_parent"
