@@ -80,9 +80,9 @@ public class MainMenuActivity extends AppCompatActivity {
                 case R.id.menu_profile:
                     transaction.replace(R.id.menu_frame_layout, fragmentProfile).commitAllowingStateLoss();
                     break;
-                case R.id.menu_setting:
-                    transaction.replace(R.id.menu_frame_layout, fragmentSetting).commitAllowingStateLoss();
-                    break;
+//                case R.id.menu_setting:
+//                    transaction.replace(R.id.menu_frame_layout, fragmentSetting).commitAllowingStateLoss();
+//                    break;
             }
 
             return true;
