@@ -108,7 +108,7 @@ public class MainMenuProfileFragment extends Fragment {
                         selectedPostDataList.add(userPostList.get(i));
                     }
                 }
-                selectDate.setText(CalendarDay.today().getYear() + "년 " + CalendarDay.today().getMonth() + "월 " + CalendarDay.today().getDay() + "일 활동");
+                selectDate.setText(CalendarDay.today().getYear() + "년 " + (CalendarDay.today().getMonth() + 1) + "월 " + CalendarDay.today().getDay() + "일 활동");
                 if (selectedPostTitleList.size() == 0) {
                     dayListView.setVisibility(View.GONE);
                     defensiveText.setVisibility(View.VISIBLE);
@@ -196,7 +196,7 @@ public class MainMenuProfileFragment extends Fragment {
                         selectedPostDataList.add(userPostList.get(i));
                     }
                 }
-                selectDate.setText(date.getYear() + "년 " + date.getMonth() + "월 " + date.getDay() + "일 활동");
+                selectDate.setText(date.getYear() + "년 " + (date.getMonth() + 1) + "월 " + date.getDay() + "일 활동");
                 if (selectedPostTitleList.size() == 0) {
                     dayListView.setVisibility(View.GONE);
                     defensiveText.setVisibility(View.VISIBLE);

@@ -94,12 +94,11 @@ public class UserProfileActivity extends AppCompatActivity {
                     selectedPostDataList.add(postDataArrayList.get(i));
                 }
             }
-            selectDate.setText(CalendarDay.today().getYear() + "년 " + CalendarDay.today().getMonth() + "월 " + CalendarDay.today().getDay() + "일 활동");
-            if(selectedPostTitleList.size() == 0){
+            selectDate.setText(CalendarDay.today().getYear() + "년 " + (CalendarDay.today().getMonth() + 1) + "월 " + CalendarDay.today().getDay() + "일 활동");
+            if (selectedPostTitleList.size() == 0) {
                 dayListView.setVisibility(View.GONE);
                 defensiveText.setVisibility(View.VISIBLE);
-            }
-            else {
+            } else {
                 dayListView.setVisibility(View.VISIBLE);
                 defensiveText.setVisibility(View.GONE);
                 ArrayAdapter<String> stringArrayAdapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_list_item_1, selectedPostTitleList);
@@ -157,12 +156,11 @@ public class UserProfileActivity extends AppCompatActivity {
                                         selectedPostDataList.add(postDataArrayList.get(i));
                                     }
                                 }
-                                selectDate.setText(date.getYear() + "년 " + date.getMonth() + "월 " + date.getDay() + "일 활동");
-                                if(selectedPostTitleList.size() == 0){
+                                selectDate.setText(date.getYear() + "년 " + (date.getMonth() + 1) + "월 " + date.getDay() + "일 활동");
+                                if (selectedPostTitleList.size() == 0) {
                                     dayListView.setVisibility(View.GONE);
                                     defensiveText.setVisibility(View.VISIBLE);
-                                }
-                                else {
+                                } else {
                                     dayListView.setVisibility(View.VISIBLE);
                                     defensiveText.setVisibility(View.GONE);
                                     ArrayAdapter<String> stringArrayAdapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_list_item_1, selectedPostTitleList);
