@@ -40,6 +40,7 @@ public class ChattingRoomActivity extends AppCompatActivity {
     String convId;
     String mTitle;
     String mMembers;
+    String username;
     DatabaseReference mRef = FirebaseDatabase.getInstance().getReference();
     ChildEventListener mChildEventListener;
     RecyclerView recyclerView;
@@ -53,6 +54,7 @@ public class ChattingRoomActivity extends AppCompatActivity {
         convId = getIntent.getStringExtra("conv_id");
         mMembers = getIntent.getStringExtra("members");
         mTitle = getIntent.getStringExtra("title");
+        username = User.currentUser.getUserName();
 
         ImageButton backBtn = (ImageButton)findViewById(R.id.backBtn);
         TextView title = (TextView)findViewById(R.id.chatTitle);
@@ -114,6 +116,10 @@ public class ChattingRoomActivity extends AppCompatActivity {
 
 
                 mRef.child("messages/" + convId).push().setValue(message);
+                mRef.child("chat_meta/" + convId).updateChildren(update);
+
+                update.clear();
+                update.put("lastSender", username);
                 mRef.child("chat_meta/" + convId).updateChildren(update);
                 // Clear input box
                 mMessageEditText.setText("");
