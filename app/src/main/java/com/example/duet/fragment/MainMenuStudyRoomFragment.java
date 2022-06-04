@@ -125,10 +125,20 @@ public class MainMenuStudyRoomFragment extends Fragment {
                                 if(dsMember.getKey().equals(mAuth.getUid())) {
                                     AmIIn = true;
                                 }
-                                member.put(dsMember.getKey(), dsMember.getValue(Boolean.class));
                             }
 
                             Log.d("user", member.toString());
+                        }
+
+                        if(AmIIn) {
+                            if (ds.getKey().equals("user_names")) {
+                                for (DataSnapshot dsMember: ds.getChildren()) {
+                                    Log.d("asd", dsMember.getValue().toString());
+                                    member.put(dsMember.getKey(), dsMember.getValue(Boolean.class));
+                                }
+
+                                Log.d("user", member.toString());
+                            }
                         }
                     }
 
