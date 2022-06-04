@@ -16,14 +16,12 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -31,8 +29,11 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.duet.R;
-import com.example.duet.adapter.TestReplyAdapter;
+import com.example.duet.UserProfileActivity;
+import com.example.duet.adapter.ReplyAdapter;
 import com.example.duet.model.PostData;
 import com.example.duet.model.ReplyData;
 import com.example.duet.model.User;
@@ -67,7 +68,7 @@ public class PostContentActivity extends AppCompatActivity {
     private RecyclerView replyRecyclerView;
     private ArrayList<ReplyData> replyDataArrayList;
     private DividerItemDecoration dividerItemDecoration;
-    private TestReplyAdapter adapter;
+    private ReplyAdapter adapter;
     private Button groupJoinBtn;
     private DatabaseReference mRef;
 
@@ -78,7 +79,7 @@ public class PostContentActivity extends AppCompatActivity {
         public void handleMessage(Message msg) {
             checkSum += msg.getData().getInt("count");
             if (arrSize == checkSum) {
-                adapter = new TestReplyAdapter(replyDataArrayList, getApplicationContext(), data.getPostType(), data.getWriter().getUid().equals(User.currentUser.getUid()));
+                adapter = new ReplyAdapter(replyDataArrayList, getApplicationContext(), data.getPostType(), data.getWriter().getUid().equals(User.currentUser.getUid()));
                 replyRecyclerView.setAdapter(adapter);
                 return;
             }
@@ -239,7 +240,7 @@ public class PostContentActivity extends AppCompatActivity {
                         for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
                             replyDataArrayList.add(documentSnapshot.toObject(ReplyData.class));
                         }
-                        adapter = new TestReplyAdapter(replyDataArrayList, getApplicationContext(), data.getPostType(), data.getWriter().getUid().equals(User.currentUser.getUid()));
+                        adapter = new ReplyAdapter(replyDataArrayList, getApplicationContext(), data.getPostType(), data.getWriter().getUid().equals(User.currentUser.getUid()));
                         replyRecyclerView.setAdapter(adapter);
                     }
                 }
@@ -358,9 +359,27 @@ public class PostContentActivity extends AppCompatActivity {
 
         Glide.with(getApplicationContext())
                 .load(data.getWriter().getProfileUrl())
+                .fitCenter()
+                .apply(RequestOptions.bitmapTransform(new RoundedCorners(24)))
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(userProfileImage);
+        userProfileImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), UserProfileActivity.class);
+                intent.putExtra("uid", data.getWriter().getUid());
+                startActivity(intent);
+            }
+        });
         writerNicknameTextView.setText(data.getWriter().getNickname());
+        writerNicknameTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), UserProfileActivity.class);
+                intent.putExtra("uid", data.getWriter().getUid());
+                startActivity(intent);
+            }
+        });
         titleTextView.setText(data.getTitle());
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd a HH:mm:ss");
         dateTextView.setText(simpleDateFormat.format(data.getWriteDate()));
@@ -374,6 +393,8 @@ public class PostContentActivity extends AppCompatActivity {
             imageContainer.addView(imageView, params);
             Glide.with(getApplicationContext())
                     .load(data.getPostImageUrls().get(i))
+                    .fitCenter()
+                    .apply(RequestOptions.bitmapTransform(new RoundedCorners(18)))
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into((ImageView) imageContainer.getChildAt(i));
         }
@@ -514,8 +535,6 @@ public class PostContentActivity extends AppCompatActivity {
                                                 i++;
                                             }
                                             arrSize = replyDataArrayList.size();
-//                            adapter = new TestReplyAdapter(replyDataArrayList, getApplicationContext());
-//                            replyRecyclerView.setAdapter(adapter);
                                         }
                                     }
                                 });
