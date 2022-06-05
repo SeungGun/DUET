@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -49,6 +50,8 @@ public class MainMenuBulletinFragment extends Fragment {
     private Chip categoryProgramming;
     private Chip categoryArt;
     private Chip categoryKorean;
+    private SwipeRefreshLayout swipeRefreshLayout;
+
     private ArrayList<PostData> selectArrayList;
     private boolean isInitial = true;
     private ArrayList<String> currentSelectedCategoryList;
@@ -65,6 +68,21 @@ public class MainMenuBulletinFragment extends Fragment {
         currentSelectedCategoryList = new ArrayList<>();
         postType = rootView.findViewById(R.id.sefChip);
         categoryMath = rootView.findViewById(R.id.mathChip);
+
+        swipeRefreshLayout = rootView.findViewById(R.id.pullToRefresh);
+
+
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getAllPostDataAndSetting();
+                swipeRefreshLayout.setRefreshing(false);
+            }
+
+
+        });
+
+
         categoryMath.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
