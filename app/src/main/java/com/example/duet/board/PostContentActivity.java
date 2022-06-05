@@ -258,6 +258,9 @@ public class PostContentActivity extends AppCompatActivity {
             submitReplyButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    if (inputReply.getText().toString().isEmpty()) {
+                        return;
+                    }
                     customProgressDialog.showLoadingDialog();
                     ReplyData newData = new ReplyData(data.getPostID()
                             , data.getWriter().getUid()
@@ -306,6 +309,9 @@ public class PostContentActivity extends AppCompatActivity {
             submitReplyButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    if (inputReply.getText().toString().isEmpty()) {
+                        return;
+                    }
                     AlertDialog.Builder builder = new AlertDialog.Builder(PostContentActivity.this);
                     builder.setTitle("댓글 작성")
                             .setMessage("이 게시글은 작성자가 댓글을 승인해야 정식으로 댓글이 게시됩니다. 작성하시겠습니까?")
