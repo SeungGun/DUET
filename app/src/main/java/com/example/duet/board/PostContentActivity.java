@@ -144,7 +144,7 @@ public class PostContentActivity extends AppCompatActivity {
         userProfileImage = findViewById(R.id.content_user_profile);
         groupJoinBtn = findViewById(R.id.joinBtn);
 
-        if (!User.currentUser.getUid().equals(data.getWriter().getUid())) {
+        if (!User.currentUser.getUid().equals(data.getWriter().getUid()) && data.getLimitGroupCount() > 0) {
             groupJoinBtn.setVisibility(View.VISIBLE);
         }
 
@@ -187,6 +187,8 @@ public class PostContentActivity extends AppCompatActivity {
                                 mRef.child("chat_meta").child(key).child("FCM").updateChildren(update);
                             }
                         });
+
+                Toast.makeText(getApplicationContext(), "Join Success!", Toast.LENGTH_LONG).show();
 
             }
         });
