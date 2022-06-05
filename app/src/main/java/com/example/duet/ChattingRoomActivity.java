@@ -112,14 +112,12 @@ public class ChattingRoomActivity extends AppCompatActivity {
 
                 //Notification을 위해 새로운 메시지 갱신
                 Map<String, Object> update = new HashMap<>();
-                update.put("lastMessage", mMessageEditText.getText().toString());
 
+
+                //update.put("lastSender", username);
+                update.put("lastMessage", username + ": " + mMessageEditText.getText().toString());
 
                 mRef.child("messages/" + convId).push().setValue(message);
-                mRef.child("chat_meta/" + convId).updateChildren(update);
-
-                update.clear();
-                update.put("lastSender", username);
                 mRef.child("chat_meta/" + convId).updateChildren(update);
                 // Clear input box
                 mMessageEditText.setText("");
