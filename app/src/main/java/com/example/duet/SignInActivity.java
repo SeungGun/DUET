@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.duet.fragment.MainMenuActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -24,7 +25,6 @@ public class SignInActivity extends AppCompatActivity {
     private Button loginButton;
     private FirebaseAuth firebaseAuth;
     private String token;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +41,6 @@ public class SignInActivity extends AppCompatActivity {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                putAutoLogin(inputEmail.getText().toString(), inputPassword.getText().toString());
                 doSignIn(inputEmail.getText().toString(), inputPassword.getText().toString());
             }
         });
@@ -63,28 +62,30 @@ public class SignInActivity extends AppCompatActivity {
      *
      * @author Seunggun Sin, 2022-05-01
      */
-
     protected void doSignIn(String id, String password) {
-        /*
-            입력 defensive 처리 필요
-         */
+        if (id.isEmpty()) {
+            Toast.makeText(this, "이메일을 입력하세요.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (password.isEmpty()) {
+            Toast.makeText(this, "비밀번호를 입력하세요.", Toast.LENGTH_SHORT).show();
+            return;
+        }
         firebaseAuth.signInWithEmailAndPassword(id, password)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             String uid = firebaseAuth.getCurrentUser().getUid();
-                    /*
-                        FCM 사용할 때 토큰 가져오는 것도 필요할 것 같음
-                        firebaseAuth.getCurrentUser().getIdToken()
-                     */
+
+                            putAutoLogin(id, password);
                             Intent intent = new Intent(getApplicationContext(), MainMenuActivity.class);
                             intent.putExtra("uid", uid);
                             intent.putExtra("token", token);
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             startActivity(intent);
                         } else {
-
+                            Toast.makeText(SignInActivity.this, "로그인에 실패하였습니다.", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
