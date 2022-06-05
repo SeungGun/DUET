@@ -40,6 +40,7 @@ public class ChattingRoomActivity extends AppCompatActivity {
     String convId;
     String mTitle;
     String mMembers;
+    String username;
     DatabaseReference mRef = FirebaseDatabase.getInstance().getReference();
     ChildEventListener mChildEventListener;
     RecyclerView recyclerView;
@@ -53,6 +54,7 @@ public class ChattingRoomActivity extends AppCompatActivity {
         convId = getIntent.getStringExtra("conv_id");
         mMembers = getIntent.getStringExtra("members");
         mTitle = getIntent.getStringExtra("title");
+        username = User.currentUser.getUserName();
 
         ImageButton backBtn = (ImageButton)findViewById(R.id.backBtn);
         TextView title = (TextView)findViewById(R.id.chatTitle);
@@ -110,8 +112,10 @@ public class ChattingRoomActivity extends AppCompatActivity {
 
                 //Notification을 위해 새로운 메시지 갱신
                 Map<String, Object> update = new HashMap<>();
-                update.put("lastMessage", mMessageEditText.getText().toString());
 
+
+                //update.put("lastSender", username);
+                update.put("lastMessage", username + ": " + mMessageEditText.getText().toString());
 
                 mRef.child("messages/" + convId).push().setValue(message);
                 mRef.child("chat_meta/" + convId).updateChildren(update);
