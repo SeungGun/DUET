@@ -63,11 +63,10 @@
             android:id="@+id/chatTitle"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginStart="20dp"
-            android:fontFamily="sans-serif-condensed-light"
+            android:layout_marginStart="10dp"
+            android:fontFamily="sans-serif-medium"
             android:text="title"
-
-
+            android:textColor="@color/black"
             android:textSize="30dp" />
 
     </LinearLayout>
