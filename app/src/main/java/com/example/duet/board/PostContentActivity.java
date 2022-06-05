@@ -287,6 +287,7 @@ public class PostContentActivity extends AppCompatActivity {
                                                             Message msg = handler.obtainMessage();
                                                             msg.setData(bundle);
                                                             handler.sendMessage(msg);
+                                                            customProgressDialog.dismissDialog();
                                                         } else {
                                                             Log.e("update reply id in field", "failure");
                                                         }
@@ -325,6 +326,7 @@ public class PostContentActivity extends AppCompatActivity {
                                             , inputReply.getText().toString()
                                             , true, 1);
                                     replyDataArrayList.add(newData);
+                                    inputReply.setText("");
                                     Firestore.addReplyData(newData)
                                             .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
                                                 @Override
@@ -337,7 +339,7 @@ public class PostContentActivity extends AppCompatActivity {
                                                                     public void onComplete(@NonNull Task<Void> task) {
                                                                         if (task.isSuccessful()) {
                                                                             dialog.dismiss();
-                                                                            Toast.makeText(PostContentActivity.this, "success", Toast.LENGTH_SHORT).show();
+                                                                            Toast.makeText(PostContentActivity.this, "성공적으로 요청을 보냈습니다.", Toast.LENGTH_SHORT).show();
                                                                         } else {
                                                                             Log.e("update reply id in field", "failure");
                                                                         }
