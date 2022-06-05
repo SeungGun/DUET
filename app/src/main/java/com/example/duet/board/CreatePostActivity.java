@@ -67,8 +67,6 @@ import java.io.InputStream;
 
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -139,7 +137,7 @@ public class CreatePostActivity extends AppCompatActivity {
                 int id2 = typeRadioGroup.getCheckedRadioButtonId();
                 int typeState = 0;
                 int point = 0;
-                if(radioQuestionButton.getId() == id2){
+                if (radioQuestionButton.getId() == id2) {
                     typeState = 1;
                     point = Integer.parseInt(inputSubtractPoint.getText().toString());
                     state = 0;
@@ -211,11 +209,10 @@ public class CreatePostActivity extends AppCompatActivity {
         radioActivityButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked){
+                if (isChecked) {
                     subtractPointLayout.setVisibility(View.GONE);
                     replyRadioGroup.setVisibility(View.VISIBLE);
-                }
-                else{
+                } else {
                     subtractPointLayout.setVisibility(View.VISIBLE);
                     replyRadioGroup.setVisibility(View.GONE);
                 }
@@ -232,8 +229,8 @@ public class CreatePostActivity extends AppCompatActivity {
                 editText.setHint("제한할 인원 수를 입력하세요.");
                 editText.setInputType(InputType.TYPE_CLASS_NUMBER);
                 editText.setLayoutParams(params);
-                if(inputLimitGroupCount != -1){
-                    editText.setText(inputLimitGroupCount+"");
+                if (inputLimitGroupCount != -1) {
+                    editText.setText(inputLimitGroupCount + "");
                 }
                 container.addView(editText);
                 AlertDialog.Builder builder = new AlertDialog.Builder(CreatePostActivity.this);
@@ -278,7 +275,19 @@ public class CreatePostActivity extends AppCompatActivity {
         uploadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (inputTitle.getText().toString().isEmpty()) {
+                    Toast.makeText(CreatePostActivity.this, "제목을 입력하세요!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
+                if (inputBody.getText().toString().isEmpty()) {
+                    Toast.makeText(CreatePostActivity.this, "내용을 입력하세요!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (inputSubtractPoint.getText().toString().isEmpty() && radioQuestionButton.isChecked()) {
+                    Toast.makeText(CreatePostActivity.this, "차감할 포인트를 입력하세요!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 try {
                     OutputStreamWriter out = new OutputStreamWriter(openFileOutput("offline.txt", 0));
                     out.write("");
@@ -286,8 +295,6 @@ public class CreatePostActivity extends AppCompatActivity {
                 } catch (Throwable t) {
                     Toast.makeText(getApplicationContext(), "Exception: " + t.toString(), Toast.LENGTH_SHORT).show();
                 }
-
-
 
                 progressDialog.showLoadingDialog();
                 new Thread() {
@@ -502,10 +509,9 @@ public class CreatePostActivity extends AppCompatActivity {
                                 }
                             }
                             int nextPoint = 0;
-                            if(radioQuestionButton.isChecked()){
+                            if (radioQuestionButton.isChecked()) {
                                 nextPoint = Integer.parseInt(inputSubtractPoint.getText().toString());
-                            }
-                            else {
+                            } else {
                                 nextPoint = LevelSystem.obtainNextPointForPost(count, INITIAL_POST_POINT);
                             }
                             int point = nextPoint;
@@ -615,7 +621,8 @@ public class CreatePostActivity extends AppCompatActivity {
                     }
                 });
     }
-    private void readOffline(){
+
+    private void readOffline() {
         String str = "";
         StringBuffer buf = new StringBuffer();
 
@@ -637,7 +644,7 @@ public class CreatePostActivity extends AppCompatActivity {
             Toast.makeText(this, "Exception: " + t.toString(), Toast.LENGTH_SHORT).show();
         }
 
-        if(buf.toString() == "")
+        if (buf.toString() == "")
             return;
 
         Log.d("aaaaaaa", buf.toString());
@@ -661,18 +668,18 @@ public class CreatePostActivity extends AppCompatActivity {
             inputBody.setText(body);
             inputSubtractPoint.setText(point);
 
-            if(Integer.parseInt(state) == 0)
+            if (Integer.parseInt(state) == 0)
                 replyRadioGroup.check(R.id.radio_always);
-            else if(Integer.parseInt(state) == 1)
+            else if (Integer.parseInt(state) == 1)
                 replyRadioGroup.check(R.id.radio_optional);
-            else if(Integer.parseInt(state) == 2)
+            else if (Integer.parseInt(state) == 2)
                 replyRadioGroup.check(R.id.radio_never);
 
-            for(String c : category){
+            for (String c : category) {
                 categoryListView.setItemChecked(Integer.parseInt(c), true);
             }
 
-            for(String i : image){
+            for (String i : image) {
                 imageSet(Uri.parse(i));
             }
 
@@ -682,7 +689,7 @@ public class CreatePostActivity extends AppCompatActivity {
     }
 
 
-    private void imageSet(Uri selectedImageUri){
+    private void imageSet(Uri selectedImageUri) {
         try {
             InputStream inputStream = getContentResolver().openInputStream(selectedImageUri);
             InputStream inputStream2 = getContentResolver().openInputStream(selectedImageUri);

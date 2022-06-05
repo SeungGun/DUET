@@ -258,6 +258,9 @@ public class PostContentActivity extends AppCompatActivity {
             submitReplyButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    if (inputReply.getText().toString().isEmpty()) {
+                        return;
+                    }
                     customProgressDialog.showLoadingDialog();
                     ReplyData newData = new ReplyData(data.getPostID()
                             , data.getWriter().getUid()
@@ -284,6 +287,7 @@ public class PostContentActivity extends AppCompatActivity {
                                                             Message msg = handler.obtainMessage();
                                                             msg.setData(bundle);
                                                             handler.sendMessage(msg);
+                                                            customProgressDialog.dismissDialog();
                                                         } else {
                                                             Log.e("update reply id in field", "failure");
                                                         }
@@ -306,6 +310,9 @@ public class PostContentActivity extends AppCompatActivity {
             submitReplyButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    if (inputReply.getText().toString().isEmpty()) {
+                        return;
+                    }
                     AlertDialog.Builder builder = new AlertDialog.Builder(PostContentActivity.this);
                     builder.setTitle("댓글 작성")
                             .setMessage("이 게시글은 작성자가 댓글을 승인해야 정식으로 댓글이 게시됩니다. 작성하시겠습니까?")
@@ -319,6 +326,7 @@ public class PostContentActivity extends AppCompatActivity {
                                             , inputReply.getText().toString()
                                             , true, 1);
                                     replyDataArrayList.add(newData);
+                                    inputReply.setText("");
                                     Firestore.addReplyData(newData)
                                             .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
                                                 @Override
@@ -331,7 +339,7 @@ public class PostContentActivity extends AppCompatActivity {
                                                                     public void onComplete(@NonNull Task<Void> task) {
                                                                         if (task.isSuccessful()) {
                                                                             dialog.dismiss();
-                                                                            Toast.makeText(PostContentActivity.this, "success", Toast.LENGTH_SHORT).show();
+                                                                            Toast.makeText(PostContentActivity.this, "성공적으로 요청을 보냈습니다.", Toast.LENGTH_SHORT).show();
                                                                         } else {
                                                                             Log.e("update reply id in field", "failure");
                                                                         }
